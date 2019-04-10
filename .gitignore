@@ -1,0 +1,6 @@
+.idea/
+.kotlintest/
+.gradle/
+build/
+out/
+prepare_environment.sh
