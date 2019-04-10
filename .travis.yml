@@ -34,4 +34,4 @@ install: >-
 
 script: ./gradlew clean check sourcesJar javadocJar
 
-after_success: if $SHOULD_CONFIGURE && $PUBLISH; then ./gradlew publishPlugins publish; fi
+# after_success: if $SHOULD_CONFIGURE && $PUBLISH; then ./gradlew publishPlugins publish; fi
