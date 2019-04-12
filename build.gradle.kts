@@ -23,7 +23,7 @@ group = "org.danilopianini"
 val projectId = "$group.$name"
 val fullName = "Gradle Git-Sensitive Semantic Versioning Plugin"
 val projectDetails = "A Gradle plugin that forces semantic versioning and relies on git to detect the project state"
-val pluginImplementationClass = "org.danilopianini.gradle.gitsemver.GitSemanticVersioning"
+val pluginImplementationClass = "org.danilopianini.gradle.org.danilopianini.gitsemver.GitSemanticVersioning"
 val websiteUrl = "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin"
 
 val versionDetails: VersionDetails = (property("versionDetails") as? Closure<VersionDetails>)?.call()
@@ -48,9 +48,11 @@ if (!version.toString().matches(semVer)) {
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
+    api("com.palantir.gradle.gitversion:gradle-git-version:0.12.0-rc2")
     implementation(kotlin("stdlib"))
     implementation(gradleApi())
     testImplementation(gradleTestKit())
