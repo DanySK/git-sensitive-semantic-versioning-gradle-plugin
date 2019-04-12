@@ -1,13 +1,10 @@
 package org.danilopianini.gradle.gitsemver
 
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import java.lang.IllegalStateException
 import com.palantir.gradle.gitversion.GitVersionPlugin
 import com.palantir.gradle.gitversion.VersionDetails
 import groovy.lang.Closure
-import org.gradle.api.Task
-import java.lang.IllegalArgumentException
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
 /**
  * A Plugin configuring the project for publishing on Maven Central
