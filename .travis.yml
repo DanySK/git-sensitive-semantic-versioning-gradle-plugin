@@ -20,8 +20,8 @@ matrix:
       env: PUBLISH="false"
     - jdk: openjdk12
       env: PUBLISH="false"
-    - jdk: openjdk13
-      env: PUBLISH="false"
+#    - jdk: openjdk13
+#      env: PUBLISH="false"
 
 before_install:
     - export SHOULD_CONFIGURE="$(if ! $TRAVIS_PULL_REQUEST && [ $TRAVIS_REPO_SLUG="DanySK/git-sensitive-semantic-versioning-gradle-plugin" ]; then echo "true"; else echo "false"; fi)"
