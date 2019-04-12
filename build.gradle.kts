@@ -2,10 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.palantir.gradle.gitversion.*
 import groovy.lang.Closure
-import org.gradle.jvm.tasks.Jar
-import org.jetbrains.dokka.DokkaConfiguration
 import org.jetbrains.dokka.gradle.DokkaTask
-import java.net.URI
 
 plugins {
     `java-gradle-plugin`
