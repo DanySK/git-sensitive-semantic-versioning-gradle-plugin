@@ -31,7 +31,7 @@ class GitSemVer : Plugin<Project> {
                 GitStatusInfo(extension, versionDetails)
             } else {
                 GitStatusInfo(extension)
-            }.toString()
+            }.toVersion()
             project.version = { computeVersion() }
             tasks.create("printGitSemVer") {
                 it.doLast {
@@ -57,16 +57,17 @@ data class GitStatusInfo(val extension: GitSemVerExtension,
                 ?.run { if (extension.fullHash.get()) gitHashFull else gitHash }
                 ?: System.currentTimeMillis().base36(),
             baseVersion = versionDetails?.lastTag
+                ?.takeIf { it.isSemVer }
                 ?: extension.minimumVersion.get()
-                    .takeIf { it.matches(semVerRegex) }
-                    ?: throw IllegalArgumentException("${extension.minimumVersion.get()} is not Semantic Versioning compatible"),
+                .takeIf { it.isSemVer }
+                ?: throw IllegalArgumentException("${extension.minimumVersion.get()} is not Semantic Versioning compatible"),
             identifier = (if (versionDetails?.lastTag == null) extension.noTagIdentifier else extension.developmentIdentifier).get(),
-            commitDistance = versionDetails?.commitDistance)
+            commitDistance = versionDetails?.commitDistance?.takeIf { versionDetails.isTagged })
 
     val hasTag: Boolean
         get() = commitDistance != null
 
-    override fun toString() = baseVersion.takeOr(hasTag && commitDistance == 0) {
+    fun toVersion() = baseVersion.takeOr(hasTag && commitDistance == 0) {
         "$it-$identifier${commitDistance?: ""}+$hash".take(extension.maxVersionLength.get())
     }.takeOr ({ matches(semVerRegex) }) {
         throw IllegalStateException(
@@ -84,6 +85,10 @@ data class GitStatusInfo(val extension: GitSemVerExtension,
 
         inline fun <T> T.takeOr(condition: Boolean, op: (T)->T) = if (condition) this else op(this)
         inline fun <T> T.takeOr(condition: T.()->Boolean, op: (T)->T) = if (condition()) this else op(this)
+        val String.isSemVer: Boolean
+            get() = matches(semVerRegex)
+        val VersionDetails?.isTagged: Boolean
+            get() = this?.lastTag?.isSemVer ?: false
 
     }
 }
