@@ -14,6 +14,7 @@ plugins {
     id("com.gradle.plugin-publish") version "0.10.1"
     id ("org.danilopianini.publish-on-central") version "0.1.1"
     id("org.jetbrains.dokka") version "0.9.17"
+    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0-archeo+66a4d38"
 }
 
 group = "org.danilopianini"
@@ -22,26 +23,6 @@ val fullName = "Gradle Git-Sensitive Semantic Versioning Plugin"
 val projectDetails = "A Gradle plugin that forces semantic versioning and relies on git to detect the project state"
 val pluginImplementationClass = "org.danilopianini.gradle.gitsemver.GitSemVer"
 val websiteUrl = "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin"
-
-val versionDetails: VersionDetails = (property("versionDetails") as? Closure<VersionDetails>)?.call()
-    ?: throw IllegalStateException("Unable to fetch the git version for this repository")
-fun Int.asBase(base: Int = 36, digits: Int = 2) = toString(base).let {
-    if (it.length >= digits) it
-    else generateSequence {"0"}.take(digits - it.length).joinToString("") + it
-}
-val minVer = "0.1.0"
-val semVer = """^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?${'$'}""".toRegex()
-version = with(versionDetails) {
-    val tag = if(gitHash != null) lastTag ?.takeIf { it.matches(semVer) } else null
-    val baseVersion = tag ?: minVer
-    val appendix = tag?.let {
-        "".takeIf { commitDistance == 0 } ?: "-dev${commitDistance.asBase()}+${gitHash}"
-    } ?: "-archeo+${gitHash ?: System.currentTimeMillis()}"
-    baseVersion + appendix
-}.take(20)
-if (!version.toString().matches(semVer)) {
-    throw IllegalStateException("Version ${version} does not match Semantic Versioning requirements")
-}
 
 repositories {
     mavenCentral()
@@ -58,6 +39,10 @@ dependencies {
 
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_6
+}
+
+gitSemVer {
+    maxVersionLength.set(20)
 }
 
 tasks.withType<DokkaTask> {
