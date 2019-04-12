@@ -5,6 +5,7 @@ import io.kotlintest.specs.StringSpec
 import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder
 import org.gradle.testkit.runner.GradleRunner
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 class Tests : StringSpec({
     fun folder(closure: TemporaryFolder.() -> Unit) = TemporaryFolder().apply {
@@ -12,6 +13,13 @@ class Tests : StringSpec({
         closure()
     }
     fun TemporaryFolder.file(name: String, content: () -> String) = newFile(name).writeText(content().trimIndent())
+    fun TemporaryFolder.runCommand(vararg command: String, wait: Long = 10) = ProcessBuilder(*command)
+        .directory(root)
+        .redirectError(ProcessBuilder.Redirect.INHERIT)
+        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+        .start()
+        .waitFor(wait, TimeUnit.SECONDS)
+    fun TemporaryFolder.runCommand(command: String, wait: Long = 10) = runCommand(*command.split(" ").toTypedArray(), wait = wait)
     val pluginClasspathResource = ClassLoader.getSystemClassLoader()
         .getResource("plugin-classpath.txt")
         ?: throw IllegalStateException("Did not find plugin classpath resource, run \"testClasses\" build task.")
@@ -56,5 +64,29 @@ class Tests : StringSpec({
             .build()
         println(result.output)
         result.output shouldContain "0.1.0-foo+"
+    }
+    "git single commit" {
+        val workingDirectory = folder {
+            file("settings.gradle") { "rootProject.name = 'testproject'" }
+            file("build.gradle.kts") { """
+                plugins {
+                    id("org.danilopianini.git-semver")
+                }
+                gitSemVer {
+                    noTagIdentifier.set("foo")
+                }
+                """.trimIndent()
+            }
+            runCommand("git init")
+            runCommand("git add .")
+            runCommand("git", "commit", "-m", "\"Test commit\"")
+        }
+        val result = GradleRunner.create()
+            .withProjectDir(workingDirectory.root)
+            .withPluginClasspath(classpath)
+            .withArguments("printGitSemVer")
+            .build()
+        println(result.output)
+        result.output shouldContain "0.1.0-dev+"
     }
 })
