@@ -4,10 +4,9 @@ import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     `java-gradle-plugin`
-    `java`
+    java
     `maven-publish`
-    `signing`
-    id("com.palantir.git-version") version "0.12.0-rc2"
+    signing
     kotlin("jvm") version "1.3.21"
     id("com.gradle.plugin-publish") version "0.10.1"
     id("org.danilopianini.publish-on-central") version "0.1.1"
@@ -94,7 +93,7 @@ dependencies {
 
 publishing {
     publications {
-        withType<MavenPublication>() {
+        withType<MavenPublication> {
             pom {
                 developers {
                     developer {
