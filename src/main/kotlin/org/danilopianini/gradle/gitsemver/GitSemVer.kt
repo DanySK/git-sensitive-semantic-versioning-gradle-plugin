@@ -67,7 +67,6 @@ data class GitStatusInfo(val extension: GitSemVerExtension,
     val hasTag: Boolean
         get() = commitDistance != null
 
-    // TODO: limit items in commitDistance
     fun toVersion() = baseVersion.takeOr(hasTag && commitDistance == 0) {
         "$it-$identifier${
             commitDistance?.minus(1).base36(extension.developmentCounterLength.get())
