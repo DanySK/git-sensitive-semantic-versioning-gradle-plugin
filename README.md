@@ -26,7 +26,7 @@ plugins {
 }
 gitSemVer {
     version = computeGitSemVer() // THIS IS MANDATORY, AND MUST BE LAST IN BLOCK
- }
+}
 // Rest of your buildscript using project.version
 ```
 
