@@ -32,10 +32,10 @@ class GitSemVer : Plugin<Project> {
             } else {
                 GitStatusInfo(extension)
             }.toVersion()
-            project.version = ::computeVersion
+            extension.gitSemVer = ::computeVersion
             tasks.create("printGitSemVer") {
                 it.doLast {
-                    println("Version computed by ${GitSemVer::class.java.simpleName}: ${computeVersion()}")
+                    println("Version computed by ${GitSemVer::class.java.simpleName}: ${project.version}")
                 }
             }
         }

@@ -33,6 +33,9 @@ class Tests : StringSpec({
                 plugins {
                     id("org.danilopianini.git-semver")
                 }
+                gitSemVer {
+                    version = computeGitSemVer()
+                }
                 """.trimIndent()
             }
         }
@@ -53,6 +56,7 @@ class Tests : StringSpec({
                 }
                 gitSemVer {
                     noTagIdentifier.set("foo")
+                    version = computeGitSemVer()
                 }
                 """.trimIndent()
             }
@@ -74,6 +78,7 @@ class Tests : StringSpec({
                 }
                 gitSemVer {
                     noTagIdentifier.set("foo")
+                    version = computeGitSemVer()
                 }
                 """.trimIndent()
             }
@@ -98,6 +103,7 @@ class Tests : StringSpec({
                 }
                 gitSemVer {
                     noTagIdentifier.set("foo")
+                    version = computeGitSemVer()
                 }
                 """.trimIndent()
             }
@@ -122,7 +128,8 @@ class Tests : StringSpec({
                     id("org.danilopianini.git-semver")
                 }
                 gitSemVer {
-                    noTagIdentifier.set("foo")
+                    developmentIdentifier.set("foodev")
+                    version = computeGitSemVer()
                 }
                 """.trimIndent()
             }
@@ -140,6 +147,6 @@ class Tests : StringSpec({
             .withArguments("printGitSemVer")
             .build()
         println(result.output)
-        result.output shouldContain "1.2.3-dev00+"
+        result.output shouldContain "1.2.3-foodev00+"
     }
 })
