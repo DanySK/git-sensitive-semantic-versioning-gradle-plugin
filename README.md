@@ -1,4 +1,4 @@
-# maven-central-gradle-plugin
+# Git sensitive Semantic Versioning (SemVer) Gradle Plugin
 A Gradle plugin for Git-sensitive Semantic Versioning
 
 ## Rationale
