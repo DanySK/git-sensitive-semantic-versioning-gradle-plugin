@@ -111,6 +111,7 @@ pluginBundle {
     website = websiteUrl
     vcsUrl = websiteUrl
     tags = listOf("git", "semver", "semantic versioning", "vcs", "tag")
+    version = (project.version as () -> String)()
 }
 
 gradlePlugin {
