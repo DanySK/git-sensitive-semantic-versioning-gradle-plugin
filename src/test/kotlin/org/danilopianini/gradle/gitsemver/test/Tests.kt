@@ -114,4 +114,32 @@ class Tests : StringSpec({
         println(result.output)
         result.output shouldContain "1.2.3\n"
     }
+    "git tagged + development" {
+        val workingDirectory = folder {
+            file("settings.gradle") { "rootProject.name = 'testproject'" }
+            file("build.gradle.kts") { """
+                plugins {
+                    id("org.danilopianini.git-semver")
+                }
+                gitSemVer {
+                    noTagIdentifier.set("foo")
+                }
+                """.trimIndent()
+            }
+            runCommand("git init")
+            runCommand("git add .")
+            runCommand("git", "commit", "-m", "\"Test commit\"")
+            runCommand("git", "tag", "-a", "1.2.3", "-m", "\"test\"")
+            file("something") { "something" }
+            runCommand("git add something")
+            runCommand("git", "commit", "-m", "\"Test commit 2\"")
+        }
+        val result = GradleRunner.create()
+            .withProjectDir(workingDirectory.root)
+            .withPluginClasspath(classpath)
+            .withArguments("printGitSemVer")
+            .build()
+        println(result.output)
+        result.output shouldContain "1.2.3-dev00+"
+    }
 })
