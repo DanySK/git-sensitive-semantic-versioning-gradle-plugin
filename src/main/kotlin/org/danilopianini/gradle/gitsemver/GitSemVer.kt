@@ -45,13 +45,14 @@ class GitSemVer : Plugin<Project> {
     }
 }
 
-data class GitStatusInfo(val extension: GitSemVerExtension,
-                         val hash: String,
-                         val baseVersion: String,
-                         val identifier: String,
-                         val commitDistance: Int?
+data class GitStatusInfo(
+    val extension: GitSemVerExtension,
+    val hash: String,
+    val baseVersion: String,
+    val identifier: String,
+    val commitDistance: Int?
 ) {
-    constructor(extension: GitSemVerExtension, versionDetails: VersionDetails? = null):
+    constructor(extension: GitSemVerExtension, versionDetails: VersionDetails? = null) :
         this(extension,
             hash = versionDetails
                 ?.run { if (extension.fullHash.get()) gitHashFull else gitHash }
@@ -71,21 +72,21 @@ data class GitStatusInfo(val extension: GitSemVerExtension,
         "$it-$identifier${
             commitDistance?.minus(1).base36(extension.developmentCounterLength.get())
         }+$hash".take(extension.maxVersionLength.get())
-    }.takeOr ({ matches(semVerRegex) }) {
+    }.takeOr({ matches(semVerRegex) }) {
         throw IllegalStateException(
-            "Version ${it} does not match Semantic Versioning requirements. Please considering reporting the error to the developer")
+            "Version $it does not match Semantic Versioning requirements. Please considering reporting the error to the developer")
     }
 
     companion object {
         private const val semVer = """^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?${'$'}"""
         val semVerRegex = semVer.toRegex()
 
-        inline fun <T> T.takeOr(condition: Boolean, op: (T)->T) = if (condition) this else op(this)
-        inline fun <T> T.takeOr(condition: T.()->Boolean, op: (T)->T) = if (condition()) this else op(this)
+        inline fun <T> T.takeOr(condition: Boolean, op: (T) -> T) = if (condition) this else op(this)
+        inline fun <T> T.takeOr(condition: T.() -> Boolean, op: (T) -> T) = if (condition()) this else op(this)
 
         fun Long.base36(digits: Int? = null) = toString(36).let {
             if (digits == null || it.length >= digits) it
-            else generateSequence {"0"}.take(digits - it.length).joinToString("") + it
+            else generateSequence { "0" }.take(digits - it.length).joinToString("") + it
         }
 
         fun Int?.base36(digits: Int? = null): String = this?.toLong()?.base36(digits) ?: ""
@@ -95,6 +96,5 @@ data class GitStatusInfo(val extension: GitSemVerExtension,
 
         val VersionDetails?.isTagged: Boolean
             get() = this?.lastTag?.isSemVer ?: false
-
     }
 }

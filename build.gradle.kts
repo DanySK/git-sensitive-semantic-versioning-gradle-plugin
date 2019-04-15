@@ -1,7 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.palantir.gradle.gitversion.*
-import groovy.lang.Closure
 import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
@@ -12,9 +10,10 @@ plugins {
     id("com.palantir.git-version") version "0.12.0-rc2"
     kotlin("jvm") version "1.3.21"
     id("com.gradle.plugin-publish") version "0.10.1"
-    id ("org.danilopianini.publish-on-central") version "0.1.1"
-    id("org.jetbrains.dokka") version "0.9.17"
+    id("org.danilopianini.publish-on-central") version "0.1.1"
     id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0-archeo+66a4d38"
+    id("org.jetbrains.dokka") version "0.9.17"
+    id("org.jlleitschuh.gradle.ktlint") version "7.3.0"
 }
 
 group = "org.danilopianini"
@@ -43,6 +42,10 @@ configure<JavaPluginConvention> {
 
 gitSemVer {
     maxVersionLength.set(20)
+}
+
+ktlint {
+    ignoreFailures.set(false)
 }
 
 tasks.withType<DokkaTask> {
@@ -121,4 +124,3 @@ gradlePlugin {
         }
     }
 }
-
