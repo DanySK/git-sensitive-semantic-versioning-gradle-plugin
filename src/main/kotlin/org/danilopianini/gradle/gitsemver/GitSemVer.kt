@@ -35,7 +35,7 @@ class GitSemVer : Plugin<Project> {
             project.version = { computeVersion() }
             tasks.create("printGitSemVer") {
                 it.doLast {
-                    println("Version computed by ${GitSemVer::class.simpleName}: ${computeVersion()}")
+                    println("Version computed by ${GitSemVer::class.java.simpleName}: ${computeVersion()}")
                 }
             }
         }
