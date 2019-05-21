@@ -92,7 +92,7 @@ class Tests : StringSpec({
             .withArguments("printGitSemVer")
             .build()
         println(result.output)
-        result.output shouldContain "0.1.0-dev+"
+        result.output shouldContain "0.1.0-foo+"
     }
     "git tagged commit" {
         val workingDirectory = folder {

@@ -10,7 +10,7 @@ plugins {
     kotlin("jvm") version "1.3.21"
     id("com.gradle.plugin-publish") version "0.10.1"
     id("org.danilopianini.publish-on-central") version "0.1.1"
-    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0-dev+2107816ef8"
+    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0"
     id("org.jetbrains.dokka") version "0.9.17"
     id("org.jlleitschuh.gradle.ktlint") version "7.3.0"
 }
@@ -28,7 +28,6 @@ repositories {
 }
 
 dependencies {
-    api("com.palantir.gradle.gitversion:gradle-git-version:0.12.0-rc2")
     implementation(kotlin("stdlib"))
     implementation(gradleApi())
     testImplementation(gradleTestKit())
