@@ -21,7 +21,7 @@ object Versions {
 
     const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.31"
 
-    const val org_jetbrains_kotlin: String = "1.3.21" // available: "1.3.31"
+    const val org_jetbrains_kotlin: String = "1.3.31" // available: "1.3.31"
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "7.3.0" // available: "8.0.0"
 
