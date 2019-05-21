@@ -30,6 +30,10 @@ matrix:
       os: linux
     - jdk: openjdk8
       os: osx
+    - jdk: openjdk9
+      os: osx
+    - jdk: openjdk10
+      os: osx
 
 before_install: >-
     if [ $TRAVIS_OS_NAME = 'linux' ]; then
