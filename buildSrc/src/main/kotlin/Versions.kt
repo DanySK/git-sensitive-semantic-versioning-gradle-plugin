@@ -17,7 +17,7 @@ object Versions {
 
     const val org_danilopianini_publish_on_central_gradle_plugin: String = "0.1.1" 
 
-    const val org_jetbrains_dokka_gradle_plugin: String = "0.9.17" // available: "0.9.18"
+    const val org_jetbrains_dokka_gradle_plugin: String = "0.9.18"
 
     const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.21" // available: "1.3.31"
 
@@ -31,7 +31,7 @@ object Versions {
      *      ./gradle/wrapper/gradle-wrapper.properties
      */
     object Gradle {
-        const val runningVersion: String = "5.2.1"
+        const val runningVersion: String = "5.4.1"
 
         const val currentVersion: String = "5.4.1"
 
