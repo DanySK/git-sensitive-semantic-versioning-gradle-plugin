@@ -10,7 +10,7 @@ plugins {
     kotlin("jvm") version "1.3.21"
     id("com.gradle.plugin-publish") version "0.10.1"
     id("org.danilopianini.publish-on-central") version "0.1.1"
-    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0"
+    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.2.1"
     id("org.jetbrains.dokka") version "0.9.17"
     id("org.jlleitschuh.gradle.ktlint") version "7.3.0"
 }
