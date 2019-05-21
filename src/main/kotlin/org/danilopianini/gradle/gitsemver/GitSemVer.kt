@@ -18,20 +18,15 @@ class GitSemVer : Plugin<Project> {
             val extension = project.createExtension<GitSemVerExtension>(GitSemVerExtension.extensionName, project)
             fun runCommand(vararg cmd: String) = projectDir.runCommand(*cmd)
             fun computeVersion(): String {
-                println("Launching git describe")
                 val description = runCommand("git", "describe", "--abbrev=100")
-                println(description)
                 val hasAtLeastOneTag = description != null
-                println(hasAtLeastOneTag)
                 fun fullVersion(): String {
                     val tag = runCommand("git", "describe", "--no-abbrev") ?: extension.minimumVersion.get()
                     val isAtTag = hasAtLeastOneTag && description == tag
-                    println("istag: $isAtTag")
                     if (isAtTag) {
                         return tag
                     }
                     val devString = if (hasAtLeastOneTag) extension.developmentIdentifier.get() else extension.noTagIdentifier.get()
-                    println("devstring: $devString")
                     val printCommitCommand = "git rev-parse ${if (extension.fullHash.get()) "" else "--short "}HEAD".split(" ")
                     val hash = runCommand(*printCommitCommand.toTypedArray())
                         ?: System.currentTimeMillis().toString()
