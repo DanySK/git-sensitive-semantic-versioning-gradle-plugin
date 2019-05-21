@@ -3,16 +3,19 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
+    id("de.fayard.buildSrcVersions") version
+            Versions.de_fayard_buildsrcversions_gradle_plugin
+    id("org.danilopianini.git-sensitive-semantic-versioning") version
+            Versions.org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin
     `java-gradle-plugin`
     java
     `maven-publish`
     signing
-    kotlin("jvm") version "1.3.21"
-    id("com.gradle.plugin-publish") version "0.10.1"
-    id("org.danilopianini.publish-on-central") version "0.1.1"
-    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.2.1"
-    id("org.jetbrains.dokka") version "0.9.17"
-    id("org.jlleitschuh.gradle.ktlint") version "7.3.0"
+    kotlin("jvm") version Versions.org_jetbrains_kotlin
+    id("com.gradle.plugin-publish") version Versions.com_gradle_plugin_publish_gradle_plugin
+    id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
+    id("org.jetbrains.dokka") version Versions.org_jetbrains_dokka_gradle_plugin
+    id("org.jlleitschuh.gradle.ktlint") version Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
 }
 
 group = "org.danilopianini"
@@ -28,10 +31,10 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation(Libs.kotlin_stdlib)
     implementation(gradleApi())
     testImplementation(gradleTestKit())
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:+")
+    testImplementation(Libs.kotlintest_runner_junit5)
 }
 
 configure<JavaPluginConvention> {
