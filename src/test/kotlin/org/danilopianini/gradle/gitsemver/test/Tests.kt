@@ -147,6 +147,6 @@ class Tests : StringSpec({
             .withArguments("printGitSemVer")
             .build()
         println(result.output)
-        result.output shouldContain "1.2.3-foodev00+"
+        result.output shouldContain "1.2.3-foodev01+"
     }
 })

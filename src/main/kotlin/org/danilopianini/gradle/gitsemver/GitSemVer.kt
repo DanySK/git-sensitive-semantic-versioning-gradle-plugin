@@ -31,7 +31,7 @@ class GitSemVer : Plugin<Project> {
                     val hash = runCommand(*printCommitCommand.toTypedArray())
                         ?: System.currentTimeMillis().toString()
                     val distance = description
-                        ?.let { """-(?<distance>\d+)-.+$""".toRegex().matchEntire(it)?.groups?.get(0)?.value?.toLong() ?: 0L }
+                        ?.let { """-(\d+)-.+$""".toRegex().find(it)?.groups?.get(1)?.value?.toLong() ?: 0L }
                         ?.base36(extension.developmentCounterLength.get())
                         ?: ""
                     return "$tag-$devString$distance+$hash"
