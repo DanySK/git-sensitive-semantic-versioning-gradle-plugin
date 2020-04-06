@@ -1,53 +1,69 @@
-language: java
-os:
-   - linux
-   - osx
+_reference_jdk: &_reference_jdk
+    JDK="adopt@1.8"
 
-jdk:
-  - openjdk8
-  - openjdk9
-  - openjdk10
-  - openjdk11
-  - openjdk12
+_reference_build: &reference_build
+  os: linux
+  env: *reference_jdk
+
+language: shell
+
+os:
+   - osx
+   - linux
+   - windows
 
 git:
   depth: false
+  autocrlf: input
 
 env:
   global:
     - secure: "kLVDcTj5Za70rapYtZm2aMJvdFn+qi4hGVEmDxXnXYA0fKAI956f1Hv0tGUoiIJXZSRBaZwOMgYQq1pHMawU9JZK7clMUavgyGR+HiKEgfYGAEbUPu7HUzSk1UoznyCAR7ykWhHrHtq/OjCxuZcXglAoGgs01mCn9dKF2RMnAq+UeUsmiQQhFt92+37F9iP1CdjCnmzzZALLcsV84sCY1Z9zPKXbdWzhwT6lWB4hcH4RuusRmWIvaIAiU8A/dC7aeizCKIqi3s22o6dPxwDDqofbWHBI8lnEiGitHGJ3YTiPxaSOq1RNnBULyJKQs2/jHGSqJw5MCuVFqt5WdCgpA9NhUuUn6zHbVVXXcIHGLOFPn6OcoHdHrfixGMO2m9g2XrF2eCTZYgRgd5pD5gFzGeOZ86QFYn0hbzH/A786OGKnQV+q3KbJskJKGd0rVT+NogBPRpvTnr+++eFZlsr2esas+4IxxisTCQvN3bSNXA4MxMAy97/thZmjkupnX+eYLl9XMkCN5uXSp9qw8vjaIFZdDn7X9Fqlni6rKMMgNLP3ynL9cmtFUZccxtspwWyX6/UoXM2hpn1brT4KCGyCt+/koDzNar9w30EWvNoV5u3X0ZEKB7PB2ESpJkUdQw8ubI1+szJQT9w9igHILIQr9cGiCNfhsF7HfC0uwxwAAKo="
     - secure: "HSnoixw+D+04IWoCtun2dgLXg5qYNSobk48JWntkcR6zu/xZOJ1fr77ckViU2M5tdjHF3TNljdPmtPr48yV3Nq9GQger3PArV0F8ci/XfmI5gXafppZjbarnBf3toqlN8NLs9qnPubtRDCVVc1v1liKCwXFZVHgWxtdNPw4Tjv6y54/FgyaGaX/UvCwXP+ewsp4sKq4XITjgXlMRf8iMS8H0EPCixQLdLpzf1HcjOFj9xd4E4pozuo7AtoB5ZPK/HPID67Kep9xRgDljeVkQ0Q+ZnAaibWPML57/YeLgLxOdPOdoyjE9RH0HGlxei0/WiFHxX8lPNwNngF4xXq8Ve8TulNssEsY3ib211nojQ38ug38M6C9nF3q9rJyMpyldQFl/QWJzkxpiBJpZ3aK8pWGsaRAasvpk9zYUR4iyZMz4/Z7PRiMkMCKshrFwbDTUrHt1SruN0Ne192HJ51jZyyi4un2H20jrMOAT/wcRoL5g5Cj35MJOCcJf5SUFegEgVcm12Iou8N7+9kJNdato2vRb/CW4y3sAkiN2nVwfCC8WrGsGo6LvB3xWYr60+bcxBsVAKSYBjT843uvtQ9+h7azGRNorr6OUOjMuL5BdQBunwJ/UNuk+rcrRUAtclpGImb0Yis8GDv+Zf8wfaq5hXgpXo0UPPEPaopdmR183AQ0="
     - secure: "fvLUbOyypf3NWRA7VUn4MtrbgA51URqUHwU/jMotn3Vx9D+l34lIxmh6zn5OA3SK4OHlMyECIxVTgp1isnFv3RXLl5A/0eCAXEussnbx5Y2FCn9XVxKO1dAcIHLygmZDpk4q43JCUXZLcTDZVduLDfZRT8oHEzhhHXDGidvEFuGE+hKG5smZ2+mILp+76mHXLnJ4xUizsaffeLl3+vCBpuv2fRqrogB+XIjpozlpNhsJrFD+UAGfKylADHBTSUXGKmFr9Djcxn8EIwzUGgXAk7ywgzj/k4K6LzfAwYNwj/Rru9QHpRkCBcnCvjqNQbonfzeglc2zComDGDRqlkV4RgPXEfNKN5sfGWrRy81kzOiZ4ixGta2J4nUvUF0bx2DAdg8KcMTExET/mR/boctH56Ludqo3iVt8kmt34e44Ly5gUlJyiEe29SoGHfNbFHczBHIna/WIt+1IjSZBydrIp/w9A1x9VDgSD4ZiRkRFRF/7jBMd0AKieLzGcRa9zGSqpTh4rIDhkh1InXurO2Wub6X8XT6JemSItI8Ac8h5h5KHhYOSSZLzgTNsqZ7sz+38vC5PZQgM2KezgUl94kFkiu4QZU4dmcqkxq/RtJRvaTAf/yYnVVqjFKI/CboYWuX0e8mXVSietVbpMinRiWYN8FAlhnLuX7CYe6zeJvdNfv0="
-  matrix:
-    - PUBLISH="false"
-matrix:
-  include:
-    - jdk: openjdk8
-      env: PUBLISH="true"
+    - GRAVIS_REPO="https://github.com/DanySK/Gravis-CI.git"
+    - GRAVIS="$HOME/gravis"
+    - TERM="dumb"
+  jobs:
+    - *reference_jdk
+    - JDK="adopt-openj9@1.8"
+    - JDK="adopt@1.11"
+    - JDK="adopt-openj9@1.11"
+    - JDK="adopt@"
+    - JDK="adopt-openj9"
+
+stages:
+  - base
+  - test
+  - name: deploy
+    if: type != pull_request AND repo = DanySK/git-sensitive-semantic-versioning-gradle-plugin AND (branch = master OR tag ~= /^\d+(\.\d+)*$/)
+
+jobs:
   exclude:
-    - jdk: openjdk8
-      env: PUBLISH="false"
-      os: linux
-    - jdk: openjdk8
-      os: osx
-    - jdk: openjdk9
-      os: osx
-    - jdk: openjdk10
-      os: osx
+    - <<: *reference_build
+      stage: test
+  include:
+    - <<: *reference_build
+      stage: base
+      after_success: bash <(curl -s https://codecov.io/bash)
+    - <<: *reference_build
+      stage: deploy
+      before_script:
+        - openssl aes-256-cbc -K $encrypted_17755a918be8_key -iv $encrypted_17755a918be8_iv -in prepare_environment.sh.enc -out prepare_environment.sh -d
+        - bash prepare_environment.sh
+        - rm prepare_environment.sh
+      script:
+        - travis_retry ./gradlew shadow dokka githubRelease publish
 
-before_install: >-
-    if [ $TRAVIS_OS_NAME = 'linux' ]; then
-        export SHOULD_CONFIGURE="$(if ! $TRAVIS_PULL_REQUEST && [ $TRAVIS_REPO_SLUG="DanySK/git-sensitive-semantic-versioning-gradle-plugin" ]; then echo "true"; else echo "false"; fi)"
-    else
-        export SHOULD_CONFIGURE="$(echo 'false')"
-    fi
+install: 
+  - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
+  - source $GRAVIS/install-jdk
 
-install: >-
-    if $SHOULD_CONFIGURE; then
-        openssl aes-256-cbc -K $encrypted_17755a918be8_key -iv $encrypted_17755a918be8_iv -in prepare_environment.sh.enc -out prepare_environment.sh -d
-        bash prepare_environment.sh
-    fi
+script: travis_retry ./gradlew clean check
 
-script: ./gradlew clean check sourcesJar javadocJar
-
-after_success: if $SHOULD_CONFIGURE && $PUBLISH; then ./gradlew publishPlugins publish; fi
+before_cache:
+  - $GRAVIS/clean-gradle-cache
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
