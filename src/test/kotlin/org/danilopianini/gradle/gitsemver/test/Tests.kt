@@ -1,6 +1,8 @@
 package org.danilopianini.gradle.gitsemver.test
 
 import io.kotlintest.matchers.string.shouldContain
+import io.kotlintest.matchers.string.shouldMatch
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder
 import org.gradle.testkit.runner.GradleRunner
@@ -120,7 +122,7 @@ class Tests : StringSpec({
             .withArguments("printGitSemVer")
             .build()
         println(result.output)
-        result.output shouldContain "1.2.3\n"
+        result.output.lines().any { it matches Regex(""".*1\.2\.3$""") } shouldBe true
     }
     "git tagged + development" {
         val workingDirectory = folder {
