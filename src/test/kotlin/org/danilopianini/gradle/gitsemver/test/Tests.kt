@@ -1,7 +1,6 @@
 package org.danilopianini.gradle.gitsemver.test
 
 import io.kotlintest.matchers.string.shouldContain
-import io.kotlintest.matchers.string.shouldMatch
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder
