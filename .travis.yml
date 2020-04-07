@@ -9,8 +9,8 @@ language: shell
 
 os:
    - osx
-   - linux
    - windows
+   - linux
 
 git:
   depth: false
