@@ -1,4 +1,4 @@
-_reference_jdk: &_reference_jdk
+_reference_jdk: &reference_jdk
     JDK="adopt@1.8"
 
 _reference_build: &reference_build
