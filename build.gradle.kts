@@ -3,19 +3,16 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
-    id("de.fayard.buildSrcVersions") version
-            Versions.de_fayard_buildsrcversions_gradle_plugin
-    id("org.danilopianini.git-sensitive-semantic-versioning") version
-            Versions.org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin
+    id("org.danilopianini.git-sensitive-semantic-versioning")
     `java-gradle-plugin`
     java
     `maven-publish`
     signing
-    kotlin("jvm") version Versions.org_jetbrains_kotlin
-    id("com.gradle.plugin-publish") version Versions.com_gradle_plugin_publish_gradle_plugin
-    id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
-    id("org.jetbrains.dokka") version Versions.org_jetbrains_dokka_gradle_plugin
-    id("org.jlleitschuh.gradle.ktlint") version Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
+    kotlin("jvm")
+    id("com.gradle.plugin-publish")
+    id("org.danilopianini.publish-on-central")
+    id("org.jetbrains.dokka")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
 group = "org.danilopianini"
@@ -31,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    implementation(Libs.kotlin_stdlib)
+    implementation(kotlin("stdlib"))
     implementation(gradleApi())
     testImplementation(gradleTestKit())
     testImplementation(Libs.kotlintest_runner_junit5)
