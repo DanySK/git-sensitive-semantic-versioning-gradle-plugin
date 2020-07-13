@@ -6,8 +6,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("de.fayard:dependencies:+")
-        classpath("org.danilopianini:refreshversions-aliases:+")
+        classpath("de.fayard:dependencies:0.+")
+        classpath("org.danilopianini:refreshversions-aliases:0.+")
     }
 }
 bootstrapRefreshVersionsAndDependencies(justAdditionalAliases)
