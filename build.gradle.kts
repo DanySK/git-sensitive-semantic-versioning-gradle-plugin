@@ -28,14 +28,13 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
     implementation(gradleApi())
     testImplementation(gradleTestKit())
-    testImplementation(Libs.kotlintest_runner_junit5)
-}
-
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_6
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
+    testImplementation("io.kotest:kotest-core-jvm:_")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:_")
+    testRuntimeOnly("io.kotest:kotest-runner-junit5-jvm:_")
 }
 
 gitSemVer {
