@@ -48,8 +48,10 @@ ktlint {
 
 tasks.withType<DokkaTask> {
     outputDirectory = "$buildDir/javadoc"
-    jdkVersion = 8
-    reportUndocumented = false
+    configuration {
+        jdkVersion = 8
+        reportUndocumented = false
+    }
     outputFormat = "javadoc"
 }
 
