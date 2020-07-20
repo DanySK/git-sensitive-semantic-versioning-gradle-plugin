@@ -51,7 +51,13 @@ class GitSemVer : Plugin<Project> {
         }
     }
     companion object {
-        private const val semVer = """^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?${'$'}"""
+        private const val MATCH_VERSION =
+            """(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"""
+        private const val MATCH_OPTION =
+            """(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?"""
+        private const val MATCH_BUILD_INFO =
+            """(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?"""
+        private const val semVer = "^$MATCH_VERSION$MATCH_OPTION$MATCH_BUILD_INFO${'$'}"
         val semVerRegex = semVer.toRegex()
         val String.isSemVer: Boolean
             get() = matches(semVerRegex)

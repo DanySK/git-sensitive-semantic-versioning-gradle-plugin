@@ -30,7 +30,8 @@ class Tests : StringSpec({
     "minimal configuration" {
         val workingDirectory = folder {
             file("settings.gradle") { "rootProject.name = 'testproject'" }
-            file("build.gradle.kts") { """
+            file("build.gradle.kts") {
+                """
                 plugins {
                     id("org.danilopianini.git-semver")
                 }
@@ -51,7 +52,8 @@ class Tests : StringSpec({
     "simple usage of extension" {
         val workingDirectory = folder {
             file("settings.gradle") { "rootProject.name = 'testproject'" }
-            file("build.gradle.kts") { """
+            file("build.gradle.kts") {
+                """
                 plugins {
                     id("org.danilopianini.git-semver")
                 }
@@ -73,7 +75,8 @@ class Tests : StringSpec({
     "git single commit" {
         val workingDirectory = folder {
             file("settings.gradle") { "rootProject.name = 'testproject'" }
-            file("build.gradle.kts") { """
+            file("build.gradle.kts") {
+                """
                 plugins {
                     id("org.danilopianini.git-semver")
                 }
@@ -98,7 +101,8 @@ class Tests : StringSpec({
     "git tagged commit" {
         val workingDirectory = folder {
             file("settings.gradle") { "rootProject.name = 'testproject'" }
-            file("build.gradle.kts") { """
+            file("build.gradle.kts") {
+                """
                 plugins {
                     id("org.danilopianini.git-semver")
                 }
@@ -126,7 +130,8 @@ class Tests : StringSpec({
     "git tagged + development" {
         val workingDirectory = folder {
             file("settings.gradle") { "rootProject.name = 'testproject'" }
-            file("build.gradle.kts") { """
+            file("build.gradle.kts") {
+                """
                 plugins {
                     id("org.danilopianini.git-semver")
                 }
