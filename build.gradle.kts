@@ -1,6 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     id("org.danilopianini.git-sensitive-semantic-versioning")
@@ -46,13 +45,9 @@ ktlint {
     ignoreFailures.set(false)
 }
 
-tasks.withType<DokkaTask> {
-    outputDirectory = "$buildDir/javadoc"
-    configuration {
-        jdkVersion = 8
-        reportUndocumented = false
-    }
-    outputFormat = "javadoc"
+tasks.javadocjar {
+    dependsOn(tasks.dokkaJavaddoc)
+    from(tasks.dokkaJavadoc.get().outputDirectory)
 }
 
 publishOnCentral {
