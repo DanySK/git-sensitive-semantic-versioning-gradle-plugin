@@ -53,7 +53,7 @@ jobs:
         - bash prepare_environment.sh
         - rm prepare_environment.sh
       script:
-        - travis_retry ./gradlew dokka publish
+        - travis_retry ./gradlew publish
 
 install: 
   - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
