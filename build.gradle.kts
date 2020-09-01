@@ -45,8 +45,8 @@ ktlint {
     ignoreFailures.set(false)
 }
 
-tasks.javadocjar {
-    dependsOn(tasks.dokkaJavaddoc)
+tasks.javadocJar {
+    dependsOn(tasks.dokkaJavadoc)
     from(tasks.dokkaJavadoc.get().outputDirectory)
 }
 
