@@ -26,8 +26,14 @@ class GitSemVer : Plugin<Project> {
                     if (isAtTag) {
                         return tag
                     }
-                    val devString = if (hasAtLeastOneTag) extension.developmentIdentifier.get() else extension.noTagIdentifier.get()
-                    val printCommitCommand = "git rev-parse ${if (extension.fullHash.get()) "" else "--short "}HEAD".split(" ")
+                    val devString =
+                        if (hasAtLeastOneTag) {
+                            extension.developmentIdentifier.get()
+                        } else {
+                            extension.noTagIdentifier.get()
+                        }
+                    val fullHash = extension.fullHash.get()
+                    val printCommitCommand = "git rev-parse ${if (fullHash) "" else "--short "}HEAD".split(" ")
                     val hash = runCommand(*printCommitCommand.toTypedArray())
                         ?: System.currentTimeMillis().toString()
                     val distance = description
@@ -40,7 +46,9 @@ class GitSemVer : Plugin<Project> {
                 if (result.isSemVer) {
                     return result
                 }
-                throw IllegalStateException("Computed version: $result does not match Semantic Versioning 2.0 requirements.")
+                throw IllegalStateException(
+                    "Computed version: $result does not match Semantic Versioning 2.0 requirements."
+                )
             }
             extension.gitSemVer = ::computeVersion
             tasks.create("printGitSemVer") {
@@ -58,13 +66,23 @@ class GitSemVer : Plugin<Project> {
         private const val MATCH_BUILD_INFO =
             """(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?"""
         private const val semVer = "^$MATCH_VERSION$MATCH_OPTION$MATCH_BUILD_INFO${'$'}"
+
         val semVerRegex = semVer.toRegex()
+
         val String.isSemVer: Boolean
             get() = matches(semVerRegex)
-        private inline fun <reified T> Project.createExtension(name: String, vararg args: Any?): T = project.extensions.create(name, T::class.java, *args)
-        fun File.runCommand(vararg cmd: String) = Runtime.getRuntime().exec(cmd, emptyArray(), this).inputStream.bufferedReader().readText()
+
+        private inline fun <reified T> Project.createExtension(name: String, vararg args: Any?): T =
+            project.extensions.create(name, T::class.java, *args)
+
+        fun File.runCommand(vararg cmd: String) = Runtime.getRuntime()
+            .exec(cmd, emptyArray(), this)
+            .inputStream
+            .bufferedReader()
+            .readText()
             .trim()
-            .takeIf { it.length > 0 }
+            .takeIf { it.isNotEmpty() }
+
         fun Long.base36(digits: Int? = null) = toString(36).let {
             if (digits == null || it.length >= digits) it
             else generateSequence { "0" }.take(digits - it.length).joinToString("") + it
