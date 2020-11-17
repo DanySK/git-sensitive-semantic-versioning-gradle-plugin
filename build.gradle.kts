@@ -78,7 +78,10 @@ tasks {
         }
     }
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.6"
+        kotlinOptions {
+            allWarningsAsErrors = true
+            jvmTarget = "1.8"
+        }
     }
 }
 

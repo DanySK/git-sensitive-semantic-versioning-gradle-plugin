@@ -6,7 +6,11 @@ import org.gradle.api.provider.Property
 
 open class GitSemVerExtension @JvmOverloads constructor(
     private val project: Project,
-    internal var gitSemVer: () -> String = { throw IllegalStateException("Version computation called before configuration") },
+    internal var gitSemVer: () -> String = {
+        throw IllegalStateException(
+            "Version computation called before configuration"
+        )
+    },
     val minimumVersion: Property<String> = project.propertyWithDefault("0.1.0"),
     val developmentIdentifier: Property<String> = project.propertyWithDefault("dev"),
     val noTagIdentifier: Property<String> = project.propertyWithDefault("archeo"),
