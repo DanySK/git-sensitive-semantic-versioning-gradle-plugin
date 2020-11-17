@@ -90,6 +90,14 @@ dependencies {
     testRuntimeOnly(files(tasks["createClasspathManifest"]))
 }
 
+if ("true" == System.getenv("CI")) {
+    signing {
+        val signingKey: String? by project
+        val signingPassword: String? by project
+        useInMemoryPgpKeys(signingKey, signingPassword)
+    }
+}
+
 publishing {
     publications {
         withType<MavenPublication> {
