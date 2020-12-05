@@ -51,10 +51,10 @@ tasks.javadocJar {
 }
 
 publishOnCentral {
-    projectDescription.set(projectDetails)
-    projectLongName.set(fullName)
-    projectUrl.set(websiteUrl)
-    scmConnection.set("git:git@github.com:DanySK/git-sensitive-semantic-versioning-gradle-plugin")
+    projectDescription = projectDetails
+    projectLongName = fullName
+    projectUrl = websiteUrl
+    scmConnection = "git:git@github.com:DanySK/git-sensitive-semantic-versioning-gradle-plugin"
 }
 
 tasks {
