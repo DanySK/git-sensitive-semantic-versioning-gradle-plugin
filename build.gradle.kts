@@ -32,9 +32,8 @@ dependencies {
     implementation(gradleApi())
     testImplementation(gradleTestKit())
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
-    testImplementation("io.kotest:kotest-core-jvm:_")
     testImplementation("io.kotest:kotest-assertions-core-jvm:_")
-    testRuntimeOnly("io.kotest:kotest-runner-junit5-jvm:_")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:_")
 }
 
 gitSemVer {
