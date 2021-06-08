@@ -55,11 +55,6 @@ publishOnCentral {
     projectLongName = fullName
     projectUrl = websiteUrl
     scmConnection = "git:git@github.com:DanySK/git-sensitive-semantic-versioning-gradle-plugin"
-    val central = mavenCentral()
-    repository(central.url.replace("://", "://s01.")) {
-        user = central.user()
-        password = central.password()
-    }
 }
 
 tasks {
