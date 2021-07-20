@@ -1,6 +1,7 @@
 import org.danilopianini.gradle.mavencentral.mavenCentral
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION as KOTLIN_VERSION
 
 plugins {
     id("org.danilopianini.git-sensitive-semantic-versioning")
@@ -34,6 +35,16 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
     testImplementation("io.kotest:kotest-assertions-core-jvm:_")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:_")
+}
+
+// Enforce Kotlin version coherence
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.jetbrains.kotlin" && requested.name.startsWith("kotlin")) {
+            useVersion(KOTLIN_VERSION)
+            because("All Kotlin modules should use the same version, and compiler uses $KOTLIN_VERSION")
+        }
+    }
 }
 
 gitSemVer {
@@ -81,6 +92,7 @@ tasks {
         kotlinOptions {
             allWarningsAsErrors = true
             jvmTarget = "1.8"
+            freeCompilerArgs += listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xinline-classes")
         }
     }
 }
