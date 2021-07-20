@@ -175,5 +175,27 @@ class Tests : StringSpec(
             val expectedVersion = "0.1.0-archeo"
             result shouldContain expectedVersion
         }
+        "regression for bug #2: https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/2" {
+            val workingDirectory = folder {
+                file("settings.gradle") { "rootProject.name = 'testproject'" }
+                file("build.gradle.kts") {
+                    """
+                    plugins {
+                        id("org.danilopianini.git-semver")
+                    }
+                    gitSemVer {
+                        minimumVersion.set("0.1.0")
+                        developmentIdentifier.set("")    // <--- NOTICE THIS
+                        noTagIdentifier.set("")          // <--- NOTICE THIS
+                        developmentCounterLength.set(2) 
+                    }
+                    """.trimIndent()
+                }
+            }
+            val result = workingDirectory.runGradle()
+            println(result)
+            val expectedVersion = "0.1.0+"
+            result shouldContain expectedVersion
+        }
     }
 )
