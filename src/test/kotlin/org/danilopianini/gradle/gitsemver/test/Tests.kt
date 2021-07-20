@@ -156,5 +156,24 @@ class Tests : StringSpec(
                 newResult.lineSequence().find { it.matches(".*1.2.4$".toRegex()) } shouldNotBe null
             }
         }
+        "manual assignment of version" {
+            val workingDirectory = folder {
+                file("settings.gradle") { "rootProject.name = 'testproject'" }
+                file("build.gradle.kts") {
+                    """
+                    plugins {
+                        id("org.danilopianini.git-semver")
+                    }
+                    gitSemVer {
+                        assignGitSemanticVersion()
+                    }
+                    """.trimIndent()
+                }
+            }
+            val result = workingDirectory.runGradle()
+            println(result)
+            val expectedVersion = "0.1.0-archeo"
+            result shouldContain expectedVersion
+        }
     }
 )
