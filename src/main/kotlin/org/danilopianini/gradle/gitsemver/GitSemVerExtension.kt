@@ -41,7 +41,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
     }
 
     fun computeVersion(): String {
-        with (project) {
+        with(project) {
             val reachableCommits = runCommand("git", "rev-list", "HEAD")?.lines() ?: emptyList()
             logger.debug("Reachable commits: $reachableCommits")
             val reachableSemVerTags = runCommand("git", "for-each-ref", "refs/tags")
