@@ -1,22 +1,29 @@
 package org.danilopianini.gradle.gitsemver
 
+/**
+ * A class representing semantic versions:
+ * [major].[minor].[patch]-[preRelease]+[buildMetadata].
+ */
 @OptIn(ExperimentalUnsignedTypes::class)
 data class SemanticVersion(
     val major: ULong,
     val minor: ULong,
     val patch: ULong,
-    val preRelease: PreReleaseIdentifier,
-    val buildMetadata: PreReleaseIdentifier,
+    val preRelease: PreReleaseIdentifier = PreReleaseIdentifier.EMPTY,
+    val buildMetadata: PreReleaseIdentifier = PreReleaseIdentifier.EMPTY,
 ) : Comparable<SemanticVersion> {
 
+    /**
+     * True if this version is in the form [major].[minor].[patch], with no further identifiers.
+     */
     val isStable: Boolean get() = preRelease.isEmpty() && buildMetadata.isEmpty()
 
     constructor(
         major: String,
         minor: String,
         patch: String,
-        preRelease: String,
-        buildMetadata: String,
+        preRelease: String = "",
+        buildMetadata: String = "",
     ) : this(
         major.toULong(),
         minor.toULong(),
@@ -25,10 +32,11 @@ data class SemanticVersion(
         PreReleaseIdentifier("+", buildMetadata),
     )
 
-    private fun <T : Comparable<T>> compareOrNull(v1: T, v2: T) = v1.compareTo(v2).takeIf { it != 0 }
-
     override fun toString() = "$major.$minor.$patch$preRelease$buildMetadata"
 
+    /**
+     * Creates the same SemanticVersion, but without build metadata.
+     */
     fun withoutBuildMetadata(): SemanticVersion = copy(buildMetadata = PreReleaseIdentifier("+", ""))
 
     @OptIn(ExperimentalUnsignedTypes::class)
@@ -57,9 +65,12 @@ data class SemanticVersion(
             """(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"""
         private const val MATCH_BUILD_INFO =
             """(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?"""
-        const val semVerRegexString = "^$MATCH_VERSION$MATCH_OPTION$MATCH_BUILD_INFO$"
-        val semVerRegex = semVerRegexString.toRegex()
+        private const val semVerRegexString = "^$MATCH_VERSION$MATCH_OPTION$MATCH_BUILD_INFO$"
+        private val semVerRegex = semVerRegexString.toRegex()
 
+        /**
+         * Parses a [String] producing a [SemanticVersion], or null if the version can't be parsed.
+         */
         fun fromStringOrNull(input: String): SemanticVersion? = semVerRegex.matchEntire(input)?.let { match ->
             val (major, minor, patch, preRelease, buildInfo) = match.destructured
             SemanticVersion(major, minor, patch, preRelease, buildInfo)
@@ -67,10 +78,13 @@ data class SemanticVersion(
     }
 }
 
+/**
+ * A SemVer 2.0 pre-release identifier, with a selectable [prefix].
+ */
 @OptIn(ExperimentalUnsignedTypes::class)
 data class PreReleaseIdentifier(
-    val prefix: String,
-    private val segments: List<DotSeparatedIdentifier>,
+    val prefix: String = "-",
+    private val segments: List<DotSeparatedIdentifier> = emptyList(),
 ) : Comparable<PreReleaseIdentifier> {
 
     init {
@@ -90,6 +104,9 @@ data class PreReleaseIdentifier(
             }
     )
 
+    /**
+     * Whether this pre-release identifier contains anything.
+     */
     fun isEmpty(): Boolean = segments.isEmpty()
 
     override fun toString() = segments.takeIf { it.isNotEmpty() }?.joinToString(separator = ".", prefix = prefix) ?: ""
@@ -104,19 +121,30 @@ data class PreReleaseIdentifier(
          * - A larger set of pre-release fields has a higher precedence than a smaller set, if all of the preceding
          *   identifiers are equal.
          *
-         * - Example: 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0.
+         * - Example:
+         *   1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta
+         *   < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0.
          */
         segments.asSequence().zip(other.segments.asSequence())
             .map { it.first.compareTo(it.second) }
             .find { it != 0 }
             ?: segments.size.compareTo(other.segments.size)
 
+    /**
+     * A dot-separated identifier.
+     */
     sealed class DotSeparatedIdentifier : Comparable<DotSeparatedIdentifier> {
 
+        /**
+         * Numeric [identifier].
+         */
         data class NumericIdentifier(val identifier: ULong) : DotSeparatedIdentifier() {
             override fun toString() = identifier.toString()
         }
 
+        /**
+         * Alphanumeric [identifier].
+         */
         data class AlphanumericIdentifier(val identifier: String) : DotSeparatedIdentifier() {
 
             init {
@@ -149,5 +177,10 @@ data class PreReleaseIdentifier(
 
     companion object {
         private val validPrefixes = listOf("+", "-")
+
+        /**
+         * An empty pre-release identifier.
+         */
+        val EMPTY: PreReleaseIdentifier = PreReleaseIdentifier()
     }
 }

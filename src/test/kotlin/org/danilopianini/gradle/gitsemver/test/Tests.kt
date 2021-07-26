@@ -32,7 +32,9 @@ class Tests : StringSpec(
         val classpath = pluginClasspathResource.openStream().bufferedReader().use { reader ->
             reader.readLines().map { File(it) }
         }
-        fun TemporaryFolder.runGradle(vararg arguments: String = arrayOf("printGitSemVer")): String = GradleRunner
+        fun TemporaryFolder.runGradle(
+            vararg arguments: String = arrayOf("printGitSemVer", "--stacktrace")
+        ): String = GradleRunner
             .create()
             .withProjectDir(root)
             .withPluginClasspath(classpath)
