@@ -13,7 +13,7 @@ plugins {
     id("com.gradle.plugin-publish")
     id("org.danilopianini.publish-on-central")
     id("org.jetbrains.dokka")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("kotlin-qa")
 }
 
 group = "org.danilopianini"
@@ -50,10 +50,6 @@ configurations.all {
 gitSemVer {
     maxVersionLength.set(20)
     buildMetadataSeparator.set("-")
-}
-
-ktlint {
-    ignoreFailures.set(false)
 }
 
 tasks.javadocJar {
