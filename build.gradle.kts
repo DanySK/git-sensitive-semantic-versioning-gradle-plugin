@@ -65,7 +65,7 @@ publishOnCentral {
 }
 
 tasks {
-    "test"(Test::class) {
+    withType<Test> {
         useJUnitPlatform()
         testLogging.showStandardStreams = true
         testLogging {
@@ -86,7 +86,6 @@ tasks {
     }
     withType<KotlinCompile> {
         kotlinOptions {
-            allWarningsAsErrors = true
             jvmTarget = "1.8"
             freeCompilerArgs += listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xinline-classes")
         }

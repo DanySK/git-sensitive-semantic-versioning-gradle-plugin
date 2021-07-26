@@ -2,10 +2,9 @@ package org.danilopianini.gradle.gitsemver
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import java.io.File
 
 /**
- * A Plugin configuring the project for publishing on Maven Central
+ * A Plugin for comuting the project version based on the status of the local git repository.
  */
 class GitSemVer : Plugin<Project> {
 
@@ -15,7 +14,7 @@ class GitSemVer : Plugin<Project> {
             /*
              * Recursively scan project directory. If git repo is found, rely on GitSemVerExtension to inspect it.
              */
-            val extension = project.createExtension<GitSemVerExtension>(GitSemVerExtension.extensionName, project)
+            val extension = project.createExtension<GitSemVerExtension>(GitSemVerExtension.EXTENSION_NAME, project)
             project.afterEvaluate {
                 with(extension) {
                     assignGitSemanticVersion()
@@ -30,22 +29,7 @@ class GitSemVer : Plugin<Project> {
     }
 
     companion object {
-
         private inline fun <reified T> Project.createExtension(name: String, vararg args: Any?): T =
             project.extensions.create(name, T::class.java, *args)
-
-        fun File.runCommand(vararg cmd: String) = Runtime.getRuntime()
-            .exec(cmd, emptyArray(), this)
-            .inputStream
-            .bufferedReader()
-            .readText()
-            .trim()
-            .takeIf { it.isNotEmpty() }
-
-        @OptIn(ExperimentalUnsignedTypes::class)
-        fun ULong.withRadix(radix: Int, digits: Int? = null) = toString(radix).let {
-            if (digits == null || it.length >= digits) it
-            else generateSequence { "0" }.take(digits - it.length).joinToString("") + it
-        }
     }
 }
