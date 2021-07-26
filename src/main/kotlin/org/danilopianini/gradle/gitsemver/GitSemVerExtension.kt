@@ -104,9 +104,8 @@ open class GitSemVerExtension @JvmOverloads constructor(
                     }
                     val distance = runCommand("git", "rev-list", "--count", "$closestTag..HEAD")?.toULong()
                     require(distance != null) {
-                        "Bug in git SemVer plugin: [distance? $distance]." +
-                                "Please report at: " +
-                                "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
+                        "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
+                            "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
                     }
                     when (distance) {
                         0UL -> closestTag.toString()
