@@ -1,19 +1,17 @@
-import org.danilopianini.gradle.mavencentral.mavenCentral
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION as KOTLIN_VERSION
 
 plugins {
-    id("org.danilopianini.git-sensitive-semantic-versioning")
     `java-gradle-plugin`
-    java
-    `maven-publish`
-    signing
-    kotlin("jvm")
-    id("com.gradle.plugin-publish")
-    id("org.danilopianini.publish-on-central")
-    id("org.jetbrains.dokka")
-    id("kotlin-qa")
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.gitSemVer)
+    alias(libs.plugins.gradle.plugin.publish)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.qa)
+    alias(libs.plugins.publishOnCentral)
+    alias(libs.plugins.multiJvmTesting)
+    alias(libs.plugins.taskTree)
 }
 
 group = "org.danilopianini"
@@ -21,20 +19,47 @@ val projectId = "$group.$name"
 val fullName = "Gradle Git-Sensitive Semantic Versioning Plugin"
 val projectDetails = "A Gradle plugin that forces semantic versioning and relies on git to detect the project state"
 val pluginImplementationClass = "org.danilopianini.gradle.gitsemver.GitSemVer"
-val websiteUrl = "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin"
+val websiteUrl = "https://github.com/DanySK/$name"
+
+gitSemVer {
+    maxVersionLength.set(20)
+    buildMetadataSeparator.set("-")
+}
 
 repositories {
     mavenCentral()
     gradlePluginPortal()
 }
 
+multiJvm {
+    maximumSupportedJvmVersion.set(latestJavaSupportedByGradle)
+}
+
+/*
+ * By default, Gradle does not include all the plugin classpath into the testing classpath.
+ * This task creates a descriptor of the runtime classpath, to be injected (manually) when running tests.
+ */
+val createClasspathManifest = tasks.register("createClasspathManifest") {
+    val outputDir = file("$buildDir/$name")
+    inputs.files(sourceSets.main.get().runtimeClasspath)
+    outputs.dir(outputDir)
+    doLast {
+        outputDir.mkdirs()
+        file("$outputDir/plugin-classpath.txt").writeText(sourceSets.main.get().runtimeClasspath.joinToString("\n"))
+    }
+}
+
+tasks.withType<Test> {
+    dependsOn(createClasspathManifest)
+}
+
 dependencies {
+    api(gradleApi())
+    api(gradleKotlinDsl())
     implementation(kotlin("stdlib-jdk8"))
-    implementation(gradleApi())
     testImplementation(gradleTestKit())
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:_")
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:_")
+    testImplementation(libs.bundles.kotlin.testing)
+    testRuntimeOnly(files(createClasspathManifest))
 }
 
 // Enforce Kotlin version coherence
@@ -47,27 +72,16 @@ configurations.all {
     }
 }
 
-gitSemVer {
-    maxVersionLength.set(20)
-    buildMetadataSeparator.set("-")
-}
-
-tasks.javadocJar {
-    dependsOn(tasks.dokkaJavadoc)
-    from(tasks.dokkaJavadoc.get().outputDirectory)
-}
-
 publishOnCentral {
     projectDescription = projectDetails
     projectLongName = fullName
     projectUrl = websiteUrl
-    scmConnection = "git:git@github.com:DanySK/git-sensitive-semantic-versioning-gradle-plugin"
+    scmConnection = "git:git@github.com:DanySK/$name.git"
 }
 
 tasks {
     withType<Test> {
         useJUnitPlatform()
-        testLogging.showStandardStreams = true
         testLogging {
             showCauses = true
             showStackTraces = true
@@ -75,18 +89,9 @@ tasks {
             events(*TestLogEvent.values())
         }
     }
-    register("createClasspathManifest") {
-        val outputDir = file("$buildDir/$name")
-        inputs.files(sourceSets.main.get().runtimeClasspath)
-        outputs.dir(outputDir)
-        doLast {
-            outputDir.mkdirs()
-            file("$outputDir/plugin-classpath.txt").writeText(sourceSets.main.get().runtimeClasspath.joinToString("\n"))
-        }
-    }
     withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = "1.8"
+            allWarningsAsErrors = true
             freeCompilerArgs += listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xinline-classes")
         }
     }
