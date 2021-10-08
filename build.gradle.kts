@@ -77,6 +77,10 @@ publishOnCentral {
     projectLongName = fullName
     projectUrl = websiteUrl
     scmConnection = "git:git@github.com:DanySK/$name.git"
+    repository("https://maven.pkg.github.com/DanySK/${rootProject.name}".toLowerCase(), name = "github") {
+        user = "danysk"
+        password = System.getenv("GITHUB_TOKEN")
+    }
 }
 
 tasks {
