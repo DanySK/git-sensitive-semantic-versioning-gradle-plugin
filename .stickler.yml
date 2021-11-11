@@ -1,4 +1,0 @@
-linters:
-  ktlint:
-  shellcheck:
-    shell: bash
