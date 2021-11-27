@@ -118,6 +118,7 @@ internal class Tests : StringSpec(
             runCommand("git add .")
             runCommand("git config user.name gitsemver")
             runCommand("git config user.email none@test.com")
+            runCommand("git config --global init.defaultBranch master")
             runCommand("git", "commit", "-m", "\"Test commit\"")
             runCommand("git", "tag", "-a", "1.2.3", "-m", "\"test\"")
         }
