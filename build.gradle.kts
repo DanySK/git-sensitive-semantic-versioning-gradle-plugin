@@ -73,13 +73,13 @@ configurations.all {
 }
 
 publishOnCentral {
-    projectDescription = projectDetails
-    projectLongName = fullName
-    projectUrl = websiteUrl
-    scmConnection = "git:git@github.com:DanySK/$name.git"
+    projectDescription.set(projectDetails)
+    projectLongName.set(fullName)
+    projectUrl.set(websiteUrl)
+    scmConnection.set("git:git@github.com:DanySK/$name.git")
     repository("https://maven.pkg.github.com/DanySK/${rootProject.name}".toLowerCase(), name = "github") {
-        user = "danysk"
-        password = System.getenv("GITHUB_TOKEN")
+        user.set("danysk")
+        password.set(System.getenv("GITHUB_TOKEN"))
     }
 }
 
