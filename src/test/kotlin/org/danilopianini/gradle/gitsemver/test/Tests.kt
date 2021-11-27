@@ -9,134 +9,37 @@ import org.gradle.testkit.runner.GradleRunner
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-class Tests : StringSpec(
+internal class Tests : StringSpec(
     {
-        fun folder(closure: TemporaryFolder.() -> Unit) = TemporaryFolder().apply {
-            create()
-            closure()
-        }
-        fun TemporaryFolder.file(name: String, content: () -> String) = newFile(name).writeText(content().trimIndent())
-        fun TemporaryFolder.runCommand(vararg command: String, wait: Long = 10) = ProcessBuilder(*command)
-            .directory(root)
-            .redirectError(ProcessBuilder.Redirect.INHERIT)
-            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-            .start()
-            .waitFor(wait, TimeUnit.SECONDS)
-        fun TemporaryFolder.runCommand(command: String, wait: Long = 10) = runCommand(
-            *command.split(" ").toTypedArray(),
-            wait = wait
-        )
-        val pluginClasspathResource = ClassLoader.getSystemClassLoader()
-            .getResource("plugin-classpath.txt")
-            ?: throw IllegalStateException("Did not find plugin classpath resource, run \"testClasses\" build task.")
-        val classpath = pluginClasspathResource.openStream().bufferedReader().use { reader ->
-            reader.readLines().map { File(it) }
-        }
-        fun TemporaryFolder.runGradle(
-            vararg arguments: String = arrayOf("printGitSemVer", "--stacktrace")
-        ): String = GradleRunner
-            .create()
-            .withProjectDir(root)
-            .withPluginClasspath(classpath)
-            .withArguments(*arguments)
-            .build().output
         "minimal configuration" {
-            val workingDirectory = folder {
-                file("settings.gradle") { "rootProject.name = 'testproject'" }
-                file("build.gradle.kts") {
-                    """
-                    plugins {
-                        id("org.danilopianini.git-semver")
-                    }
-                    """.trimIndent()
-                }
-            }
-            val result = workingDirectory.runGradle()
+            val result = configuredPlugin().runGradle()
             println(result)
             result shouldContain "0.1.0-archeo+"
         }
         "simple usage of extension" {
-            val workingDirectory = folder {
-                file("settings.gradle") { "rootProject.name = 'testproject'" }
-                file("build.gradle.kts") {
-                    """
-                    plugins {
-                        id("org.danilopianini.git-semver")
-                    }
-                    gitSemVer {
-                        noTagIdentifier.set("foo")
-                    }
-                    """.trimIndent()
-                }
-            }
-            val result = workingDirectory.runGradle()
+            val result = configuredPlugin("noTagIdentifier.set(\"foo\")").runGradle()
             println(result)
             result shouldContain "0.1.0-foo+"
         }
         "git single commit" {
-            val workingDirectory = folder {
-                file("settings.gradle") { "rootProject.name = 'testproject'" }
-                file("build.gradle.kts") {
-                    """
-                    plugins {
-                        id("org.danilopianini.git-semver")
-                    }
-                    gitSemVer {
-                        noTagIdentifier.set("foo")
-                    }
-                    """.trimIndent()
-                }
+            val result = configuredPlugin("noTagIdentifier.set(\"foo\")") {
                 runCommand("git init")
                 runCommand("git add .")
                 runCommand("git", "commit", "-m", "\"Test commit\"")
-            }
-            val result = workingDirectory.runGradle()
+            }.runGradle()
             println(result)
             result shouldContain "0.1.0-foo+"
         }
         "git tagged commit" {
-            val workingDirectory = folder {
-                file("settings.gradle") { "rootProject.name = 'testproject'" }
-                file("build.gradle.kts") {
-                    """
-                    plugins {
-                        id("org.danilopianini.git-semver")
-                    }
-                    gitSemVer {
-                        noTagIdentifier.set("foo")
-                    }
-                    """.trimIndent()
-                }
-                runCommand("git init")
-                runCommand("git add .")
-                runCommand("git config user.name gitsemver")
-                runCommand("git config user.email none@test.com")
-                runCommand("git", "commit", "-m", "\"Test commit\"")
-                runCommand("git", "tag", "-a", "1.2.3", "-m", "\"test\"")
-            }
-            val result = workingDirectory.runGradle()
+            val result = configuredPlugin("noTagIdentifier.set(\"foo\")") {
+                initGit()
+            }.runGradle()
             println(result)
             result.lines().any { it matches Regex(""".*1\.2\.3$""") } shouldBe true
         }
         "git tagged + development" {
-            val workingDirectory = folder {
-                file("settings.gradle") { "rootProject.name = 'testproject'" }
-                file("build.gradle.kts") {
-                    """
-                    plugins {
-                        id("org.danilopianini.git-semver")
-                    }
-                    gitSemVer {
-                        developmentIdentifier.set("foodev")
-                    }
-                    """.trimIndent()
-                }
-                runCommand("git init")
-                runCommand("git add .")
-                runCommand("git config user.name gitsemver")
-                runCommand("git config user.email none@test.com")
-                runCommand("git", "commit", "-m", "\"Test commit\"")
-                runCommand("git", "tag", "-a", "1.2.3", "-m", "\"test\"")
+            val workingDirectory = configuredPlugin("developmentIdentifier.set(\"foodev\")") {
+                initGit()
                 file("something") { "something" }
                 runCommand("git add something")
                 runCommand("git", "commit", "-m", "\"Test commit 2\"")
@@ -159,45 +62,91 @@ class Tests : StringSpec(
             }
         }
         "manual assignment of version" {
-            val workingDirectory = folder {
-                file("settings.gradle") { "rootProject.name = 'testproject'" }
-                file("build.gradle.kts") {
-                    """
-                    plugins {
-                        id("org.danilopianini.git-semver")
-                    }
-                    gitSemVer {
-                        assignGitSemanticVersion()
-                    }
-                    """.trimIndent()
-                }
-            }
+            val workingDirectory = configuredPlugin("assignGitSemanticVersion()")
             val result = workingDirectory.runGradle()
             println(result)
             val expectedVersion = "0.1.0-archeo"
             result shouldContain expectedVersion
         }
         "regression for bug #2: https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/2" {
-            val workingDirectory = folder {
-                file("settings.gradle") { "rootProject.name = 'testproject'" }
-                file("build.gradle.kts") {
-                    """
-                    plugins {
-                        id("org.danilopianini.git-semver")
-                    }
-                    gitSemVer {
-                        minimumVersion.set("0.1.0")
-                        developmentIdentifier.set("")    // <--- NOTICE THIS
-                        noTagIdentifier.set("")          // <--- NOTICE THIS
-                        developmentCounterLength.set(2) 
-                    }
-                    """.trimIndent()
-                }
-            }
+            val workingDirectory = configuredPlugin(
+                """
+                minimumVersion.set("0.1.0")
+                developmentIdentifier.set("")    // <--- NOTICE THIS
+                noTagIdentifier.set("")          // <--- NOTICE THIS
+                developmentCounterLength.set(2) 
+                """.trimIndent()
+            )
             val result = workingDirectory.runGradle()
             println(result)
             val expectedVersion = "0.1.0+"
             result shouldContain expectedVersion
         }
     }
-)
+) {
+    companion object {
+
+        val pluginClasspathResource = ClassLoader.getSystemClassLoader()
+            .getResource("plugin-classpath.txt")
+            ?: throw IllegalStateException("Did not find plugin classpath resource, run \"testClasses\" build task.")
+
+        val classpath = pluginClasspathResource.openStream().bufferedReader().use { reader ->
+            reader.readLines().map { File(it) }
+        }
+
+        fun folder(closure: TemporaryFolder.() -> Unit) = TemporaryFolder().apply {
+            create()
+            closure()
+        }
+
+        fun TemporaryFolder.file(name: String, content: () -> String) = newFile(name).writeText(content().trimIndent())
+
+        fun TemporaryFolder.runCommand(vararg command: String, wait: Long = 10) = ProcessBuilder(*command)
+            .directory(root)
+            .redirectError(ProcessBuilder.Redirect.INHERIT)
+            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+            .start()
+            .waitFor(wait, TimeUnit.SECONDS)
+
+        fun TemporaryFolder.runCommand(command: String, wait: Long = 10) = runCommand(
+            *command.split(" ").toTypedArray(),
+            wait = wait
+        )
+
+        fun TemporaryFolder.initGit() {
+            runCommand("git init")
+            runCommand("git add .")
+            runCommand("git config user.name gitsemver")
+            runCommand("git config user.email none@test.com")
+            runCommand("git", "commit", "-m", "\"Test commit\"")
+            runCommand("git", "tag", "-a", "1.2.3", "-m", "\"test\"")
+        }
+
+        fun TemporaryFolder.runGradle(
+            vararg arguments: String = arrayOf("printGitSemVer", "--stacktrace")
+        ): String = GradleRunner
+            .create()
+            .withProjectDir(root)
+            .withPluginClasspath(classpath)
+            .withArguments(*arguments)
+            .build().output
+
+        fun configuredPlugin(
+            pluginConfiguration: String = "",
+            otherChecks: TemporaryFolder.() -> Unit = {},
+        ): TemporaryFolder = folder {
+            file("settings.gradle") { "rootProject.name = 'testproject'" }
+            file("build.gradle.kts") {
+                """
+                plugins {
+                    id("org.danilopianini.git-semver")
+                }
+                gitSemVer {
+                    $pluginConfiguration
+                }
+                """.trimIndent()
+            }
+            otherChecks()
+        }
+    }
+}
