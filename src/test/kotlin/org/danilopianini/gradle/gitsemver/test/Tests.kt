@@ -23,23 +23,21 @@ internal class Tests : StringSpec(
         }
         "git single commit" {
             val result = configuredPlugin("noTagIdentifier.set(\"foo\")") {
-                runCommand("git init")
-                runCommand("git add .")
-                runCommand("git", "commit", "-m", "\"Test commit\"")
+                initGit()
             }.runGradle()
             println(result)
-            result shouldContain "0.1.0-foo+"
+            result shouldContain "0.1.0-foo"
         }
         "git tagged commit" {
             val result = configuredPlugin("noTagIdentifier.set(\"foo\")") {
-                initGit()
+                initGitWithTag()
             }.runGradle()
             println(result)
             result.lines().any { it matches Regex(""".*1\.2\.3$""") } shouldBe true
         }
         "git tagged + development" {
             val workingDirectory = configuredPlugin("developmentIdentifier.set(\"foodev\")") {
-                initGit()
+                initGitWithTag()
                 file("something") { "something" }
                 runCommand("git add something")
                 runCommand("git", "commit", "-m", "\"Test commit 2\"")
@@ -55,7 +53,7 @@ internal class Tests : StringSpec(
                 newResult shouldContain expectedVersion
             }
             with(workingDirectory) {
-                runCommand("git", "tag", "-a", "1.2.4", "-m", "stable")
+                runCommand("git", "tag", "-a", "1.2.4", "-m", "\"test\"")
                 val newResult = runGradle()
                 println(newResult)
                 newResult.lineSequence().find { it.matches(".*1.2.4$".toRegex()) } shouldNotBe null
@@ -101,12 +99,17 @@ internal class Tests : StringSpec(
 
         fun TemporaryFolder.file(name: String, content: () -> String) = newFile(name).writeText(content().trimIndent())
 
-        fun TemporaryFolder.runCommand(vararg command: String, wait: Long = 10) = ProcessBuilder(*command)
-            .directory(root)
-            .redirectError(ProcessBuilder.Redirect.INHERIT)
-            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-            .start()
-            .waitFor(wait, TimeUnit.SECONDS)
+        fun TemporaryFolder.runCommand(vararg command: String, wait: Long = 10) {
+            val process = ProcessBuilder(*command)
+                .directory(root)
+                .redirectError(ProcessBuilder.Redirect.INHERIT)
+                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                .start()
+            process.waitFor(wait, TimeUnit.SECONDS)
+            require(process.exitValue() == 0) {
+                "command '${command.joinToString(" ")}' failed with exit value ${process.exitValue()}"
+            }
+        }
 
         fun TemporaryFolder.runCommand(command: String, wait: Long = 10) = runCommand(
             *command.split(" ").toTypedArray(),
@@ -120,6 +123,10 @@ internal class Tests : StringSpec(
             runCommand("git config user.email none@test.com")
             runCommand("git config --global init.defaultBranch master")
             runCommand("git", "commit", "-m", "\"Test commit\"")
+        }
+
+        fun TemporaryFolder.initGitWithTag() {
+            initGit()
             runCommand("git", "tag", "-a", "1.2.3", "-m", "\"test\"")
         }
 
