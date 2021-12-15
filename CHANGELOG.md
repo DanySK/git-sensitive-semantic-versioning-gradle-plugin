@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.1...0.3.2) (2021-12-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency gradle to v7.3.2 ([630e56d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/630e56d09dbfa0154164678e213a2e78ce19a8a1))
+
 ## [0.3.1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.0...0.3.1) (2021-12-01)
 
 
