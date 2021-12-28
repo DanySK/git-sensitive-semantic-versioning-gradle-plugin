@@ -1,3 +1,10 @@
+## [0.3.4](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.3...0.3.4) (2021-12-28)
+
+
+### Bug Fixes
+
+* **deps:** update plugin dokka to v1.6.10 ([aaf5470](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/aaf54705c09795ce7194bfabefad206c93957404))
+
 ## [0.3.3](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.2...0.3.3) (2021-12-22)
 
 
