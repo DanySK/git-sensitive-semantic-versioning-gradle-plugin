@@ -15,11 +15,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  Build:
+  build:
     strategy:
       matrix:
         os: [windows, macos, ubuntu]
     runs-on: ${{ matrix.os }}-latest
+    concurrency:
+      group: build-${{ github.workflow }}-${{ matrix.os }}-${{ github.event.number || github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: DanySK/action-checkout@0.2.1
@@ -27,14 +30,19 @@ jobs:
         with:
           should-run-codecov: ${{ runner.os == 'Linux' }}
           should-deploy: false
-  Release:
+  release:
+    concurrency:
+      # Only one release job at a time. Strictly sequential.
+      group: release
     needs:
-      - Build
+      - build
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.0
+        with:
+          token: ${{ secrets.DEPLOYMENT_TOKEN }}
       - uses: DanySK/build-check-deploy-gradle-action@1.2.9
         with:
           build-command: true
