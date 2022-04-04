@@ -1,3 +1,21 @@
+### [0.3.8](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.7...0.3.8) (2022-04-04)
+
+
+### Dependency updates
+
+* **core-deps:** update plugin kotlin-jvm to v1.6.20 ([4a3502d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/4a3502d6bd2b0641f375a67f1e51111129994ef3))
+* **deps:** update plugin publishoncentral to v0.7.15 ([772ec57](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/772ec576fd24158ac6ce9fbbc5725062c274dd23))
+* **deps:** update plugin publishoncentral to v0.7.16 ([cac0eff](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/cac0eff9f91a35c624e7e1ca97e70abff3a3abf1))
+
+
+### Build and continuous integration
+
+* '-Xopt-in' is deprecated, use -opt-in instead ([621bec0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/621bec0f226c5a04b9db0d8429c06c5ef840776d))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v1.2.8 ([7bddb69](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/7bddb694d3e84c2a15114d6a24e945b0508fdb60))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v1.2.9 ([d156a50](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/d156a50a6ea5e827bf6a7b8aaadeadbd2c4e006e))
+* fix concurrency and use a dedicated deployment token ([53204da](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/53204daf4e0eaa39c7495bab3434c196e2df3d3f))
+* split the versions of Kotlin and Dokka ([25e0173](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/25e0173b0e180b1404c8270d9ba3b1094bcc90af))
+
 ### [0.3.7](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.6...0.3.7) (2022-04-01)
 
 
