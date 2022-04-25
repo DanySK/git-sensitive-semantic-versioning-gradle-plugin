@@ -1,3 +1,20 @@
+### [0.3.11](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.10...0.3.11) (2022-04-25)
+
+
+### Build and continuous integration
+
+* **deps:** remove mockito ([c02a58c](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c02a58c8fa8cbb9e57fe683a9dc72c7f0f797ebb))
+* **deps:** update actions/checkout action to v3.0.2 ([a7448b5](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a7448b5c411a7e3215c0127341f8f7cbc75a8248))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v1.2.13 ([ba30da2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ba30da2c0616365cb7b2109bbce1f568bcca12bb))
+
+
+### Dependency updates
+
+* **core-deps:** update plugin dokka to v1.6.21 ([92e6111](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/92e6111599cc4adb5644db6c6eb4ac638ad284ae))
+* **deps:** update dependency org.mockito:mockito-core to v4.5.0 ([cc12d1a](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/cc12d1ae718e72277c3fc1f4582ce5b90edb5334))
+* **deps:** update plugin com.gradle.enterprise to v3.10 ([2070992](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/2070992f438bc8ba8257e30829fabee6cbf2f754))
+* **deps:** update plugin publishoncentral to v0.7.18 ([c36835e](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c36835ed03454e2f3f94e67c634e255d4758f5a2))
+
 ### [0.3.10](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.9...0.3.10) (2022-04-20)
 
 
