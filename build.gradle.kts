@@ -138,7 +138,7 @@ pluginBundle {
 
 gradlePlugin {
     plugins {
-        create(projectId) {
+        create(project.name) {
             id = projectId
             displayName = fullName
             description = projectDetails
