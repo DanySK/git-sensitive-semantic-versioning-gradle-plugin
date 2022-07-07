@@ -1,3 +1,21 @@
+## [0.3.14](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.13...0.3.14) (2022-07-07)
+
+
+### Build and continuous integration
+
+* add dry-deployment test and fix the release process for publish-on-central 2.x.x ([ecf5e5c](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ecf5e5ccc95293d3da134e6831de6d774552d00d))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.0.3 ([313dd6c](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/313dd6cef2c1cdb605363187cb7000ea4cb4e715))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.0 ([bd20204](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/bd20204f9a9c583bf5249a9d1bb26e6406545f42))
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.jvm to v1.7.10 ([8bbd4af](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/8bbd4af6b9f4430cc94b26261c3e91046b319f3b))
+* **deps:** update plugin gradle-plugin-publish to v1 ([81e56ba](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/81e56ba8173d6ddfcea873cbca6364617c9c178d))
+* **deps:** update plugin multijvmtesting to v0.4.4 ([33fe046](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/33fe046aedf4ed18c896a0266f2bbb964e010bdf))
+* **deps:** update plugin multijvmtesting to v0.4.5 ([f8c55c4](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f8c55c4fc20d9fcb874c8f97e01f3f7d2f7e73ab))
+* **deps:** update plugin publishoncentral to v2 ([33302e0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/33302e0c7d73ff449779ff9ab661421f6b78e18c))
+
 ## [0.3.13](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.12...0.3.13) (2022-06-19)
 
 
