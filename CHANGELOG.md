@@ -1,3 +1,21 @@
+## [0.3.15](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.14...0.3.15) (2022-07-12)
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.1 ([65e0b38](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/65e0b38ce56c5c88a4e4beba69a5931cdb947c53))
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.dokka to v1.7.10 ([777af1e](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/777af1ed1b99dbcd7847d45b588548cf862c9a30))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.9 ([4c584ba](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/4c584bad695a1389db162fedf3996f686c705aba))
+* **deps:** update node.js to 16.16 ([68180c4](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/68180c46e6b73f986cccee5d11eedd03d56c2338))
+* **deps:** update plugin com.gradle.enterprise to v3.10.3 ([35e6407](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/35e64074f63cc1a92821ebc0dd2538242a8c7fb4))
+* **deps:** update plugin multijvmtesting to v0.4.6 ([7c0d58f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/7c0d58fe06aa7ff9063e4dce77ac70f408ee1279))
+* **deps:** update plugin multijvmtesting to v0.4.7 ([05bdb8d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/05bdb8d80d9d6daec683bbcf5cc51adfcf919544))
+* **deps:** update plugin publishoncentral to v2.0.3 ([60e29f7](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/60e29f73bb9710d4617d28cbc2ab25177025f7da))
+
 ## [0.3.14](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.13...0.3.14) (2022-07-07)
 
 
