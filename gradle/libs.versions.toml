@@ -1,7 +1,7 @@
 [versions]
 dokka = "1.7.10"
 kotlin = "1.7.10"
-kotest = "5.3.0"
+kotest = "5.3.2"
 
 [libraries]
 kotest-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
