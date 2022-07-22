@@ -1,3 +1,5 @@
+@file:Suppress("SuspiciousCollectionReassignment")
+
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION as KOTLIN_VERSION
@@ -35,31 +37,12 @@ multiJvm {
     maximumSupportedJvmVersion.set(latestJavaSupportedByGradle)
 }
 
-/*
- * By default, Gradle does not include all the plugin classpath into the testing classpath.
- * This task creates a descriptor of the runtime classpath, to be injected (manually) when running tests.
- */
-val createClasspathManifest = tasks.register("createClasspathManifest") {
-    val outputDir = file("$buildDir/$name")
-    inputs.files(sourceSets.main.get().runtimeClasspath)
-    outputs.dir(outputDir)
-    doLast {
-        outputDir.mkdirs()
-        file("$outputDir/plugin-classpath.txt").writeText(sourceSets.main.get().runtimeClasspath.joinToString("\n"))
-    }
-}
-
-tasks.withType<Test> {
-    dependsOn(createClasspathManifest)
-}
-
 dependencies {
     api(gradleApi())
     api(gradleKotlinDsl())
     implementation(kotlin("stdlib-jdk8"))
     testImplementation(gradleTestKit())
     testImplementation(libs.bundles.kotlin.testing)
-    testRuntimeOnly(files(createClasspathManifest))
 }
 
 // Enforce Kotlin version coherence
@@ -99,11 +82,6 @@ tasks {
             freeCompilerArgs += listOf("-opt-in=kotlin.RequiresOptIn", "-Xinline-classes")
         }
     }
-}
-
-// Add the classpath file to the test runtime classpath
-dependencies {
-    testRuntimeOnly(files(tasks["createClasspathManifest"]))
 }
 
 if ("true" == System.getenv("CI")) {

@@ -6,7 +6,6 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder
 import org.gradle.testkit.runner.GradleRunner
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 internal class Tests : StringSpec(
@@ -84,14 +83,6 @@ internal class Tests : StringSpec(
 ) {
     companion object {
 
-        val pluginClasspathResource = ClassLoader.getSystemClassLoader()
-            .getResource("plugin-classpath.txt")
-            ?: throw IllegalStateException("Did not find plugin classpath resource, run \"testClasses\" build task.")
-
-        val classpath = pluginClasspathResource.openStream().bufferedReader().use { reader ->
-            reader.readLines().map { File(it) }
-        }
-
         fun folder(closure: TemporaryFolder.() -> Unit) = TemporaryFolder().apply {
             create()
             closure()
@@ -135,7 +126,7 @@ internal class Tests : StringSpec(
         ): String = GradleRunner
             .create()
             .withProjectDir(root)
-            .withPluginClasspath(classpath)
+            .withPluginClasspath()
             .withArguments(*arguments)
             .build().output
 
