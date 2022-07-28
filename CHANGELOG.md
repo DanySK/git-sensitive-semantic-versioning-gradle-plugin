@@ -1,3 +1,24 @@
+## [0.3.17](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.16...0.3.17) (2022-07-28)
+
+
+### Bug Fixes
+
+* **deps:** update kotest to v5.4.1 ([6c22d99](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6c22d9933b7214b8420011f75f75920b683c259f))
+
+
+### Build and continuous integration
+
+* use the default plugin classpath ([a6226f2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a6226f241ccb9d1a255e450cc48699464e312a45))
+
+
+### Dependency updates
+
+* **deps:** update kotest to v5.3.2 ([fda97e7](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/fda97e7eb1e1997b7a196aaf6a87829fbc78cc15))
+* **deps:** update kotest to v5.4.0 ([d8c3b1a](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/d8c3b1a19652115cf087ee9b0f0d5e0c6585b16c))
+* **deps:** update plugin kotlin-qa to v0.20.4 ([9f6b596](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/9f6b596964d3f94c5a98372f938c49be47868e5b))
+* **deps:** update plugin kotlin-qa to v0.22.0 ([ab60737](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ab60737d3150134bcf74ce3a6ecccb9274b3d183))
+* **deps:** update plugin publishoncentral to v2.0.5 ([d63e0c8](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/d63e0c86797e36aa6a4090b3684b4693069c6d2d))
+
 ## [0.3.16](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.15...0.3.16) (2022-07-14)
 
 
