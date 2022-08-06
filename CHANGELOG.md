@@ -1,3 +1,20 @@
+## [0.3.18](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.17...0.3.18) (2022-08-06)
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.3 ([90ef94d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/90ef94d7cec524267c6d8d04eaff8a6ee946823a))
+
+
+### Dependency updates
+
+* **core-deps:** update dependency gradle to v7.5.1 ([837dee3](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/837dee37826a148c852f589144a5f183f228a482))
+* **deps:** update plugin kotlin-qa to v0.22.1 ([6fd7058](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6fd7058517bf3a1e6c847d3b66627fdb531f36d6))
+* **deps:** update plugin kotlin-qa to v0.22.2 ([e64c205](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/e64c20576cc1a48301824abf23c9bcf9f22187b1))
+* **deps:** update plugin kotlin-qa to v0.23.0 ([007d4c2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/007d4c28021050c1bdd253827187885462c4c4b1))
+* **deps:** update plugin kotlin-qa to v0.23.1 ([aa66d03](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/aa66d03f06b6b0fc9dac7eea4c752b026e9c33d4))
+* **deps:** update plugin multijvmtesting to v0.4.9 ([0f1a3bf](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/0f1a3bfb763e6424899efc8f39d1f62b7642ebe3))
+
 ## [0.3.17](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.16...0.3.17) (2022-07-28)
 
 
