@@ -1,3 +1,32 @@
+## [0.3.19](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.18...0.3.19) (2022-10-01)
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/action-checkout action to v0.2.2 ([f2ce099](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f2ce0992f13b9c1ed41db90a84a634e32aae6c6f))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.4 ([9e69821](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/9e698215cd79c20a3cbfd4cc9c0ff2af4dca059b))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.5 ([afcd0c7](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/afcd0c7ecc5c99a17bd9a2a30796e05f4e0322ab))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.6 ([579076e](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/579076e8f6f47c6a604911f19978270f1e8b98d2))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.7 ([8ecd158](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/8ecd15802cba50db39b7e1b5b615f3d93cf72b2a))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.8 ([2068869](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/20688695ac7e5299fa0b5033ea88295adb854cb2))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.9 ([f162a5e](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f162a5e7693dfe9e93c64b2c22e9b806970d4978))
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.jvm to v1.7.20 ([35ef394](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/35ef394fb102ef39bd5ec0457c98bf54ebc1d5c6))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.10 ([d68dade](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/d68dade1bec96281d7962abf345dc673ec8a3240))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.11 ([a9d205f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a9d205f333898575b24d727315cb34695cc83dde))
+* **deps:** update kotest to v5.4.2 ([c743fc4](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c743fc4e407f18aaa40d242b269b28f83a061e74))
+* **deps:** update node.js to 16.17 ([684ba66](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/684ba6644ec16593ce28f846481e8a83f548c7cb))
+* **deps:** update plugin com.gradle.enterprise to v3.11 ([3575185](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/35751853d76df585100a011c2d6a990eb78775c9))
+* **deps:** update plugin com.gradle.enterprise to v3.11.1 ([ba37679](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ba376793971b58ff274d10209ba1b0ff28d93ead))
+* **deps:** update plugin kotlin-qa to v0.23.2 ([b321fed](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b321fedc197e6a93d0e1583c8d705219c1895c5a))
+* **deps:** update plugin kotlin-qa to v0.24.0 ([b1e3e91](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b1e3e91225310fd6262e25988b61bef0595db192))
+* **deps:** update plugin kotlin-qa to v0.25.0 ([e1e33fc](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/e1e33fc6b6e587b06465cab4eaa38114c4d19edb))
+* **deps:** update plugin multijvmtesting to v0.4.10 ([cd58025](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/cd580256e3009a142084ec0ccce5e8d46dc22024))
+* **deps:** update plugin publishoncentral to v2.0.6 ([f766ebe](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f766ebed409c413b16d8a71f9a9b5c385051035f))
+
 ## [0.3.18](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.17...0.3.18) (2022-08-06)
 
 
