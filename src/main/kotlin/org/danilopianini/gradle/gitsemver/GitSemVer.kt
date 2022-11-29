@@ -20,7 +20,7 @@ class GitSemVer : Plugin<Project> {
                     assignGitSemanticVersion()
                 }
             }
-            tasks.create("printGitSemVer") {
+            tasks.register("printGitSemVer") {
                 it.doLast {
                     println("Version computed by ${GitSemVer::class.java.simpleName}: ${extension.computeVersion()}")
                 }
