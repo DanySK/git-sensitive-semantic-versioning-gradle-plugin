@@ -1,3 +1,10 @@
+## [0.3.23](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.22...0.3.23) (2022-11-29)
+
+
+### Performance improvements
+
+* use configuration avoidance when creating task 'printGitSemVer' ([13d739e](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/13d739ee34ffd8fa6c9c55bb882764066b3dfe63))
+
 ## [0.3.22](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.21...0.3.22) (2022-11-28)
 
 
