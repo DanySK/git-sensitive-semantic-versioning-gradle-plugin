@@ -1,3 +1,10 @@
+## [0.3.24](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.23...0.3.24) (2022-12-01)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.jvm to v1.7.22 ([a485d4f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a485d4fc854ed732f7653bda5846714ec6c34c78))
+
 ## [0.3.23](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.22...0.3.23) (2022-11-29)
 
 
