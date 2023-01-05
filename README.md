@@ -50,6 +50,8 @@ gitSemVer {
     // Many project are versioned with tags named "vX.Y.Z", de-facto building valid SemVer versions but for the leading "v".
     // If it is the case for some project, setting this property to "v" would make these tags readable as SemVer tags.
     versionPrefix.set("")
+    // This reproduces the behavior of the plugin at version 0.x.y: ignores non-annotated (lightweight) tags.
+    excludeLightweightTags()
 }
 ```
 
