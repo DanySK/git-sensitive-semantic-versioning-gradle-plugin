@@ -18,7 +18,6 @@ jobs:
             ./gradlew
             uploadKotlin
             uploadPluginMavenToMavenCentralNexus
-            uploadGit
             close
             --parallel
           should-run-codecov: ${{ runner.os == 'Linux' }}
