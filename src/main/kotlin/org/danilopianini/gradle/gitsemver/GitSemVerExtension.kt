@@ -1,6 +1,5 @@
 package org.danilopianini.gradle.gitsemver
 
-import org.danilopianini.gradle.gitsemver.GitSemVerExtension.Companion.runCommand
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.slf4j.Logger
@@ -28,6 +27,7 @@ import java.lang.IllegalStateException
  * - [distanceCounterRadix], the radix for the commit counter. Defaults to base 36. Bases from 2 to 36 allowed.
  * - [versionPrefix], to be used in case tags are prefixed with some symbols before the semantic version
  *      (e.g., v1.0.0 is prefixed with "v").
+ * - [includeLightweightTags], to be used in case lightweight tags should be considered.
  */
 @ExperimentalUnsignedTypes
 open class GitSemVerExtension @JvmOverloads constructor(
@@ -43,9 +43,8 @@ open class GitSemVerExtension @JvmOverloads constructor(
     val buildMetadataSeparator: Property<String> = project.propertyWithDefault("+"),
     val distanceCounterRadix: Property<Int> = project.propertyWithDefault(DEFAULT_RADIX),
     val versionPrefix: Property<String> = project.propertyWithDefault(""),
+    val includeLightweightTags: Property<Boolean> = project.propertyWithDefault(false),
 ) {
-
-    private val tagMatcher = """^(\w*)\s+tag\s+refs\/tags\/(.*)$""".toRegex()
 
     private fun computeMinVersion(logger: Logger): SemanticVersion {
         val minVersion = minimumVersion.get()
@@ -63,21 +62,31 @@ open class GitSemVerExtension @JvmOverloads constructor(
      * Finds the closest tag compatible with Semantic Version, or returns null if none is available.
      */
     fun Project.findClosestTag(): SemanticVersion? {
-        val reachableCommits = runCommand("git", "rev-list", "HEAD")?.lines() ?: emptyList()
+        val reachableCommits = runCommand("git", "rev-list", "HEAD")?.lines()?.toSet() ?: emptySet()
+        val tagMatcher = Regex(
+            """^(\w*)\s+(${
+            if (includeLightweightTags.get()) "commit|" else ""
+            }tag)\s+refs/tags/${
+            versionPrefix.get()
+            }(${
+            SemanticVersion.semVerRegexString
+            })$"""
+        )
         logger.debug("Reachable commits: $reachableCommits")
-        val reachableSemVerTags = runCommand("git", "for-each-ref", "refs/tags")
+        return runCommand("git", "for-each-ref", "refs/tags", "--sort=-version:refname")
             ?.lineSequence()
             ?.mapNotNull { tagMatcher.matchEntire(it)?.destructured }
-            ?.mapNotNull { (_, tag) ->
-                tag.takeIf { runCommand("git", "rev-list", "-n", "1", tag) in reachableCommits }
+            ?.mapNotNull { (commit, type, semVer, major, minor, patch, option, build) ->
+                val actualRef = when (type) {
+                    "commit" -> commit
+                    "tag" -> runCommand("git", "rev-list", "-n1", versionPrefix.get() + semVer)
+                    else -> error("Unknown tag ref type '$type' (expected 'tag' or 'commit')")
+                }
+                actualRef.takeIf { it in reachableCommits }?.let {
+                    SemanticVersion(major, minor, patch, option, build)
+                }
             }
-            ?.map { it.removePrefix(versionPrefix.get()) }
-            ?.mapNotNull(SemanticVersion::fromStringOrNull)
-            ?.sortedDescending()
-            ?.toList()
-            ?: emptyList()
-        logger.debug("Reachable SemVer tags: $reachableSemVerTags")
-        return reachableSemVerTags.firstOrNull()
+            ?.firstOrNull()
     }
 
     /**
@@ -102,13 +111,13 @@ open class GitSemVerExtension @JvmOverloads constructor(
                     if (!closestTag.buildMetadata.isEmpty()) {
                         logger.warn("Build metadata of closest tag $closestTag will be ignored.")
                     }
-                    val distance = runCommand("git", "rev-list", "--count", "$closestTag..HEAD")?.toULong()
+                    val distance = runCommand("git", "rev-list", "--count", "$closestTag..HEAD")?.toLong()
                     require(distance != null) {
                         "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
                             "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
                     }
                     when (distance) {
-                        0UL -> closestTag.toString()
+                        0L -> closestTag.toString()
                         else -> {
                             val base: SemanticVersion = closestTag.withoutBuildMetadata()
                             val devString = developmentIdentifier.get()
@@ -145,6 +154,13 @@ open class GitSemVerExtension @JvmOverloads constructor(
         }
     }
 
+    /**
+     * If called, the system will also consider non-annotated tags.
+     */
+    fun includeLightweightTags() {
+        includeLightweightTags.set(true)
+    }
+
     companion object {
 
         /**
@@ -167,9 +183,9 @@ open class GitSemVerExtension @JvmOverloads constructor(
             .trim()
             .takeIf { it.isNotEmpty() }
 
-        private fun ULong.withRadix(radix: Int, digits: Int? = null) = toString(radix).let {
+        private fun Long.withRadix(radix: Int, digits: Int? = null) = toString(radix).let {
             if (digits == null || it.length >= digits) it
-            else generateSequence { "0" }.take(digits - it.length).joinToString("") + it
+            else it.padStart(digits, '0')
         }
     }
 }
