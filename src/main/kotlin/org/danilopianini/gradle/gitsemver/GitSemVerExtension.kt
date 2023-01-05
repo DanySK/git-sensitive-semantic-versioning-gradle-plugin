@@ -43,7 +43,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
     val buildMetadataSeparator: Property<String> = project.propertyWithDefault("+"),
     val distanceCounterRadix: Property<Int> = project.propertyWithDefault(DEFAULT_RADIX),
     val versionPrefix: Property<String> = project.propertyWithDefault(""),
-    val includeLightweightTags: Property<Boolean> = project.propertyWithDefault(false),
+    val includeLightweightTags: Property<Boolean> = project.propertyWithDefault(true),
 ) {
 
     private fun computeMinVersion(logger: Logger): SemanticVersion {
@@ -157,8 +157,8 @@ open class GitSemVerExtension @JvmOverloads constructor(
     /**
      * If called, the system will also consider non-annotated tags.
      */
-    fun includeLightweightTags() {
-        includeLightweightTags.set(true)
+    fun excludeLightweightTags() {
+        includeLightweightTags.set(false)
     }
 
     companion object {
