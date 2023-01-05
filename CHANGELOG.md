@@ -1,3 +1,19 @@
+## [1.0.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.4.0...1.0.0) (2023-01-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* consider both annotated and lightweight tags by default
+
+### Features
+
+* consider both annotated and lightweight tags by default ([34a06dd](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/34a06dddfa40caa23135a6bea4f7b64cf308aaaf))
+
+
+### Documentation
+
+* update the README.md ([2fcf43e](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/2fcf43e5a250c0b0395d0eabdb9b0ea5f6ae0fa7))
+
 ## [0.4.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.25...0.4.0) (2023-01-05)
 
 
