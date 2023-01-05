@@ -65,8 +65,16 @@ data class SemanticVersion(
             """(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"""
         private const val MATCH_BUILD_INFO =
             """(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?"""
-        private const val semVerRegexString = "^$MATCH_VERSION$MATCH_OPTION$MATCH_BUILD_INFO$"
-        private val semVerRegex = semVerRegexString.toRegex()
+
+        /**
+         * [String] version of a regular expression matching a SemVer.
+         */
+        const val semVerRegexString = "$MATCH_VERSION$MATCH_OPTION$MATCH_BUILD_INFO"
+
+        /**
+         * A [Regex] matching a valid semantic version.
+         */
+        val semVerRegex = Regex("^$semVerRegexString$")
 
         /**
          * Parses a [String] producing a [SemanticVersion], or null if the version can't be parsed.

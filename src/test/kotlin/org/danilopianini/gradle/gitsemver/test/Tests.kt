@@ -75,9 +75,20 @@ internal class Tests : StringSpec(
                 """.trimIndent()
             )
             val result = workingDirectory.runGradle()
-            println(result)
             val expectedVersion = "0.1.0+"
             result shouldContain expectedVersion
+        }
+        "support for lightweight tags (#323)" {
+            val workingDirectory = configuredPlugin(
+                """
+                includeLightweightTags() 
+                """.trimIndent()
+            )
+            with(workingDirectory) {
+                initGit()
+                runCommand("git", "tag", "1.2.3")
+            }
+            workingDirectory.runGradle() shouldContain "1.2.3"
         }
     }
 ) {
