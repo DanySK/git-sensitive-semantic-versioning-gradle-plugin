@@ -1,3 +1,11 @@
+## [1.0.1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.0.0...1.0.1) (2023-01-05)
+
+
+### Bug Fixes
+
+* **build:** drop unused "uploadGit" task ([6b33d5d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6b33d5d8e087d0a981b2b6ebba141da36890265b))
+* **release:** release the plugin with both the IDs it had ([18d9664](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/18d966474003f7096f9f5dbba6fe5dcbafa2b970))
+
 ## [1.0.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.4.0...1.0.0) (2023-01-05)
 
 
