@@ -1,3 +1,23 @@
+## [0.4.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.25...0.4.0) (2023-01-05)
+
+
+### Features
+
+* add support for lightweight tags ([#457](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/457)) ([a25b10f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a25b10fa6125216d165432d446f0cbbf3975b1e4))
+
+
+### Dependency updates
+
+* **deps:** update plugin kotlin-qa to v0.29.2 ([b7bd81f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b7bd81f07012b75a791a724a18926f1d33b3b226))
+* **deps:** update plugin multijvmtesting to v0.4.15 ([6d36af1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6d36af1a3d69a87afc0fcc1bda8d7a00bbc808ba))
+* **deps:** update plugin publishoncentral to v2.0.12 ([27d7537](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/27d75379277a599cd7c26f06678817dae5f0ea88))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.3.0 ([f84c248](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f84c248869e833098bd1deff29778cc8b55e2072))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.20 ([1317e57](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/1317e57e62a8817fb3e0bc48de9f93b850ba647d))
+
 ## [0.3.25](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/0.3.24...0.3.25) (2022-12-30)
 
 
