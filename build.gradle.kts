@@ -116,8 +116,14 @@ pluginBundle {
 
 gradlePlugin {
     plugins {
-        create(project.name) {
+        create("long") {
             id = projectId
+            displayName = fullName
+            description = projectDetails
+            implementationClass = pluginImplementationClass
+        }
+        create("short") {
+            id = "$group.git-sensitive-semantic-versioning"
             displayName = fullName
             description = projectDetails
             implementationClass = pluginImplementationClass
