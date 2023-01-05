@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder
 import org.gradle.testkit.runner.GradleRunner
 import java.util.concurrent.TimeUnit
@@ -79,16 +80,24 @@ internal class Tests : StringSpec(
             result shouldContain expectedVersion
         }
         "support for lightweight tags (#323)" {
+            val workingDirectory = configuredPlugin()
+            with(workingDirectory) {
+                initGit()
+                runCommand("git", "tag", "1.2.3")
+            }
+            workingDirectory.runGradle() shouldContain "1.2.3"
+        }
+        "exclusion of lightweight tags (#323)" {
             val workingDirectory = configuredPlugin(
                 """
-                includeLightweightTags() 
+                excludeLightweightTags() 
                 """.trimIndent()
             )
             with(workingDirectory) {
                 initGit()
                 runCommand("git", "tag", "1.2.3")
             }
-            workingDirectory.runGradle() shouldContain "1.2.3"
+            workingDirectory.runGradle() shouldNotContain "1.2.3"
         }
     }
 ) {
