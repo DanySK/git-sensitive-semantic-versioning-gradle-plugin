@@ -11,4 +11,3 @@ gradleEnterprise {
 }
 
 rootProject.name = "git-sensitive-semantic-versioning-gradle-plugin"
-enableFeaturePreview("VERSION_CATALOGS")
