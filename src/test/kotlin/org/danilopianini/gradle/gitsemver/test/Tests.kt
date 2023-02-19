@@ -1,5 +1,6 @@
 package org.danilopianini.gradle.gitsemver.test
 
+import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -7,6 +8,7 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.UnexpectedBuildFailure
 import java.util.concurrent.TimeUnit
 
 internal class Tests : StringSpec(
@@ -98,6 +100,16 @@ internal class Tests : StringSpec(
                 runCommand("git", "tag", "1.2.3")
             }
             workingDirectory.runGradle() shouldNotContain "1.2.3"
+        }
+        "force the version" {
+            val result = configuredPlugin().runGradle("-PforceVersion=1.2.3", "printGitSemVer", "--stacktrace")
+            print(result)
+            result shouldContain "1.2.3"
+        }
+        "force the version with a non compliant version" {
+            shouldThrowUnit<UnexpectedBuildFailure> {
+                configuredPlugin().runGradle("-PforceVersion=a.b.c", "printGitSemVer", "--stacktrace")
+            }
         }
     }
 ) {
