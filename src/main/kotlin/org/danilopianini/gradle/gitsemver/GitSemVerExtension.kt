@@ -29,7 +29,6 @@ import java.lang.IllegalStateException
  *      (e.g., v1.0.0 is prefixed with "v").
  * - [includeLightweightTags], to be used in case lightweight tags should be considered.
  */
-@ExperimentalUnsignedTypes
 open class GitSemVerExtension @JvmOverloads constructor(
     private val project: Project,
     val minimumVersion: Property<String> = project.propertyWithDefault("0.1.0"),
