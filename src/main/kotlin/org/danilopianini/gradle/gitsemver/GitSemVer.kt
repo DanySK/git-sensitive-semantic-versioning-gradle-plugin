@@ -8,7 +8,6 @@ import org.gradle.api.Project
  */
 class GitSemVer : Plugin<Project> {
 
-    @OptIn(ExperimentalUnsignedTypes::class)
     override fun apply(project: Project) {
         with(project) {
             /*
@@ -17,12 +16,21 @@ class GitSemVer : Plugin<Project> {
             val extension = project.createExtension<GitSemVerExtension>(GitSemVerExtension.EXTENSION_NAME, project)
             project.afterEvaluate {
                 with(extension) {
-                    assignGitSemanticVersion()
+                    properties["forceVersion"]?.let {
+                        require(SemanticVersion.semVerRegex.matches(it.toString())) {
+                            "The version '$it' is not a valid semantic versioning format"
+                        }
+                        project.logger.lifecycle("Forcing version to $it")
+                        project.version = it.toString()
+                    } ?: run { assignGitSemanticVersion() }
                 }
             }
             tasks.register("printGitSemVer") {
                 it.doLast {
-                    println("Version computed by ${GitSemVer::class.java.simpleName}: ${extension.computeVersion()}")
+                    println(
+                        "Version computed by ${GitSemVer::class.java.simpleName}: " +
+                            "${properties["forceVersion"] ?: extension.computeVersion()}",
+                    )
                 }
             }
         }
