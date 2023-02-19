@@ -4,7 +4,6 @@ package org.danilopianini.gradle.gitsemver
  * A class representing semantic versions:
  * [major].[minor].[patch]-[preRelease]+[buildMetadata].
  */
-@OptIn(ExperimentalUnsignedTypes::class)
 data class SemanticVersion(
     val major: ULong,
     val minor: ULong,
@@ -39,7 +38,6 @@ data class SemanticVersion(
      */
     fun withoutBuildMetadata(): SemanticVersion = copy(buildMetadata = PreReleaseIdentifier("+", ""))
 
-    @OptIn(ExperimentalUnsignedTypes::class)
     override fun compareTo(other: SemanticVersion): Int =
         /*
          * Precedence refers to how versions are compared to each other when ordered.
@@ -89,7 +87,6 @@ data class SemanticVersion(
 /**
  * A SemVer 2.0 pre-release identifier, with a selectable [prefix].
  */
-@OptIn(ExperimentalUnsignedTypes::class)
 data class PreReleaseIdentifier(
     val prefix: String = "-",
     private val segments: List<DotSeparatedIdentifier> = emptyList(),
