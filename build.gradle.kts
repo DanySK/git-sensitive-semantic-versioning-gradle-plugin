@@ -22,6 +22,9 @@ val fullName = "Gradle Git-Sensitive Semantic Versioning Plugin"
 val projectDetails = "A Gradle plugin that forces semantic versioning and relies on git to detect the project state"
 val pluginImplementationClass = "org.danilopianini.gradle.gitsemver.GitSemVer"
 val websiteUrl = "https://github.com/DanySK/$name"
+val vcsUrl = "$websiteUrl.git"
+val scm = "scm:git:$websiteUrl.git"
+val tags = listOf("git", "semver", "semantic versioning", "vcs", "tag")
 
 gitSemVer {
     maxVersionLength.set(20)
@@ -59,7 +62,7 @@ publishOnCentral {
     projectDescription.set(projectDetails)
     projectLongName.set(fullName)
     projectUrl.set(websiteUrl)
-    scmConnection.set("git:git@github.com:DanySK/$name.git")
+    scmConnection.set(scm)
     repository("https://maven.pkg.github.com/DanySK/${rootProject.name}".toLowerCase(), name = "github") {
         user.set("danysk")
         password.set(System.getenv("GITHUB_TOKEN"))
@@ -108,25 +111,23 @@ publishing {
     }
 }
 
-pluginBundle {
-    website = websiteUrl
-    vcsUrl = websiteUrl
-    tags = listOf("git", "semver", "semantic versioning", "vcs", "tag")
-}
-
 gradlePlugin {
     plugins {
+        website.set(websiteUrl)
+        vcsUrl.set(vcsUrl)
         create("long") {
             id = projectId
             displayName = fullName
             description = projectDetails
             implementationClass = pluginImplementationClass
+            tags.set(tags)
         }
         create("short") {
             id = "$group.git-sensitive-semantic-versioning"
             displayName = fullName
             description = projectDetails
             implementationClass = pluginImplementationClass
+            tags.set(tags)
         }
     }
 }
