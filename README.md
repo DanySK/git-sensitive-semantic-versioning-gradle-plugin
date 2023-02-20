@@ -71,6 +71,22 @@ gitSemVer {
 Inside the configuration block is also available the `computeVersion()` is also available to recompute (but do not set)
 the version.
 
+### Manually force the version
+
+The plugin allows to manually set the version via a gradle property that, if present, will be used as the version of the project.
+By default, the property name is `forceVersion`, but you can change the property name by setting the `forceVersionPropertyName` property of the plugin with a custom name.
+
+`./gradlew -PforceVersion=1.2.3 build` will result in the project version being set to `1.2.3`.
+
+If a custom property name is used, the plugin will look for the property with the given name:
+
+```kotlin
+gitSemVer {
+    forceVersionPropertyName.set("myCustomPropertyVersion")
+}
+```
+
+`./gradlew -PmyCustomPropertyVersion=1.2.3 build` will result in the project version being set to `1.2.3`.
 
 ## Contributing to the project
 
