@@ -43,6 +43,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
     val distanceCounterRadix: Property<Int> = project.propertyWithDefault(DEFAULT_RADIX),
     val versionPrefix: Property<String> = project.propertyWithDefault(""),
     val includeLightweightTags: Property<Boolean> = project.propertyWithDefault(true),
+    val forceVersionPropertyName: Property<String> = project.propertyWithDefault("forceVersion"),
 ) {
 
     private fun computeMinVersion(logger: Logger): SemanticVersion {
