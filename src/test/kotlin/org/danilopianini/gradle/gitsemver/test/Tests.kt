@@ -111,6 +111,15 @@ internal class Tests : StringSpec(
                 configuredPlugin().runGradle("-PforceVersion=a.b.c", "printGitSemVer", "--stacktrace")
             }
         }
+        "force the version with a custom property" {
+            val result = configuredPlugin(
+                """
+                forceVersionPropertyName.set("customVersion")
+                """.trimIndent()
+            ).runGradle("-PcustomVersion=1.2.3", "printGitSemVer", "--stacktrace")
+            print(result)
+            result shouldContain "1.2.3"
+        }
     }
 ) {
     companion object {

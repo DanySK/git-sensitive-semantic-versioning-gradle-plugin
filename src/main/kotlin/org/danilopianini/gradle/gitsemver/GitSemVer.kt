@@ -16,7 +16,7 @@ class GitSemVer : Plugin<Project> {
             val extension = project.createExtension<GitSemVerExtension>(GitSemVerExtension.EXTENSION_NAME, project)
             project.afterEvaluate {
                 with(extension) {
-                    properties["forceVersion"]?.let {
+                    properties[extension.forceVersionPropertyName.get()]?.let {
                         require(SemanticVersion.semVerRegex.matches(it.toString())) {
                             "The version '$it' is not a valid semantic versioning format"
                         }
@@ -29,7 +29,7 @@ class GitSemVer : Plugin<Project> {
                 it.doLast {
                     println(
                         "Version computed by ${GitSemVer::class.java.simpleName}: " +
-                            "${properties["forceVersion"] ?: extension.computeVersion()}",
+                            "${properties[extension.forceVersionPropertyName.get()] ?: extension.computeVersion()}",
                     )
                 }
             }
