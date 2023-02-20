@@ -28,6 +28,8 @@ import java.lang.IllegalStateException
  * - [versionPrefix], to be used in case tags are prefixed with some symbols before the semantic version
  *      (e.g., v1.0.0 is prefixed with "v").
  * - [includeLightweightTags], to be used in case lightweight tags should be considered.
+ * - [forceVersionPropertyName], the name of the property that, if set, will force the plugin to use the specified
+ *      version. By default the property name is "forceVersion".
  */
 open class GitSemVerExtension @JvmOverloads constructor(
     private val project: Project,
