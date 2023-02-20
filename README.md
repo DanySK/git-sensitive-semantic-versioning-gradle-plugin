@@ -76,7 +76,7 @@ the version.
 The plugin allows to manually set the version via a gradle property that, if present, will be used as the version of the project.
 By default, the property name is `forceVersion`, but you can change the property name by setting the `forceVersionPropertyName` property of the plugin with a custom name.
 
-`./gradlew -PforceVersion=1.2.3 build` will result in the project version being set to `1.2.3`.
+`./gradlew -PforceVersion=1.2.3 <task list>` will result in the project version being set to `1.2.3`.
 
 If a custom property name is used, the plugin will look for the property with the given name:
 
@@ -86,7 +86,7 @@ gitSemVer {
 }
 ```
 
-`./gradlew -PmyCustomPropertyVersion=1.2.3 build` will result in the project version being set to `1.2.3`.
+`./gradlew -PmyCustomPropertyVersion=1.2.3 <task list>` will result in the project version being set to `1.2.3`.
 
 ## Contributing to the project
 
