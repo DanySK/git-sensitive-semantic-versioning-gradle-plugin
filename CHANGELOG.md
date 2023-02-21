@@ -1,3 +1,30 @@
+## [1.1.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.0.3...1.1.0) (2023-02-21)
+
+
+### Features
+
+* allow forcing the version via gradle property ([dba5b4d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/dba5b4dbcc537e191a78e99c8dca334bee95281c))
+* force the version with a customizable property ([86d7535](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/86d7535dfaa38bed4733f78f27870ae1f49fc667))
+
+
+### Dependency updates
+
+* **deps:** update plugin multijvmtesting to v0.4.17 ([2e22876](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/2e22876a0e5c99c421cccc4a1621230e3dabdfbd))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.3 ([1db74ac](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/1db74acd7b87bb9f440b9dec0f63d05dfa3f97d4))
+* **deps:** update plugin publishoncentral to v3.2.4 ([3c65927](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/3c65927dfda91c7c43b73673d02882efd1e28384))
+
+
+### General maintenance
+
+* remove uneeded experimental annotation ([1a9286e](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/1a9286ec9eaf936e5b08c0560da092b35992e055))
+
+
+### Documentation
+
+* document the force version behaviour ([69b03ce](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/69b03cec7ccf14363af84984b74d0961dbeb8bd6))
+* documented force version property ([f3906cc](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f3906cc73b7e60882f5d5ef6d36e013098e77898))
+* minor fix to readme ([f7f833d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f7f833dac02853fa9af160a881184c9bbb7099db))
+
 ## [1.0.3](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.0.2...1.0.3) (2023-02-19)
 
 
