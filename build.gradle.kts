@@ -17,14 +17,17 @@ plugins {
 }
 
 group = "org.danilopianini"
-val projectId = "$group.$name"
-val fullName = "Gradle Git-Sensitive Semantic Versioning Plugin"
-val projectDetails = "A Gradle plugin that forces semantic versioning and relies on git to detect the project state"
-val pluginImplementationClass = "org.danilopianini.gradle.gitsemver.GitSemVer"
-val websiteUrl = "https://github.com/DanySK/$name"
-val vcsUrl = "$websiteUrl.git"
-val scm = "scm:git:$websiteUrl.git"
-val tags = listOf("git", "semver", "semantic versioning", "vcs", "tag")
+class ProjectInfo {
+    val projectId = "$group.$name"
+    val fullName = "Gradle Git-Sensitive Semantic Versioning Plugin"
+    val projectDetails = "A Gradle plugin that forces semantic versioning and relies on git to detect the project state"
+    val pluginImplementationClass = "org.danilopianini.gradle.gitsemver.GitSemVer"
+    val websiteUrl = "https://github.com/DanySK/$name"
+    val vcsUrl = "$websiteUrl.git"
+    val scm = "scm:git:$websiteUrl.git"
+    val tags = listOf("git", "semver", "semantic versioning", "vcs", "tag")
+}
+val info = ProjectInfo()
 
 gitSemVer {
     maxVersionLength.set(20)
@@ -59,10 +62,10 @@ configurations.all {
 }
 
 publishOnCentral {
-    projectDescription.set(projectDetails)
-    projectLongName.set(fullName)
-    projectUrl.set(websiteUrl)
-    scmConnection.set(scm)
+    projectDescription.set(info.projectDetails)
+    projectLongName.set(info.fullName)
+    projectUrl.set(info.websiteUrl)
+    scmConnection.set(info.scm)
     repository("https://maven.pkg.github.com/DanySK/${rootProject.name}".toLowerCase(), name = "github") {
         user.set("danysk")
         password.set(System.getenv("GITHUB_TOKEN"))
@@ -113,21 +116,21 @@ publishing {
 
 gradlePlugin {
     plugins {
-        website.set(websiteUrl)
-        vcsUrl.set(vcsUrl)
+        website.set(info.websiteUrl)
+        vcsUrl.set(info.vcsUrl)
         create("long") {
-            id = projectId
-            displayName = fullName
-            description = projectDetails
-            implementationClass = pluginImplementationClass
-            tags.set(tags)
+            id = info.projectId
+            displayName = info.fullName
+            description = info.projectDetails
+            implementationClass = info.pluginImplementationClass
+            tags.set(info.tags)
         }
         create("short") {
             id = "$group.git-sensitive-semantic-versioning"
-            displayName = fullName
-            description = projectDetails
-            implementationClass = pluginImplementationClass
-            tags.set(tags)
+            displayName = info.fullName
+            description = info.projectDetails
+            implementationClass = info.pluginImplementationClass
+            tags.set(info.tags)
         }
     }
 }
