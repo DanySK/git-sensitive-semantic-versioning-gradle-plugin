@@ -1,3 +1,23 @@
+## [1.1.1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.0...1.1.1) (2023-02-22)
+
+
+### Bug Fixes
+
+* **build:** incapsulate the project information into a specialized object ([154a7cc](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/154a7cc47586e00fbc37d4d2c52655065220dbd3))
+* improve the forced version message ([5c27ff0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/5c27ff08b716803ec8c53b5cfc43d88a0c622c7f))
+
+
+### Dependency updates
+
+* **deps:** update plugin publishoncentral to v3.3.0 ([85a9644](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/85a964418562a0a02357ea95ec9d72cdd23daf30))
+
+
+### Build and continuous integration
+
+* add missing deployment keys ([17690aa](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/17690aa5723649b0dc4e76c5e3ecfa94b3cc1df8))
+* always try to deploy this plugin on the Gradle Portal ([c1381ae](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c1381ae224af3f1c53dc1cb35b044d7664d8d488))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.26 ([1f2f470](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/1f2f4703fe90f85f2ce921edbce9b21648364921))
+
 ## [1.1.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.0.3...1.1.0) (2023-02-21)
 
 
