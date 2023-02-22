@@ -22,6 +22,7 @@ jobs:
             uploadKotlin
             uploadPluginMavenToMavenCentralNexus
             close
+            publishPlugins
             --parallel
           should-run-codecov: ${{ runner.os == 'Linux' }}
           should-deploy: >-
