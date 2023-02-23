@@ -22,7 +22,7 @@ The plugin generates the following:
 
 ```kotlin
 plugins {
-    id ("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0"
+    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0"
 }
 // Rest of your buildscript using project.version
 ```
