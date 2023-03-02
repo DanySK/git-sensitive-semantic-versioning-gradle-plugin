@@ -1,3 +1,16 @@
+## [1.1.2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.1...1.1.2) (2023-03-02)
+
+
+### Documentation
+
+* **readme:** remove useless space ([6365d26](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6365d268325cf97a84e1081db5598fee35fcc167))
+
+
+### Dependency updates
+
+* **deps:** update plugin com.gradle.enterprise to v3.12.4 ([9012027](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/901202766a2779df4032e3a5c1395abf2aaa2ea3))
+* **deps:** update plugin gitsemver to v1.1.1 ([5ec6326](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/5ec63268721c477ac8bc5e7a81b6487b3c45d8a7))
+
 ## [1.1.1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.0...1.1.1) (2023-02-22)
 
 
