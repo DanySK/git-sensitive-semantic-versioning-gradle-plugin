@@ -1,3 +1,16 @@
+## [1.1.3](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.2...1.1.3) (2023-03-04)
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.0 ([3749982](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/3749982d857bd316509aaf6da7be0f147a8cd0a5))
+
+
+### Dependency updates
+
+* **core-deps:** update dependency gradle to v8.0.2 ([ad1fe4e](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ad1fe4e58f9323439536b9a7f1962b4d952a72a3))
+* **deps:** update plugin gitsemver to v1.1.2 ([0430729](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/043072967c327b08a92dd31bd61a70c376d5fb10))
+
 ## [1.1.2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.1...1.1.2) (2023-03-02)
 
 
