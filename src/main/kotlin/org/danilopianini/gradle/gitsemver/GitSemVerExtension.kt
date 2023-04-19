@@ -113,7 +113,12 @@ open class GitSemVerExtension @JvmOverloads constructor(
                     if (!closestTag.buildMetadata.isEmpty()) {
                         logger.warn("Build metadata of closest tag $closestTag will be ignored.")
                     }
-                    val distance = runCommand("git", "rev-list", "--count", "$closestTag..HEAD")?.toLong()
+                    val distance = runCommand(
+                        "git",
+                        "rev-list",
+                        "--count",
+                        "${versionPrefix.get()}$closestTag..HEAD"
+                    )?.toLong()
                     require(distance != null) {
                         "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
                             "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
