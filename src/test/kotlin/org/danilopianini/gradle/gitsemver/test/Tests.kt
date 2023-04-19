@@ -86,7 +86,7 @@ internal class Tests : StringSpec(
                 developmentIdentifier.set("")    // <--- NOTICE THIS
                 noTagIdentifier.set("")          // <--- NOTICE THIS
                 developmentCounterLength.set(2) 
-                """.trimIndent()
+                """.trimIndent(),
             )
             val result = workingDirectory.runGradle()
             val expectedVersion = "0.1.0+"
@@ -104,7 +104,7 @@ internal class Tests : StringSpec(
             val workingDirectory = configuredPlugin(
                 """
                 excludeLightweightTags() 
-                """.trimIndent()
+                """.trimIndent(),
             )
             with(workingDirectory) {
                 initGit()
@@ -126,12 +126,12 @@ internal class Tests : StringSpec(
             val result = configuredPlugin(
                 """
                 forceVersionPropertyName.set("customVersion")
-                """.trimIndent()
+                """.trimIndent(),
             ).runGradle("-PcustomVersion=1.2.3", "printGitSemVer", "--stacktrace")
             print(result)
             result shouldContain "1.2.3"
         }
-    }
+    },
 ) {
     companion object {
 
@@ -156,7 +156,7 @@ internal class Tests : StringSpec(
 
         fun TemporaryFolder.runCommand(command: String, wait: Long = 10) = runCommand(
             *command.split(" ").toTypedArray(),
-            wait = wait
+            wait = wait,
         )
 
         fun TemporaryFolder.initGit() {
@@ -179,7 +179,7 @@ internal class Tests : StringSpec(
         }
 
         fun TemporaryFolder.runGradle(
-            vararg arguments: String = arrayOf("printGitSemVer", "--stacktrace")
+            vararg arguments: String = arrayOf("printGitSemVer", "--stacktrace"),
         ): String = GradleRunner
             .create()
             .withProjectDir(root)

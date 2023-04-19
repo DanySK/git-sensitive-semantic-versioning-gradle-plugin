@@ -21,7 +21,7 @@ class GitSemVer : Plugin<Project> {
                             "The version '$it' is not a valid semantic versioning format"
                         }
                         project.logger.lifecycle(
-                            "Forcing version to $it, mandated by property '$forceVersionPropertyName'"
+                            "Forcing version to $it, mandated by property '$forceVersionPropertyName'",
                         )
                         project.version = it.toString()
                     } ?: run { assignGitSemanticVersion() }
