@@ -117,7 +117,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
                         "git",
                         "rev-list",
                         "--count",
-                        "${versionPrefix.get()}$closestTag..HEAD"
+                        "${versionPrefix.get()}$closestTag..HEAD",
                     )?.toLong()
                     require(distance != null) {
                         "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
