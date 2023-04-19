@@ -41,7 +41,7 @@ internal class Tests : StringSpec(
             val result = configuredPlugin(
                 """
                 versionPrefix.set("v")
-                """.trimIndent()
+                """.trimIndent(),
             ) {
                 initGitWithPrefixedTag()
             }.runGradle()

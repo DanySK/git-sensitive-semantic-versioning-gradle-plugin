@@ -4,7 +4,6 @@ import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.slf4j.Logger
 import java.io.File
-import java.lang.IllegalStateException
 
 /**
  * The plugin extension with the DSL.
@@ -64,7 +63,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
      * Finds the closest tag compatible with Semantic Version, or returns null if none is available.
      */
     fun Project.findClosestTag(): SemanticVersion? {
-        val reachableCommits = runCommand("git", "rev-list", "HEAD")?.lines()?.toSet() ?: emptySet()
+        val reachableCommits = runCommand("git", "rev-list", "HEAD")?.lines()?.toSet().orEmpty()
         val tagMatcher = Regex(
             """^(\w*)\s+(${
                 if (includeLightweightTags.get()) "commit|" else ""
@@ -119,7 +118,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
                         "--count",
                         "${versionPrefix.get()}$closestTag..HEAD",
                     )?.toLong()
-                    require(distance != null) {
+                    requireNotNull(distance) {
                         "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
                             "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
                     }
@@ -151,7 +150,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
         if (resultingVersion == null) {
             val error = "Invalid Semantic Versioning 2.0 version: ${project.version}"
             if (enforceSemanticVersioning.get()) {
-                throw IllegalStateException(error)
+                error(error)
             } else {
                 project.logger.warn(error)
             }
