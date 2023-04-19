@@ -38,7 +38,11 @@ internal class Tests : StringSpec(
             result.lines().any { it matches Regex(""".*1\.2\.3$""") } shouldBe true
         }
         "git tagged commit with prefix" {
-            val result = configuredPlugin("noTagIdentifier.set(\"foo\")") {
+            val result = configuredPlugin(
+                """
+                versionPrefix.set("v")
+                """.trimIndent()
+            ) {
                 initGitWithPrefixedTag()
             }.runGradle()
             println(result)
