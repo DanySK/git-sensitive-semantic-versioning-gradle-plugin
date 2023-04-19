@@ -114,7 +114,9 @@ data class PreReleaseIdentifier(
      */
     fun isEmpty(): Boolean = segments.isEmpty()
 
-    override fun toString() = segments.takeIf { it.isNotEmpty() }?.joinToString(separator = ".", prefix = prefix) ?: ""
+    override fun toString() = segments.takeIf { it.isNotEmpty() }
+        ?.joinToString(separator = ".", prefix = prefix)
+        .orEmpty()
 
     override fun compareTo(other: PreReleaseIdentifier): Int =
         /*
