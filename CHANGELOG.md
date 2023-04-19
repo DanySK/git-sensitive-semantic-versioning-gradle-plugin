@@ -1,3 +1,20 @@
+## [1.1.8](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.7...1.1.8) (2023-04-19)
+
+
+### Bug Fixes
+
+* add actual support for version prefixes, closes [#543](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/543) ([#544](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/544)) ([d8999d8](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/d8999d877f41c3e4311e3d59d3a9c78ca34dd338))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.25 ([fc1e3d8](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/fc1e3d8cb8cc9043fa6d56605284149d7250e522))
+* **deps:** update kotest to v5.6.0 ([78a3f38](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/78a3f38b876a81d2dc4463607b0fa9ed7ffea47c))
+* **deps:** update kotest to v5.6.1 ([4465325](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/446532569f438a18e45379238904550087091a93))
+* **deps:** update plugin gitsemver to v1.1.7 ([b593803](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b59380392cb52b2cd740f34589cc36eb00e325bd))
+* **deps:** update plugin publishoncentral to v4.1.1 ([cf5003b](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/cf5003b20f1c30ad2e14cd8504baa4d763d54795))
+* **deps:** update plugin publishoncentral to v5 ([e972fc9](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/e972fc9f55f49be573cef8130c6ccc1236b5618a))
+
 ## [1.1.7](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.6...1.1.7) (2023-04-13)
 
 
