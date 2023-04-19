@@ -67,12 +67,12 @@ open class GitSemVerExtension @JvmOverloads constructor(
         val reachableCommits = runCommand("git", "rev-list", "HEAD")?.lines()?.toSet() ?: emptySet()
         val tagMatcher = Regex(
             """^(\w*)\s+(${
-            if (includeLightweightTags.get()) "commit|" else ""
+                if (includeLightweightTags.get()) "commit|" else ""
             }tag)\s+refs/tags/${
-            versionPrefix.get()
+                versionPrefix.get()
             }(${
-            SemanticVersion.semVerRegexString
-            })$"""
+                SemanticVersion.semVerRegexString
+            })$""",
         )
         logger.debug("Reachable commits: $reachableCommits")
         return runCommand("git", "for-each-ref", "refs/tags", "--sort=-version:refname")
@@ -131,7 +131,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
                             val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
                             val distanceString = distance.withRadix(
                                 distanceCounterRadix.get(),
-                                developmentCounterLength.get()
+                                developmentCounterLength.get(),
                             )
                             val buildSeparator = buildMetadataSeparator.get()
                             "$base$separator$devString$distanceString$buildSeparator$hash".take(maxVersionLength.get())
@@ -191,8 +191,11 @@ open class GitSemVerExtension @JvmOverloads constructor(
             .takeIf { it.isNotEmpty() }
 
         private fun Long.withRadix(radix: Int, digits: Int? = null) = toString(radix).let {
-            if (digits == null || it.length >= digits) it
-            else it.padStart(digits, '0')
+            if (digits == null || it.length >= digits) {
+                it
+            } else {
+                it.padStart(digits, '0')
+            }
         }
     }
 }

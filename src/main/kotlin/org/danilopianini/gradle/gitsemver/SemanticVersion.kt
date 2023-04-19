@@ -106,7 +106,7 @@ data class PreReleaseIdentifier(
                 segment.toULongOrNull()
                     ?.let { DotSeparatedIdentifier.NumericIdentifier(it) }
                     ?: DotSeparatedIdentifier.AlphanumericIdentifier(segment)
-            }
+            },
     )
 
     /**
