@@ -37,6 +37,13 @@ internal class Tests : StringSpec(
             println(result)
             result.lines().any { it matches Regex(""".*1\.2\.3$""") } shouldBe true
         }
+        "git tagged commit with prefix" {
+            val result = configuredPlugin("noTagIdentifier.set(\"foo\")") {
+                initGitWithPrefixedTag()
+            }.runGradle()
+            println(result)
+            result.lines().any { it matches Regex(""".*1\.2\.3$""") } shouldBe true
+        }
         "git tagged + development" {
             val workingDirectory = configuredPlugin("developmentIdentifier.set(\"foodev\")") {
                 initGitWithTag()
@@ -160,6 +167,11 @@ internal class Tests : StringSpec(
         fun TemporaryFolder.initGitWithTag() {
             initGit()
             runCommand("git", "tag", "-a", "1.2.3", "-m", "\"test\"")
+        }
+
+        fun TemporaryFolder.initGitWithPrefixedTag() {
+            initGit()
+            runCommand("git", "tag", "-a", "v1.2.3", "-m", "\"test\"")
         }
 
         fun TemporaryFolder.runGradle(
