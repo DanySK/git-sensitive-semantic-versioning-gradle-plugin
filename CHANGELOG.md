@@ -1,3 +1,27 @@
+## [1.1.9](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.8...1.1.9) (2023-04-21)
+
+
+### Build and continuous integration
+
+* **editorconfig:** remove unsupported import order rule suppression ([4ef431f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/4ef431fee41a659c9c98a2d34b7ba1d234fed2e4))
+* use `lowercase` instead of `toLowerCase` ([f84d863](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f84d8638760986cb03d4de6c340e4e7d135cb21a))
+
+
+### Style improvements
+
+* apply the latest Detekt and Ktlint formatting rules ([b00fc19](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b00fc19ec4be15b567be96aba3057ccd7ff222dc))
+* fix Detekt errors ([8990387](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/89903873310b2b56f70ec34aa04a7058e42f2bb5))
+
+
+### Dependency updates
+
+* **core-deps:** update dependency gradle to v8.1.1 ([265cc87](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/265cc876381e32d1779e01840ff74f81b669707b))
+* **deps:** update plugin gitsemver to v1.1.8 ([1b4d3a1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/1b4d3a1310b5619f68d0ef65141d3e2d58bbf9e8))
+* **deps:** update plugin kotlin-qa to v0.38.1 ([970cd4d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/970cd4d08fea2a7c88c0643c8b4bbac98600ba88))
+* **deps:** update plugin multijvmtesting to v0.4.21 ([de1098f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/de1098f47c7eb3005e5957557bb432e6a32ab8ec))
+* **deps:** update plugin multijvmtesting to v0.4.22 ([b7fbe92](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b7fbe926fa5527022ee18d7a68ce671b15698cc2))
+* **deps:** update plugin publishoncentral to v5.0.2 ([94b1ee5](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/94b1ee5948d3ad1b4fe2ed56bce7b9ff7e017aa6))
+
 ## [1.1.8](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.7...1.1.8) (2023-04-19)
 
 
