@@ -131,6 +131,57 @@ internal class Tests : StringSpec(
             print(result)
             result shouldContain "1.2.3"
         }
+        "git tagged + development with basic fix commit" {
+            val workingDirectory = configuredPlugin("developmentIdentifier.set(\"foodev\")") {
+                initGitWithTag()
+                file("something") { "something" }
+                runCommand("git add something")
+                runCommand("git", "commit", "-m", "fix: Test commit test")
+            }
+            val result = workingDirectory.runGradle()
+            println(result)
+            val expectedVersion = "1.2.4-foodev01+"
+            result shouldContain expectedVersion
+        }
+        "git tagged + development with basic feat commit" {
+            val workingDirectory = configuredPlugin("developmentIdentifier.set(\"foodev\")") {
+                initGitWithTag()
+                file("something") { "something" }
+                runCommand("git add something")
+                runCommand("git", "commit", "-m", "feat: Test commit test")
+            }
+            val result = workingDirectory.runGradle()
+            println(result)
+            val expectedVersion = "1.3.0-foodev01+"
+            result shouldContain expectedVersion
+        }
+        "git tagged + development with braking change commit using ! in the type" {
+            val workingDirectory = configuredPlugin("developmentIdentifier.set(\"foodev\")") {
+                initGitWithTag()
+                file("something") { "something" }
+                runCommand("git add something")
+                runCommand("git", "commit", "-m", "feat!: Test commit test")
+            }
+            val result = workingDirectory.runGradle()
+            println(result)
+            val expectedVersion = "2.0.0-foodev01+"
+            result shouldContain expectedVersion
+        }
+        "git tagged + development with braking change commit using ! in the type and then a fix commit" {
+            val workingDirectory = configuredPlugin("developmentIdentifier.set(\"foodev\")") {
+                initGitWithTag()
+                file("something") { "something" }
+                runCommand("git add something")
+                runCommand("git", "commit", "-m", "feat!: Test commit test")
+                file("something1") { "something" }
+                runCommand("git add something1")
+                runCommand("git", "commit", "-m", "fix: Test commit test")
+            }
+            val result = workingDirectory.runGradle()
+            println(result)
+            val expectedVersion = "2.0.0-foodev02+"
+            result shouldContain expectedVersion
+        }
     },
 ) {
     companion object {
