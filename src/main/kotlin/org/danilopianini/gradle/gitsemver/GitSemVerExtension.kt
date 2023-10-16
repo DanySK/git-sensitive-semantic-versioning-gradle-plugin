@@ -126,6 +126,23 @@ open class GitSemVerExtension @JvmOverloads constructor(
                         0L -> closestTag.toString()
                         else -> {
                             val base: SemanticVersion = closestTag.withoutBuildMetadata()
+                            val lastCommits = runCommand(
+                                "git",
+                                "log",
+                                "--oneline",
+                                "-$distance",
+                                "--no-decorate",
+                                "--format=%s",
+                            )?.lines().orEmpty()
+                            val currentVersion =
+                                ConventionalCommit.incrementVersion(
+                                    base,
+                                    lastCommits
+                                        .mapNotNull {
+                                            ConventionalCommit.computeCommitType(it)
+                                        }
+                                        .maxOrNull(),
+                                )
                             val devString = developmentIdentifier.get()
                             val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
                             val distanceString = distance.withRadix(
@@ -133,7 +150,8 @@ open class GitSemVerExtension @JvmOverloads constructor(
                                 developmentCounterLength.get(),
                             )
                             val buildSeparator = buildMetadataSeparator.get()
-                            "$base$separator$devString$distanceString$buildSeparator$hash".take(maxVersionLength.get())
+                            "$currentVersion$separator$devString$distanceString$buildSeparator$hash"
+                                .take(maxVersionLength.get())
                         }
                     }
                 }
