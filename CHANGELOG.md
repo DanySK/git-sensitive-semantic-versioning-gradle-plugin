@@ -1,3 +1,29 @@
+## [1.1.11](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.10...1.1.11) (2023-10-16)
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.32 ([0b66609](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/0b666099c6303e2c5983fb7f5087e28000bcb94d))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.33 ([17943c8](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/17943c825f2d7d552b6e08873da86d0df224a041))
+* **deps:** update plugin gitsemver to v1.1.10 ([603b589](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/603b5893c7603e2bd6fc556b855951c8fb2c87e0))
+* **deps:** update plugin multijvmtesting to v0.5.2 ([7662c7c](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/7662c7cdf8fff813cf9aa5e2958383ed112f5f5e))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.8 ([b0d338c](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b0d338cb7ea5e9ad017a09f670b5a9bbbf76d6f1))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.9 ([8937453](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/8937453fa28c57baa2571f814f6793b95a1b33d2))
+* **deps:** update plugin publishoncentral to v5.0.7 ([b0777a0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b0777a0bffe19c740bba69533eb1a82cd6098e01))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.5.3 ([ca9255c](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ca9255c92c41128758333de75efcd82527a115ec))
+* **deps:** update danysk/action-checkout action to v0.2.10 ([a4c7d4f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a4c7d4f7a742aec2d166286fa76e79adbdcb878d))
+* do not fail fast on matrix jobs ([648c790](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/648c7904791bc6f5a57dde7c0ce6bdab241b3bdc))
+* **mergify:** point to the shared Mergify configuration ([fa0dabd](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/fa0dabdd09647edb40d7fbef2af1bbea9f49d2ed))
+
+
+### Revert previous changes
+
+* **deps:** downgrade plugin publishoncentral to v5.0.4 ([d04d9ce](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/d04d9ceb578eac19e8ea23f6a23fe3f9c63bec43))
+
 ## [1.1.10](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.9...1.1.10) (2023-06-05)
 
 
