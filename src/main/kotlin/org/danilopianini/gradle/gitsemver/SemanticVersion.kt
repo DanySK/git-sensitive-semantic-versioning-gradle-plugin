@@ -31,6 +31,23 @@ data class SemanticVersion(
         PreReleaseIdentifier("+", buildMetadata),
     )
 
+    /**
+     * Creates a new [SemanticVersion] with the [major] version increased by 1 and the [minor] and [patch] reset to 0.
+     */
+    fun increaseMajor(): SemanticVersion = copy(major = major + 1u, minor = 0u, patch = 0u)
+
+    /**
+     * Creates a new [SemanticVersion] with the [minor] version increased by 1 and the [patch] reset to 0, while
+     * keeping the [major] version.
+     */
+    fun increaseMinor(): SemanticVersion = copy(minor = minor + 1u, patch = 0u)
+
+    /**
+     * Creates a new [SemanticVersion] with the [patch] version increased by 1, while keeping the [major] and [minor]
+     * versions.
+     */
+    fun increasePatch(): SemanticVersion = copy(patch = patch + 1u)
+
     override fun toString() = "$major.$minor.$patch$preRelease$buildMetadata"
 
     /**
@@ -173,6 +190,7 @@ data class PreReleaseIdentifier(
                     else -> -1
                 }
             }
+
             is AlphanumericIdentifier -> {
                 when (other) {
                     is AlphanumericIdentifier -> identifier.compareTo(other.identifier)
