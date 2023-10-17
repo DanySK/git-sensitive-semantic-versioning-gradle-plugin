@@ -1,3 +1,14 @@
+## [1.1.14](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.13...1.1.14) (2023-10-17)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.dokka to v1.9.10 ([f9cc8f3](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f9cc8f301eb98a0868b50e04a002d35903fb5d77))
+* **deps:** update plugin gitsemver to v1.1.12 ([fb76028](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/fb76028197bbb5064bd2703009cdafbcb680939b))
+* **deps:** update plugin gitsemver to v1.1.13 ([08613c9](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/08613c97d551a955e147d1476a071d3c4c35c20e))
+* **deps:** update plugin multijvmtesting to v0.5.6 ([6754e1a](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6754e1a58b41e50c2aa73d8c1b389451d68b282c))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.11 ([a9b19e2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a9b19e220a07967dd7bece046b69bf9144eab614))
+
 ## [1.1.13](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.12...1.1.13) (2023-10-17)
 
 
