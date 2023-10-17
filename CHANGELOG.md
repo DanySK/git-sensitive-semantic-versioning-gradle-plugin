@@ -1,3 +1,21 @@
+## [1.1.13](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.12...1.1.13) (2023-10-17)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency gradle to v8.4 ([1495c64](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/1495c64a229da2402a770e72e36626e07f55f6c4))
+* **deps:** update plugin com.gradle.enterprise to v3.13.4 ([9aa3479](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/9aa34795fb39ebe4f1f3aa1225cc396594dfc889))
+* **deps:** update plugin com.gradle.enterprise to v3.15.1 ([55509c8](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/55509c8aea6d7855346c837cfaafa6c97dec98df))
+* **deps:** update plugin gitsemver to v1.1.11 ([566c861](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/566c861a11252367efd744a908f3e02d06eb16cd))
+* **deps:** update plugin gradle-plugin-publish to v1.2.1 ([ddfd2ff](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ddfd2ff448467555b20ef3181747248f69118010))
+* **deps:** update plugin org.gradle.toolchains.foojay-resolver-convention to v0.7.0 ([db246b3](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/db246b369a7addf490f2cea2b1a407709f271d61))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v4 ([c16d8d0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c16d8d0e8dda87aa4629ec1ceb20fa415a33aa3c))
+* **deps:** update danysk/action-checkout action to v0.2.13 ([c5f6d6e](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c5f6d6e47094d8f65fd9ec7b915605fee701b4ca))
+
 ## [1.1.12](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.11...1.1.12) (2023-10-17)
 
 
