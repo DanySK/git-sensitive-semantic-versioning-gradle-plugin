@@ -1,3 +1,17 @@
+## [1.1.12](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.11...1.1.12) (2023-10-17)
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.68 ([d5a8a30](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/d5a8a30738c07db360828968da3aed64e3ec9f23))
+* **deps:** update kotest to v5.7.2 ([441f95b](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/441f95b65ca956a73d0d268d919f46bd649f0ff2))
+* **deps:** update plugin kotlin-qa to v0.51.1 ([b3e09a2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b3e09a2c67b45fd73dc619a58fefba2aeb62c7ac))
+
+
+### Revert previous changes
+
+* **deps:** downgrade plugin kotlin-qa to v0.40.0 ([#606](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/606)) ([81a187e](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/81a187ef1066dfc8295f857849c0e4bbb296bd87)), closes [#564](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/564)
+
 ## [1.1.11](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.10...1.1.11) (2023-10-16)
 
 
