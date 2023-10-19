@@ -1,3 +1,21 @@
+## [1.1.15](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.14...1.1.15) (2023-10-19)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.jvm to v1.9.10 ([ea3493e](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ea3493e768945031a1e026ba803267f7070ecdcc))
+* **deps:** update node.js to 18.18 ([9139389](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/9139389379cad31b9613106332c2d53a655d64ee))
+* **deps:** update plugin gitsemver to v1.1.14 ([6a2d4e0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6a2d4e0c3d27d67d7e6f51d2e1f20d4677d9d81e))
+* **deps:** update plugin kotlin-qa to v0.52.0 ([54a2d92](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/54a2d92e9922dd696ae3cdb2acec94645ec2694b))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v4.1.1 ([081ec5d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/081ec5dbdf8ba4832b38af62417e0502caa6dfa8))
+* **deps:** update danysk/action-checkout action to v0.2.14 ([ef315e2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ef315e29dcf0311cfbba41196d54c6a1b137de93))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.10 ([1992222](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/19922220edba0d11eea089831ea710886703904b))
+* **detekt:** do not enforce the project's version of Kotlin upon detekt ([3644691](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/3644691ca00b127085688a341276180d81be260f))
+
 ## [1.1.14](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.13...1.1.14) (2023-10-17)
 
 
