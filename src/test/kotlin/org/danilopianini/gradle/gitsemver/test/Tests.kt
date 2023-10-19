@@ -57,7 +57,7 @@ internal class Tests : StringSpec(
             }
             val result = workingDirectory.runGradle()
             println(result)
-            val expectedVersion = "1.2.3-foodev01+"
+            val expectedVersion = "1.2.4-foodev01+"
             result shouldContain expectedVersion
             with(workingDirectory) {
                 runCommand("git", "tag", "-a", "test", "-m", "test tag")
