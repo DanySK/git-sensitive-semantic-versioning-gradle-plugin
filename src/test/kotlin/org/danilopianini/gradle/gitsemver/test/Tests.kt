@@ -131,56 +131,57 @@ internal class Tests : StringSpec(
             print(result)
             result shouldContain "1.2.3"
         }
-        "git tagged + development with basic fix commit" {
-            val workingDirectory = configuredPlugin("developmentIdentifier.set(\"foodev\")") {
-                initGitWithTag()
-                file("something") { "something" }
-                runCommand("git add something")
-                runCommand("git", "commit", "-m", "fix: Test commit test")
-            }
-            val result = workingDirectory.runGradle()
-            println(result)
-            val expectedVersion = "1.2.4-foodev01+"
-            result shouldContain expectedVersion
+        "git tagged + development with basic chore commit (conventional commits)" {
+            conventionalCommitTest(
+                "chore: Test commit",
+                expectedVersion = "1.2.3-foodev01+",
+                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
+            )
         }
-        "git tagged + development with basic feat commit" {
-            val workingDirectory = configuredPlugin("developmentIdentifier.set(\"foodev\")") {
-                initGitWithTag()
-                file("something") { "something" }
-                runCommand("git add something")
-                runCommand("git", "commit", "-m", "feat: Test commit test")
-            }
-            val result = workingDirectory.runGradle()
-            println(result)
-            val expectedVersion = "1.3.0-foodev01+"
-            result shouldContain expectedVersion
+        "git tagged + development with fix commit (conventional commits)" {
+            conventionalCommitTest(
+                "fix: Test commit",
+                expectedVersion = "1.2.4-foodev01+",
+                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
+            )
         }
-        "git tagged + development with braking change commit using ! in the type" {
-            val workingDirectory = configuredPlugin("developmentIdentifier.set(\"foodev\")") {
-                initGitWithTag()
-                file("something") { "something" }
-                runCommand("git add something")
-                runCommand("git", "commit", "-m", "feat!: Test commit test")
-            }
-            val result = workingDirectory.runGradle()
-            println(result)
-            val expectedVersion = "2.0.0-foodev01+"
-            result shouldContain expectedVersion
+        "git tagged + development with feat commit (conventional commits)" {
+            conventionalCommitTest(
+                "feat: Test commit",
+                expectedVersion = "1.3.0-foodev01+",
+                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
+
+            )
         }
-        "git tagged + development with braking change commit using ! in the type and then a fix commit" {
-            val workingDirectory = configuredPlugin("developmentIdentifier.set(\"foodev\")") {
-                initGitWithTag()
-                file("something") { "something" }
-                runCommand("git add something")
-                runCommand("git", "commit", "-m", "feat!: Test commit test")
-                file("something1") { "something" }
-                runCommand("git add something1")
-                runCommand("git", "commit", "-m", "fix: Test commit test")
-            }
-            val result = workingDirectory.runGradle()
-            println(result)
-            val expectedVersion = "2.0.0-foodev02+"
-            result shouldContain expectedVersion
+        "git tagged + development with breaking change commit (conventional commits) using !: " {
+            conventionalCommitTest(
+                "feat!: Test commit",
+                expectedVersion = "2.0.0-foodev01+",
+                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
+            )
+        }
+        "git tagged + development with breaking change commit (conventional commits) using BREAKING CHANGE footer" {
+            conventionalCommitTest(
+                "feat: Test commit\nBREAKING CHANGE: test",
+                expectedVersion = "2.0.0-foodev01+",
+                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
+            )
+        }
+        """git tagged + development with breaking change commit (conventional commits)
+                "using !: and BREAKING CHANGE footer""" {
+            conventionalCommitTest(
+                "feat!: Test commit\nBREAKING CHANGE: test",
+                expectedVersion = "2.0.0-foodev01+",
+                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
+            )
+        }
+        "git tagged + development with breaking change commit and fix commit (conventional commits)" {
+            conventionalCommitTest(
+                "fix: Test commit",
+                "feat!: Test commit",
+                expectedVersion = "2.0.0-foodev02+",
+                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
+            )
         }
     },
 ) {
@@ -245,6 +246,8 @@ internal class Tests : StringSpec(
             file("settings.gradle") { "rootProject.name = 'testproject'" }
             file("build.gradle.kts") {
                 """
+                import org.danilopianini.gradle.gitsemver.*    
+                    
                 plugins {
                     id("org.danilopianini.git-semver")
                 }
@@ -254,6 +257,27 @@ internal class Tests : StringSpec(
                 """.trimIndent()
             }
             otherChecks()
+        }
+
+        fun conventionalCommitTest(
+            vararg commits: String,
+            expectedVersion: String,
+            pluginConfiguration: String = "",
+        ) {
+            val workingDirectory = configuredPlugin(
+                """$pluginConfiguration
+                versionUpdateStrategy.set(ConventionalCommit::semanticVersionUpdate)""",
+            ) {
+                initGitWithTag()
+                commits.forEachIndexed { index, it ->
+                    file("something$index") { "something$index" }
+                    runCommand("git add something$index")
+                    runCommand("git", "commit", "-m", it)
+                }
+            }
+            val result = workingDirectory.runGradle()
+            println(result)
+            result shouldContain expectedVersion
         }
     }
 }
