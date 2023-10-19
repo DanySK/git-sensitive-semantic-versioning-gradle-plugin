@@ -1,6 +1,6 @@
 [versions]
 dokka = "1.9.10"
-kotlin = "1.8.20"
+kotlin = "1.8.22"
 kotest = "5.7.2"
 
 [libraries]
