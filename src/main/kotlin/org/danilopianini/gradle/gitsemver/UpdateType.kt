@@ -14,24 +14,20 @@ package org.danilopianini.gradle.gitsemver
 enum class UpdateType {
     NONE, PATCH, MINOR, MAJOR;
 
-    companion object {
-
-        /**
-         * Increments the [version] according to the [updateType].
-         * If [updateType] is [UpdateType.NONE], the [version] is returned unchanged.
-         * If [updateType] is [UpdateType.PATCH], the [version] is incremented as a patch.
-         * If [updateType] is [UpdateType.MINOR], the [version] is incremented as a minor.
-         * If [updateType] is [UpdateType.MAJOR], the [version] is incremented as a major.
-         *
-         * @param version the last tagged version
-         * @param updateType the type of update
-         */
-        fun incrementVersion(version: SemanticVersion, updateType: UpdateType): SemanticVersion =
-            when (updateType) {
-                UpdateType.MAJOR -> version.incrementMajor()
-                UpdateType.MINOR -> version.incrementMinor()
-                UpdateType.PATCH -> version.incrementPatch()
-                UpdateType.NONE -> version
-            }
-    }
+    /**
+     * Increments the [version] according to the enum value.
+     * If it is [UpdateType.NONE], the [version] is returned unchanged.
+     * If it is [UpdateType.PATCH], the [version] is incremented as a patch.
+     * If it is [UpdateType.MINOR], the [version] is incremented as a minor.
+     * If it is [UpdateType.MAJOR], the [version] is incremented as a major.
+     *
+     * @param version the last tagged version
+     */
+    fun incrementVersion(version: SemanticVersion): SemanticVersion =
+        when (this) {
+            NONE -> version
+            PATCH -> version.incrementPatch()
+            MINOR -> version.incrementMinor()
+            MAJOR -> version.incrementMajor()
+        }
 }

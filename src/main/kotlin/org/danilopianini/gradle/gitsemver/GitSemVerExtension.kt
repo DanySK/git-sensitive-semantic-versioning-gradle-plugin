@@ -139,10 +139,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
                                 "--no-decorate",
                                 "--format=%s",
                             )?.lines().orEmpty()
-                            val currentVersion = UpdateType.incrementVersion(
-                                base,
-                                updateStrategy(lastCommits),
-                            )
+                            val currentVersion = updateStrategy(lastCommits).incrementVersion(base)
                             val devString = developmentIdentifier.get()
                             val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
                             val distanceString = distance.withRadix(
