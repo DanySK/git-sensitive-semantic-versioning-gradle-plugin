@@ -190,7 +190,6 @@ data class PreReleaseIdentifier(
                     else -> -1
                 }
             }
-
             is AlphanumericIdentifier -> {
                 when (other) {
                     is AlphanumericIdentifier -> identifier.compareTo(other.identifier)
