@@ -54,9 +54,9 @@ gitSemVer {
     versionPrefix.set("")
     // This reproduces the behavior of the plugin at version 0.x.y: ignores non-annotated (lightweight) tags.
     excludeLightweightTags()
-    // How the develop version should be computed.
+    // How the development version should be computed based on commit messages.
     // The default is to update the patch version if there is at least one commit since the last tag, so the following settings can be omitted.
-    commitNameBasedUpdateStrategy({ _ -> UpdateType.PATCH })
+    commitNameBasedUpdateStrategy { UpdateType.PATCH }
 }
 ```
 
