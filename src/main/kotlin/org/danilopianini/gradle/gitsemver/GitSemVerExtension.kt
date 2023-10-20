@@ -45,9 +45,12 @@ open class GitSemVerExtension @JvmOverloads constructor(
     val versionPrefix: Property<String> = project.propertyWithDefault(""),
     val includeLightweightTags: Property<Boolean> = project.propertyWithDefault(true),
     val forceVersionPropertyName: Property<String> = project.propertyWithDefault("forceVersion"),
-    val versionUpdateStrategy: Property<(List<String>) -> UpdateType> =
-        project.propertyWithDefault { _ -> UpdateType.PATCH },
+    private var updateStrategy: (List<String>) -> UpdateType = { _ -> UpdateType.PATCH },
 ) {
+
+    fun commitNameBasedUpdateStrategy(strategy: (List<String>) -> UpdateType) {
+        updateStrategy = strategy
+    }
 
     private fun computeMinVersion(logger: Logger): SemanticVersion {
         val minVersion = minimumVersion.get()
@@ -136,9 +139,9 @@ open class GitSemVerExtension @JvmOverloads constructor(
                                 "--no-decorate",
                                 "--format=%s",
                             )?.lines().orEmpty()
-                            val currentVersion = UpdateVersion.incrementVersion(
+                            val currentVersion = UpdateType.incrementVersion(
                                 base,
-                                versionUpdateStrategy.get()(lastCommits),
+                                updateStrategy(lastCommits),
                             )
                             val devString = developmentIdentifier.get()
                             val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
