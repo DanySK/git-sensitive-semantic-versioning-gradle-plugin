@@ -131,6 +131,22 @@ internal class Tests : StringSpec(
             print(result)
             result shouldContain "1.2.3"
         }
+        "git tagged + development with change the version update strategy" {
+            val workingDirectory = configuredPlugin(
+                """
+                commitNameBasedUpdateStrategy({ _ -> UpdateType.MAJOR })
+                """,
+            ) {
+                initGitWithTag()
+                file("something") { "something" }
+                runCommand("git add something")
+                runCommand("git", "commit", "-m", "\"Test commit 2\"")
+            }
+            val result = workingDirectory.runGradle()
+            println(result)
+            val expectedVersion = "2.0.0"
+            result shouldContain expectedVersion
+        }
     },
 ) {
     companion object {
