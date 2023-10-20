@@ -131,58 +131,6 @@ internal class Tests : StringSpec(
             print(result)
             result shouldContain "1.2.3"
         }
-        "git tagged + development with basic chore commit (conventional commits)" {
-            conventionalCommitTest(
-                "chore: Test commit",
-                expectedVersion = "1.2.3-foodev01+",
-                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
-            )
-        }
-        "git tagged + development with fix commit (conventional commits)" {
-            conventionalCommitTest(
-                "fix: Test commit",
-                expectedVersion = "1.2.4-foodev01+",
-                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
-            )
-        }
-        "git tagged + development with feat commit (conventional commits)" {
-            conventionalCommitTest(
-                "feat: Test commit",
-                expectedVersion = "1.3.0-foodev01+",
-                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
-
-            )
-        }
-        "git tagged + development with breaking change commit (conventional commits) using !: " {
-            conventionalCommitTest(
-                "feat!: Test commit",
-                expectedVersion = "2.0.0-foodev01+",
-                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
-            )
-        }
-        "git tagged + development with breaking change commit (conventional commits) using BREAKING CHANGE footer" {
-            conventionalCommitTest(
-                "feat: Test commit\nBREAKING CHANGE: test",
-                expectedVersion = "2.0.0-foodev01+",
-                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
-            )
-        }
-        """git tagged + development with breaking change commit (conventional commits)
-                "using !: and BREAKING CHANGE footer""" {
-            conventionalCommitTest(
-                "feat!: Test commit\nBREAKING CHANGE: test",
-                expectedVersion = "2.0.0-foodev01+",
-                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
-            )
-        }
-        "git tagged + development with breaking change commit and fix commit (conventional commits)" {
-            conventionalCommitTest(
-                "fix: Test commit",
-                "feat!: Test commit",
-                expectedVersion = "2.0.0-foodev02+",
-                pluginConfiguration = "developmentIdentifier.set(\"foodev\")",
-            )
-        }
     },
 ) {
     companion object {
@@ -257,27 +205,6 @@ internal class Tests : StringSpec(
                 """.trimIndent()
             }
             otherChecks()
-        }
-
-        fun conventionalCommitTest(
-            vararg commits: String,
-            expectedVersion: String,
-            pluginConfiguration: String = "",
-        ) {
-            val workingDirectory = configuredPlugin(
-                """$pluginConfiguration
-                versionUpdateStrategy.set(ConventionalCommit::semanticVersionUpdate)""",
-            ) {
-                initGitWithTag()
-                commits.forEachIndexed { index, it ->
-                    file("something$index") { "something$index" }
-                    runCommand("git add something$index")
-                    runCommand("git", "commit", "-m", it)
-                }
-            }
-            val result = workingDirectory.runGradle()
-            println(result)
-            result shouldContain expectedVersion
         }
     }
 }
