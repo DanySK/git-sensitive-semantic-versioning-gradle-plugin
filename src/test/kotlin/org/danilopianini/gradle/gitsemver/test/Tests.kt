@@ -134,7 +134,7 @@ internal class Tests : StringSpec(
         "git tagged + development with change the version update strategy" {
             val workingDirectory = configuredPlugin(
                 """
-                commitNameBasedUpdateStrategy({ _ -> UpdateType.MAJOR })
+                commitNameBasedUpdateStrategy { UpdateType.MAJOR }
                 """,
             ) {
                 initGitWithTag()
