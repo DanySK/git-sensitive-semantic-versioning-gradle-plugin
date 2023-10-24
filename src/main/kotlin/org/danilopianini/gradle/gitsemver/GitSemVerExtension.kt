@@ -48,6 +48,12 @@ open class GitSemVerExtension @JvmOverloads constructor(
     private var updateStrategy: (List<String>) -> UpdateType = { _ -> UpdateType.PATCH },
 ) {
 
+    /**
+     * Sets the strategy to be used to compute the version increment based on the commit messages since the last tag.
+     * The default strategy is to increment the patch version.
+     *
+     * @param strategy a function that takes the list of commit messages since the last tag and returns the update type
+     */
     fun commitNameBasedUpdateStrategy(strategy: (List<String>) -> UpdateType) {
         updateStrategy = strategy
     }
@@ -113,6 +119,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
                     val separator = if (identifier.isBlank()) "" else preReleaseSeparator.get()
                     return "$base$separator$identifier${buildMetadataSeparator.get()}$hash"
                 }
+
                 else -> {
                     if (!closestTag.buildMetadata.isEmpty()) {
                         logger.warn("Build metadata of closest tag $closestTag will be ignored.")
