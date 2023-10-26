@@ -1,3 +1,23 @@
+## [2.0.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.15...2.0.0) (2023-10-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* raise the patch version by default, improving adherence to SemanticVersioning. Allow commit-based control of the version to be generated, fixing #595  (#603)
+
+### Features
+
+* raise the patch version by default, improving adherence to SemanticVersioning. Allow commit-based control of the version to be generated, fixing [#595](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/595)  ([#603](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/603)) ([0f26a13](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/0f26a13ce1ce6a291b26ad2505ebf2cbaca2b88f))
+
+
+### Dependency updates
+
+* **deps:** update node.js to 20.9 ([efd507b](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/efd507b6329188c5e1293e9877e734738f824b4f))
+* **deps:** update node.js to v20 ([fd242fb](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/fd242fb8c081a83d238f928492f15f5854e0888e))
+* **deps:** update plugin gitsemver to v1.1.15 ([84b3bf9](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/84b3bf9a67f7615cc8db17af6832a7767ecdc7a4))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.13 ([028bbf3](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/028bbf3a1615c3cce754c416b03a695ea88392ef))
+* **deps:** update plugin publishoncentral to v5.0.16 ([e7e128c](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/e7e128c8ac79dbb7d71e68d601947d760f288b70))
+
 ## [1.1.15](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.14...1.1.15) (2023-10-19)
 
 
