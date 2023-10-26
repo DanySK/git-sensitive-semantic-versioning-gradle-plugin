@@ -57,7 +57,7 @@ internal class Tests : StringSpec(
             }
             val result = workingDirectory.runGradle()
             println(result)
-            val expectedVersion = "1.2.3-foodev01+"
+            val expectedVersion = "1.2.4-foodev01+"
             result shouldContain expectedVersion
             with(workingDirectory) {
                 runCommand("git", "tag", "-a", "test", "-m", "test tag")
@@ -131,6 +131,22 @@ internal class Tests : StringSpec(
             print(result)
             result shouldContain "1.2.3"
         }
+        "git tagged + development with change the version update strategy" {
+            val workingDirectory = configuredPlugin(
+                """
+                commitNameBasedUpdateStrategy { UpdateType.MAJOR }
+                """,
+            ) {
+                initGitWithTag()
+                file("something") { "something" }
+                runCommand("git add something")
+                runCommand("git", "commit", "-m", "\"Test commit 2\"")
+            }
+            val result = workingDirectory.runGradle()
+            println(result)
+            val expectedVersion = "2.0.0"
+            result shouldContain expectedVersion
+        }
     },
 ) {
     companion object {
@@ -194,6 +210,8 @@ internal class Tests : StringSpec(
             file("settings.gradle") { "rootProject.name = 'testproject'" }
             file("build.gradle.kts") {
                 """
+                import org.danilopianini.gradle.gitsemver.*    
+                    
                 plugins {
                     id("org.danilopianini.git-semver")
                 }

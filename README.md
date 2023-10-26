@@ -30,6 +30,8 @@ plugins {
 ### Plugin options
 
 ```kotlin
+import org.danilopianini.gradle.gitsemver.UpdateType
+...
 gitSemVer {
     minimumVersion.set("0.1.0")
     developmentIdentifier.set("dev")
@@ -52,6 +54,8 @@ gitSemVer {
     versionPrefix.set("")
     // This reproduces the behavior of the plugin at version 0.x.y: ignores non-annotated (lightweight) tags.
     excludeLightweightTags()
+    // Compute the next upgrade type (major/minor/patch) based on commit messages; defaults to patch regardless of the commits.
+    commitNameBasedUpdateStrategy { UpdateType.PATCH }
 }
 ```
 
