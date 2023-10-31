@@ -1,3 +1,13 @@
+## [2.0.1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/2.0.0...2.0.1) (2023-10-31)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.jvm to v1.9.20 ([568bc4a](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/568bc4aede25c17a3a2ae58a16bdc184808ea0fc))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.69 ([301126a](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/301126a0bdeb8fb18b47cb546101996b84f90af4))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.70 ([0ad0571](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/0ad057127b7ecfd0cfc3e9235a2cc6fb638f6931))
+* **deps:** update plugin gitsemver to v2 ([28f2a22](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/28f2a2248531b11d8f23d8fb17418289c741b973))
+
 ## [2.0.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/1.1.15...2.0.0) (2023-10-26)
 
 
