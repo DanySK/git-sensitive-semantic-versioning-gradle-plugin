@@ -63,7 +63,7 @@ gitSemVer {
 
 The plugin sets the project version by scheduling a call to the `assignGitSemanticVersion()` using `project.afterEvaluate`.
 This should be fine for most use cases, but you might need the version of the project to be set early in the configuration phase.
-If so, you can manually call `assignGitSemanticVersion()` from within the plugin configuration block, *after* all options have been configured
+If so, you can manually call `assignGitSemanticVersion()` from within the plugin configuration block *after* all options have been configured
 (if any configuration was performed):
 ```kotlin
 gitSemVer {
@@ -77,7 +77,7 @@ the version.
 
 ### Manually force the version
 
-The plugin allows to manually set the version via a gradle property that, if present, will be used as the version of the project.
+The plugin allows the user to manually set the version via a gradle property that, if present, will be used as the version of the project.
 By default, the property name is `forceVersion`, but you can change the property name by setting the `forceVersionPropertyName` property of the plugin with a custom name.
 
 `./gradlew -PforceVersion=1.2.3 <task list>` will result in the project version being set to `1.2.3`.
@@ -91,6 +91,12 @@ gitSemVer {
 ```
 
 `./gradlew -PmyCustomPropertyVersion=1.2.3 <task list>` will result in the project version being set to `1.2.3`.
+
+### Using conventional commits?
+
+This plugin can be configured to use the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) to determine the next version
+through another plugin developed by [Andrea Brighi](https://github.com/AndreaBrighi).
+Visit the [conventional commits extension for git-sensitive-semantic-versioning-gradle-plugin](https://github.com/AndreaBrighi/conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin) to learn more.
 
 ## Contributing to the project
 
