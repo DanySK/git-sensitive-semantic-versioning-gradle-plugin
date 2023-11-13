@@ -92,6 +92,29 @@ gitSemVer {
 
 `./gradlew -PmyCustomPropertyVersion=1.2.3 <task list>` will result in the project version being set to `1.2.3`.
 
+### Add conventional commits support
+
+The plugin can be configured to use the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) to determine the next version.
+In order to do so, you need to add the [conventional commits extension](https://github.com/AndreaBrighi/conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin) to your buildscript:
+
+```kotlin
+import io.github.andreabrighi.gradle.gitsemver.conventionalcommit.ConventionalCommit
+...
+
+gitSemVer {
+    ...
+    commitNameBasedUpdateStrategy(ConventionalCommit::semanticVersionUpdate)
+}
+
+buildscript {
+    dependencies {
+        classpath("io.github.andreabrighi:conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin:1.0.0")
+    }
+}
+...
+```
+
+
 ## Contributing to the project
 
 I gladly review pull requests and I'm happy to improve the work.
