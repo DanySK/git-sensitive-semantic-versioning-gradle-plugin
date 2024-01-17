@@ -1,7 +1,10 @@
 package org.danilopianini.gradle.gitsemver
 
+import org.danilopianini.gradle.gitsemver.source.GitCommandValueSource
 import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.ProviderFactory
 import org.slf4j.Logger
 import java.io.File
 
@@ -32,6 +35,8 @@ import java.io.File
  */
 open class GitSemVerExtension @JvmOverloads constructor(
     private val project: Project,
+    providerFactory: ProviderFactory,
+    objectFactory: ObjectFactory,
     val minimumVersion: Property<String> = project.propertyWithDefault("0.1.0"),
     val developmentIdentifier: Property<String> = project.propertyWithDefault("dev"),
     val noTagIdentifier: Property<String> = project.propertyWithDefault("archeo"),
@@ -47,6 +52,8 @@ open class GitSemVerExtension @JvmOverloads constructor(
     val forceVersionPropertyName: Property<String> = project.propertyWithDefault("forceVersion"),
     private var updateStrategy: (List<String>) -> UpdateType = { _ -> UpdateType.PATCH },
 ) {
+
+    private val context = FactoryContext(objectFactory, providerFactory)
 
     /**
      * Sets the strategy to be used to compute the version increment based on the commit messages since the last tag.
@@ -74,7 +81,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
      * Finds the closest tag compatible with Semantic Version, or returns null if none is available.
      */
     fun Project.findClosestTag(): SemanticVersion? {
-        val reachableCommits = runCommand("git", "rev-list", "HEAD")?.lines()?.toSet().orEmpty()
+        val reachableCommits = with(context) { runCommand("git", "rev-list", "HEAD")?.lines()?.toSet().orEmpty() }
         val tagMatcher = Regex(
             """^(\w*)\s+(${
                 if (includeLightweightTags.get()) "commit|" else ""
@@ -85,20 +92,22 @@ open class GitSemVerExtension @JvmOverloads constructor(
             })$""",
         )
         logger.debug("Reachable commits: $reachableCommits")
-        return runCommand("git", "for-each-ref", "refs/tags", "--sort=-version:refname")
-            ?.lineSequence()
-            ?.mapNotNull { tagMatcher.matchEntire(it)?.destructured }
-            ?.mapNotNull { (commit, type, semVer, major, minor, patch, option, build) ->
-                val actualRef = when (type) {
-                    "commit" -> commit
-                    "tag" -> runCommand("git", "rev-list", "-n1", versionPrefix.get() + semVer)
-                    else -> error("Unknown tag ref type '$type' (expected 'tag' or 'commit')")
+        return with(context) {
+            runCommand("git", "for-each-ref", "refs/tags", "--sort=-version:refname")
+                ?.lineSequence()
+                ?.mapNotNull { tagMatcher.matchEntire(it)?.destructured }
+                ?.mapNotNull { (commit, type: String, semVer, major, minor, patch, option, build) ->
+                    val actualRef = when (type) {
+                        "commit" -> commit
+                        "tag" -> runCommand("git", "rev-list", "-n1", versionPrefix.get() + semVer)
+                        else -> error("Unknown tag ref type '$type' (expected 'tag' or 'commit')")
+                    }
+                    actualRef.takeIf { it in reachableCommits }?.let {
+                        SemanticVersion(major, minor, patch, option, build)
+                    }
                 }
-                actualRef.takeIf { it in reachableCommits }?.let {
-                    SemanticVersion(major, minor, patch, option, build)
-                }
-            }
-            ?.firstOrNull()
+                ?.firstOrNull()
+        }
     }
 
     /**
@@ -110,7 +119,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
             logger.debug("Closest SemVer tag: $closestTag")
             val fullHash = fullHash.get()
             val printCommitCommand = "git rev-parse ${if (fullHash) "" else "--short "}HEAD".split(" ")
-            val hash = runCommand(*printCommitCommand.toTypedArray())
+            val hash = with(context) { runCommand(*printCommitCommand.toTypedArray()) }
                 ?: System.currentTimeMillis().toString()
             return when (closestTag) {
                 null -> {
@@ -124,12 +133,14 @@ open class GitSemVerExtension @JvmOverloads constructor(
                     if (!closestTag.buildMetadata.isEmpty()) {
                         logger.warn("Build metadata of closest tag $closestTag will be ignored.")
                     }
-                    val distance = runCommand(
-                        "git",
-                        "rev-list",
-                        "--count",
-                        "${versionPrefix.get()}$closestTag..HEAD",
-                    )?.toLong()
+                    val distance = with(context) {
+                        runCommand(
+                            "git",
+                            "rev-list",
+                            "--count",
+                            "${versionPrefix.get()}$closestTag..HEAD",
+                        )?.toLong()
+                    }
                     requireNotNull(distance) {
                         "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
                             "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
@@ -138,14 +149,16 @@ open class GitSemVerExtension @JvmOverloads constructor(
                         0L -> closestTag.toString()
                         else -> {
                             val base: SemanticVersion = closestTag.withoutBuildMetadata()
-                            val lastCommits = runCommand(
-                                "git",
-                                "log",
-                                "--oneline",
-                                "-$distance",
-                                "--no-decorate",
-                                "--format=%s",
-                            )?.lines().orEmpty()
+                            val lastCommits = with(context) {
+                                runCommand(
+                                    "git",
+                                    "log",
+                                    "--oneline",
+                                    "-$distance",
+                                    "--no-decorate",
+                                    "--format=%s",
+                                )?.lines().orEmpty()
+                            }
                             val currentVersion = updateStrategy(lastCommits).incrementVersion(base)
                             val devString = developmentIdentifier.get()
                             val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
@@ -201,15 +214,22 @@ open class GitSemVerExtension @JvmOverloads constructor(
         private inline fun <reified T> Project.propertyWithDefault(default: T): Property<T> =
             objects.property(T::class.java).apply { convention(default) }
 
+        context(DependencyContext)
         private fun Project.runCommand(vararg cmd: String) = projectDir.runCommandInFolder(*cmd)
 
-        private fun File.runCommandInFolder(vararg cmd: String) = Runtime.getRuntime()
-            .exec(cmd, emptyArray(), this)
-            .inputStream
-            .bufferedReader()
-            .readText()
+        context(DependencyContext)
+        private fun File.runCommandInFolder(vararg cmd: String): String? = getValueSourceProvider(*cmd)
+            .get()
             .trim()
             .takeIf { it.isNotEmpty() }
+
+        context(DependencyContext)
+        private fun File.getValueSourceProvider(vararg cmd: String) = of(GitCommandValueSource::class.java) {
+            it.parameters { params ->
+                params.commands.set(listProperty(String::class.java).value(cmd.asList()))
+                params.directory.set(this)
+            }
+        }
 
         private fun Long.withRadix(radix: Int, digits: Int? = null) = toString(radix).let {
             if (digits == null || it.length >= digits) {
@@ -220,3 +240,10 @@ open class GitSemVerExtension @JvmOverloads constructor(
         }
     }
 }
+
+private interface DependencyContext : ProviderFactory, ObjectFactory
+
+private class FactoryContext(
+    objectFactory: ObjectFactory,
+    providerFactory: ProviderFactory,
+) : DependencyContext, ObjectFactory by objectFactory, ProviderFactory by providerFactory
