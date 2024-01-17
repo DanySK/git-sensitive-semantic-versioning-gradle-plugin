@@ -1,9 +1,9 @@
 package org.danilopianini.gradle.gitsemver
 
 import org.danilopianini.gradle.gitsemver.source.GitCommandValueSource
-import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.slf4j.Logger
 import java.io.File
@@ -34,27 +34,26 @@ import java.io.File
  *      version. By default the property name is "forceVersion".
  */
 open class GitSemVerExtension @JvmOverloads constructor(
-    private val project: Project,
-    providerFactory: ProviderFactory,
-    objectFactory: ObjectFactory,
-    val minimumVersion: Property<String> = project.propertyWithDefault("0.1.0"),
-    val developmentIdentifier: Property<String> = project.propertyWithDefault("dev"),
-    val noTagIdentifier: Property<String> = project.propertyWithDefault("archeo"),
-    val fullHash: Property<Boolean> = project.propertyWithDefault(false),
-    val maxVersionLength: Property<Int> = project.propertyWithDefault(Int.MAX_VALUE),
-    val developmentCounterLength: Property<Int> = project.propertyWithDefault(2),
-    val enforceSemanticVersioning: Property<Boolean> = project.propertyWithDefault(true),
-    val preReleaseSeparator: Property<String> = project.propertyWithDefault("-"),
-    val buildMetadataSeparator: Property<String> = project.propertyWithDefault("+"),
-    val distanceCounterRadix: Property<Int> = project.propertyWithDefault(DEFAULT_RADIX),
-    val versionPrefix: Property<String> = project.propertyWithDefault(""),
-    val includeLightweightTags: Property<Boolean> = project.propertyWithDefault(true),
-    val forceVersionPropertyName: Property<String> = project.propertyWithDefault("forceVersion"),
+    private val providerFactory: ProviderFactory,
+    private val objectFactory: ObjectFactory,
+    private val projectDir: File,
+    private val version: String,
+    private val logger: Logger,
+    val minimumVersion: Property<String> = objectFactory.propertyWithDefault("0.1.0"),
+    val developmentIdentifier: Property<String> = objectFactory.propertyWithDefault("dev"),
+    val noTagIdentifier: Property<String> = objectFactory.propertyWithDefault("archeo"),
+    val fullHash: Property<Boolean> = objectFactory.propertyWithDefault(false),
+    val maxVersionLength: Property<Int> = objectFactory.propertyWithDefault(Int.MAX_VALUE),
+    val developmentCounterLength: Property<Int> = objectFactory.propertyWithDefault(2),
+    val enforceSemanticVersioning: Property<Boolean> = objectFactory.propertyWithDefault(true),
+    val preReleaseSeparator: Property<String> = objectFactory.propertyWithDefault("-"),
+    val buildMetadataSeparator: Property<String> = objectFactory.propertyWithDefault("+"),
+    val distanceCounterRadix: Property<Int> = objectFactory.propertyWithDefault(DEFAULT_RADIX),
+    val versionPrefix: Property<String> = objectFactory.propertyWithDefault(""),
+    val includeLightweightTags: Property<Boolean> = objectFactory.propertyWithDefault(true),
+    val forceVersionPropertyName: Property<String> = objectFactory.propertyWithDefault("forceVersion"),
     private var updateStrategy: (List<String>) -> UpdateType = { _ -> UpdateType.PATCH },
 ) {
-
-    private val context = FactoryContext(objectFactory, providerFactory)
-
     /**
      * Sets the strategy to be used to compute the version increment based on the commit messages since the last tag.
      * The default strategy is to increment the patch version.
@@ -65,7 +64,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
         updateStrategy = strategy
     }
 
-    private fun computeMinVersion(logger: Logger): SemanticVersion {
+    private fun computeMinVersion(): SemanticVersion {
         val minVersion = minimumVersion.get()
         val minSemVer = SemanticVersion.fromStringOrNull(minVersion)?.withoutBuildMetadata()
         requireNotNull(minSemVer) {
@@ -80,8 +79,8 @@ open class GitSemVerExtension @JvmOverloads constructor(
     /**
      * Finds the closest tag compatible with Semantic Version, or returns null if none is available.
      */
-    fun Project.findClosestTag(): SemanticVersion? {
-        val reachableCommits = with(context) { runCommand("git", "rev-list", "HEAD")?.lines()?.toSet().orEmpty() }
+    fun findClosestTag(): SemanticVersion? {
+        val reachableCommits = runCommand("git", "rev-list", "HEAD")?.lines()?.toSet().orEmpty()
         val tagMatcher = Regex(
             """^(\w*)\s+(${
                 if (includeLightweightTags.get()) "commit|" else ""
@@ -92,84 +91,75 @@ open class GitSemVerExtension @JvmOverloads constructor(
             })$""",
         )
         logger.debug("Reachable commits: $reachableCommits")
-        return with(context) {
-            runCommand("git", "for-each-ref", "refs/tags", "--sort=-version:refname")
-                ?.lineSequence()
-                ?.mapNotNull { tagMatcher.matchEntire(it)?.destructured }
-                ?.mapNotNull { (commit, type: String, semVer, major, minor, patch, option, build) ->
-                    val actualRef = when (type) {
-                        "commit" -> commit
-                        "tag" -> runCommand("git", "rev-list", "-n1", versionPrefix.get() + semVer)
-                        else -> error("Unknown tag ref type '$type' (expected 'tag' or 'commit')")
-                    }
-                    actualRef.takeIf { it in reachableCommits }?.let {
-                        SemanticVersion(major, minor, patch, option, build)
-                    }
+        return runCommand("git", "for-each-ref", "refs/tags", "--sort=-version:refname")
+            ?.lineSequence()
+            ?.mapNotNull { tagMatcher.matchEntire(it)?.destructured }
+            ?.mapNotNull { (commit, type: String, semVer, major, minor, patch, option, build) ->
+                val actualRef = when (type) {
+                    "commit" -> commit
+                    "tag" -> runCommand("git", "rev-list", "-n1", versionPrefix.get() + semVer)
+                    else -> error("Unknown tag ref type '$type' (expected 'tag' or 'commit')")
                 }
-                ?.firstOrNull()
-        }
+                actualRef.takeIf { it in reachableCommits }?.let {
+                    SemanticVersion(major, minor, patch, option, build)
+                }
+            }
+            ?.firstOrNull()
     }
 
     /**
      * Computes a valid Semantic Versioning 2.0 version based on the status of the current git repository.
      */
     fun computeVersion(): String {
-        with(project) {
-            val closestTag = findClosestTag()
-            logger.debug("Closest SemVer tag: $closestTag")
-            val fullHash = fullHash.get()
-            val printCommitCommand = "git rev-parse ${if (fullHash) "" else "--short "}HEAD".split(" ")
-            val hash = with(context) { runCommand(*printCommitCommand.toTypedArray()) }
-                ?: System.currentTimeMillis().toString()
-            return when (closestTag) {
-                null -> {
-                    val base = computeMinVersion(logger)
-                    val identifier = noTagIdentifier.orElse("").get()
-                    val separator = if (identifier.isBlank()) "" else preReleaseSeparator.get()
-                    return "$base$separator$identifier${buildMetadataSeparator.get()}$hash"
-                }
+        val closestTag = findClosestTag()
+        logger.debug("Closest SemVer tag: $closestTag")
+        val fullHash = fullHash.get()
+        val printCommitCommand = "git rev-parse ${if (fullHash) "" else "--short "}HEAD".split(" ")
+        val hash = runCommand(*printCommitCommand.toTypedArray()) ?: System.currentTimeMillis().toString()
+        return when (closestTag) {
+            null -> {
+                val base = computeMinVersion()
+                val identifier = noTagIdentifier.orElse("").get()
+                val separator = if (identifier.isBlank()) "" else preReleaseSeparator.get()
+                return "$base$separator$identifier${buildMetadataSeparator.get()}$hash"
+            }
 
-                else -> {
-                    if (!closestTag.buildMetadata.isEmpty()) {
-                        logger.warn("Build metadata of closest tag $closestTag will be ignored.")
-                    }
-                    val distance = with(context) {
-                        runCommand(
+            else -> {
+                if (!closestTag.buildMetadata.isEmpty()) {
+                    logger.warn("Build metadata of closest tag $closestTag will be ignored.")
+                }
+                val distance = runCommand(
+                    "git",
+                    "rev-list",
+                    "--count",
+                    "${versionPrefix.get()}$closestTag..HEAD",
+                )?.toLong()
+                requireNotNull(distance) {
+                    "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
+                        "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
+                }
+                when (distance) {
+                    0L -> closestTag.toString()
+                    else -> {
+                        val base: SemanticVersion = closestTag.withoutBuildMetadata()
+                        val lastCommits = runCommand(
                             "git",
-                            "rev-list",
-                            "--count",
-                            "${versionPrefix.get()}$closestTag..HEAD",
-                        )?.toLong()
-                    }
-                    requireNotNull(distance) {
-                        "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
-                            "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
-                    }
-                    when (distance) {
-                        0L -> closestTag.toString()
-                        else -> {
-                            val base: SemanticVersion = closestTag.withoutBuildMetadata()
-                            val lastCommits = with(context) {
-                                runCommand(
-                                    "git",
-                                    "log",
-                                    "--oneline",
-                                    "-$distance",
-                                    "--no-decorate",
-                                    "--format=%s",
-                                )?.lines().orEmpty()
-                            }
-                            val currentVersion = updateStrategy(lastCommits).incrementVersion(base)
-                            val devString = developmentIdentifier.get()
-                            val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
-                            val distanceString = distance.withRadix(
-                                distanceCounterRadix.get(),
-                                developmentCounterLength.get(),
-                            )
-                            val buildSeparator = buildMetadataSeparator.get()
-                            "$currentVersion$separator$devString$distanceString$buildSeparator$hash"
-                                .take(maxVersionLength.get())
-                        }
+                            "log",
+                            "--oneline",
+                            "-$distance",
+                            "--no-decorate",
+                            "--format=%s",
+                        )?.lines().orEmpty()
+                        val currentVersion = updateStrategy(lastCommits).incrementVersion(base)
+                        val devString = developmentIdentifier.get()
+                        val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
+                        val distanceString = distance.withRadix(
+                            distanceCounterRadix.get(),
+                            developmentCounterLength.get(),
+                        )
+                        val buildSeparator = buildMetadataSeparator.get()
+                        "$currentVersion$separator$devString$distanceString$buildSeparator$hash"
+                            .take(maxVersionLength.get())
                     }
                 }
             }
@@ -179,19 +169,19 @@ open class GitSemVerExtension @JvmOverloads constructor(
     /**
      * modifies the version of the current project, assigning the value computed by [computeVersion].
      */
-    fun assignGitSemanticVersion() {
+    fun assignGitSemanticVersion(): String {
         val computedVersion = computeVersion()
         val resultingVersion = SemanticVersion.fromStringOrNull(computedVersion)
-        if (resultingVersion == null) {
-            val error = "Invalid Semantic Versioning 2.0 version: ${project.version}"
+        return if (resultingVersion == null) {
+            val error = "Invalid Semantic Versioning 2.0 version: $version"
             if (enforceSemanticVersioning.get()) {
                 error(error)
             } else {
-                project.logger.warn(error)
+                logger.warn(error)
             }
-            project.version = computedVersion
+            computedVersion
         } else {
-            project.version = resultingVersion.toString()
+            resultingVersion.toString()
         }
     }
 
@@ -202,6 +192,21 @@ open class GitSemVerExtension @JvmOverloads constructor(
         includeLightweightTags.set(false)
     }
 
+    private fun runCommand(vararg cmd: String) = processCommand(*cmd)
+
+    private fun processCommand(vararg cmd: String) = createValueSourceProvider(*cmd)
+        .get()
+        .trim()
+        .takeIf { it.isNotEmpty() }
+
+    private fun createValueSourceProvider(vararg cmd: String): Provider<String> =
+        providerFactory.of(GitCommandValueSource::class.java) {
+            it.parameters { params ->
+                params.commands.set(objectFactory.listProperty(String::class.java).value(cmd.asList()))
+                params.directory.set(projectDir)
+            }
+        }
+
     companion object {
 
         /**
@@ -211,25 +216,8 @@ open class GitSemVerExtension @JvmOverloads constructor(
 
         private const val DEFAULT_RADIX = 36
 
-        private inline fun <reified T> Project.propertyWithDefault(default: T): Property<T> =
-            objects.property(T::class.java).apply { convention(default) }
-
-        context(DependencyContext)
-        private fun Project.runCommand(vararg cmd: String) = projectDir.runCommandInFolder(*cmd)
-
-        context(DependencyContext)
-        private fun File.runCommandInFolder(vararg cmd: String): String? = getValueSourceProvider(*cmd)
-            .get()
-            .trim()
-            .takeIf { it.isNotEmpty() }
-
-        context(DependencyContext)
-        private fun File.getValueSourceProvider(vararg cmd: String) = of(GitCommandValueSource::class.java) {
-            it.parameters { params ->
-                params.commands.set(listProperty(String::class.java).value(cmd.asList()))
-                params.directory.set(this)
-            }
-        }
+        private inline fun <reified T> ObjectFactory.propertyWithDefault(default: T): Property<T> =
+            property(T::class.java).apply { convention(default) }
 
         private fun Long.withRadix(radix: Int, digits: Int? = null) = toString(radix).let {
             if (digits == null || it.length >= digits) {
@@ -240,10 +228,3 @@ open class GitSemVerExtension @JvmOverloads constructor(
         }
     }
 }
-
-private interface DependencyContext : ProviderFactory, ObjectFactory
-
-private class FactoryContext(
-    objectFactory: ObjectFactory,
-    providerFactory: ProviderFactory,
-) : DependencyContext, ObjectFactory by objectFactory, ProviderFactory by providerFactory
