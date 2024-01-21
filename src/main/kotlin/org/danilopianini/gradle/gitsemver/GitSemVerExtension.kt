@@ -192,7 +192,7 @@ open class GitSemVerExtension @JvmOverloads constructor(
         includeLightweightTags.set(false)
     }
 
-    private fun runCommand(vararg cmd: String) = processCommand(*cmd)
+    protected fun runCommand(vararg cmd: String) = processCommand(*cmd)
 
     private fun processCommand(vararg cmd: String) = createValueSourceProvider(*cmd)
         .get()
