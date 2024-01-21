@@ -1,3 +1,15 @@
+## [3.1.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.0.0...3.1.0) (2024-01-21)
+
+
+### Features
+
+* relax `runCommand` function visibility to `protected` ([#680](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/680)) ([aab38c7](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/aab38c727c78a17b4ece90d60915e7d796980bea))
+
+
+### Dependency updates
+
+* **deps:** update plugin gitsemver to v3 ([b797fb0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b797fb0a5bc3b279b298253a75abe3285a439af8))
+
 ## [3.0.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/2.0.5...3.0.0) (2024-01-21)
 
 
