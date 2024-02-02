@@ -1,3 +1,24 @@
+## [3.1.1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.1.0...3.1.1) (2024-02-02)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency gradle to v8.6 ([551350c](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/551350ccf60bab755d46754a0734d68c71cc0792))
+* **deps:** update plugin com.gradle.enterprise to v3.16.2 ([999f3db](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/999f3dbeaabcf746b12a2c5f4b3bce1579c75a1f))
+* **deps:** update plugin gitsemver to v3.1.0 ([a3ffbb0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a3ffbb0ff7f7bce5c878cc787e86c7043e307bce))
+* **deps:** update plugin kotlin-qa to v0.59.0 ([5aa2cc0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/5aa2cc0da04b132afa28d5d6a839fe4b73f9a8a2))
+* **deps:** update plugin multijvmtesting to v0.5.8 ([7b2685c](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/7b2685c34aca909535ac886d1f5ced7c0731543c))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.15 ([b4808b4](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b4808b427160c53063ccd83ec83d20b3cdd206ea))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.16 ([ab7b693](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ab7b693d063ce66013562fbeb380cf6789f90902))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.17 ([80934db](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/80934dbbae6a4e284cabed4550341210640a1af5))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.18 ([f716d25](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f716d253c205108655aca3dec49671f1222e2bfc))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.19 ([f24b6b6](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f24b6b6a2a964df6ab5fe8ed5222c95f32f6cbf3))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.20 ([11a0066](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/11a006647549252c9615dfe75a96930c78ff8770))
+
 ## [3.1.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.0.0...3.1.0) (2024-01-21)
 
 
