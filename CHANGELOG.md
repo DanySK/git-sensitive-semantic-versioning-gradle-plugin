@@ -1,3 +1,14 @@
+## [3.1.3](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.1.2...3.1.3) (2024-03-07)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.jvm to v1.9.23 ([0ce1de9](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/0ce1de9805c440e724a93bbffa2f6a0d299dbd9b))
+* **deps:** update plugin gitsemver to v3.1.2 ([6c17ec0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6c17ec0c4f59ddb273f072dc3c071a3bc2f5d4ea))
+* **deps:** update plugin kotlin-qa to v0.60.2 ([026abc5](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/026abc5d3e2bbe5cf5a588346d0c5e4cc74b4b98))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.2 ([b22a880](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b22a88060d53de4fbb75d3d668355e883e8990f0))
+* **deps:** update plugin publishoncentral to v5.0.24 ([d0b72a3](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/d0b72a3c7d119bbdf38721baf7d8bc3881d03fec))
+
 ## [3.1.2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.1.1...3.1.2) (2024-03-04)
 
 
