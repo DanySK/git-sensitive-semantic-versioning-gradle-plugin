@@ -1,3 +1,13 @@
+## [3.1.7](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.1.6...3.1.7) (2024-05-31)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency gradle to v8.8 ([320bd44](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/320bd440e04632238b90708c213ceb76763ff706))
+* **deps:** update node.js to 20.14 ([39a7dad](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/39a7dadb64a0594676f4a1cf16c072e05d8d814c))
+* **deps:** update plugin gitsemver to v3.1.6 ([97e0a3a](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/97e0a3a9b6eeb58b4dd5f66810fa1b026c171cd9))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.6 ([e5a8dd4](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/e5a8dd4887a9507972918a0d9d2a02ca239d4673))
+
 ## [3.1.6](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.1.5...3.1.6) (2024-05-21)
 
 
