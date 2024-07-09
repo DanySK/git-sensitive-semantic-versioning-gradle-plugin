@@ -50,7 +50,7 @@ jobs:
         with:
           token: ${{ secrets.DEPLOYMENT_TOKEN }}
       - name: Setup Node
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: package.json
       - uses: DanySK/build-check-deploy-gradle-action@3.0.0
