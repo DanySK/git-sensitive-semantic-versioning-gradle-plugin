@@ -8,8 +8,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows, macos, ubuntu]
-    runs-on: ${{ matrix.os }}-latest
+        os: [windows-2022, macos-14, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
     concurrency:
       group: ${{ github.workflow }}-build-${{ matrix.os }}-${{ github.event.number || github.ref }}
       cancel-in-progress: true
@@ -40,7 +40,7 @@ jobs:
   release:
     needs:
       - build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     concurrency:
       group: ${{ github.workflow }}-release-${{ github.event.number || github.ref }}
@@ -71,7 +71,7 @@ jobs:
           signing-key: ${{ secrets.SIGNING_KEY }}
           signing-password: ${{ secrets.SIGNING_PASSWORD }}
   success:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - build
       - release
