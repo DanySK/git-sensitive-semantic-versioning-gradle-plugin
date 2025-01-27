@@ -20,6 +20,7 @@ jobs:
             uploadKotlin
             uploadPluginMavenToMavenCentralNexus
             close
+            dropStaging
             publishPlugins
             --parallel
           should-run-codecov: ${{ runner.os == 'Linux' }}
