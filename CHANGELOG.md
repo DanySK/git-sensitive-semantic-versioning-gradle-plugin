@@ -1,3 +1,11 @@
+## [4.0.3](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/4.0.2...4.0.3) (2025-01-27)
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.jvm to v2.1.10 ([#825](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/825)) ([623c57d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/623c57d845533e798ca189ccc46d416f39f5bf5f))
+* **deps:** update plugin multijvmtesting to v3.2.2 ([#864](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/864)) ([e98957a](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/e98957a6ae61efd5d481d12763945f382b548581))
+* **deps:** update plugin publishoncentral to v7 ([#852](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/852)) ([028209f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/028209f5f5e6be96e659edf0792e65e1963b2170))
+
 ## [4.0.2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/4.0.1...4.0.2) (2025-01-27)
 
 ### Dependency updates
