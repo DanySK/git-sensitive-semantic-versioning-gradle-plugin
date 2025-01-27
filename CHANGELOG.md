@@ -1,3 +1,18 @@
+## [4.0.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.1.10...4.0.0) (2025-01-27)
+
+### ⚠ BREAKING CHANGES
+
+* update plugin kotlin-qa to v0.78.0 (#838)
+
+### Dependency updates
+
+* **deps:** update dependency io.kotest to v6 ([c886fad](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c886fadfff07c0e44f8f823ff1dc22dc0be811f9))
+* **deps:** update plugin gitsemver to v3.1.10 ([#861](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/861)) ([14834ee](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/14834eed670006e09ab8f86a5418d11f2bc546cb))
+
+### Style improvements
+
+* update plugin kotlin-qa to v0.78.0 ([#838](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/838)) ([88cead4](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/88cead446d39432f6df4fa81f0a02a760f4ccd51))
+
 ## [3.1.10](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.1.9...3.1.10) (2025-01-27)
 
 ### Dependency updates
