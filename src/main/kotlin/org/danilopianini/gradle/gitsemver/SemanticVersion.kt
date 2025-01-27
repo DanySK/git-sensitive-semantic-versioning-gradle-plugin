@@ -11,7 +11,6 @@ data class SemanticVersion(
     val preRelease: PreReleaseIdentifier = PreReleaseIdentifier.EMPTY,
     val buildMetadata: PreReleaseIdentifier = PreReleaseIdentifier.EMPTY,
 ) : Comparable<SemanticVersion> {
-
     /**
      * True if this version is in the form [major].[minor].[patch], with no further identifiers.
      */
@@ -69,10 +68,14 @@ data class SemanticVersion(
             major != other.major -> major.compareTo(other.major)
             minor != other.minor -> minor.compareTo(other.minor)
             patch != other.patch -> patch.compareTo(other.patch)
-            else -> preRelease.compareTo(other.preRelease).takeUnless { it == 0 }
-                ?: buildMetadata.compareTo(buildMetadata)
+            else ->
+                preRelease.compareTo(other.preRelease).takeUnless { it == 0 }
+                    ?: buildMetadata.compareTo(buildMetadata)
         }
 
+    /**
+     * Constants and utilities for working with semantic versions.
+     */
     companion object {
         private const val MATCH_VERSION =
             """(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"""
@@ -84,20 +87,21 @@ data class SemanticVersion(
         /**
          * [String] version of a regular expression matching a SemVer.
          */
-        const val semVerRegexString = "$MATCH_VERSION$MATCH_OPTION$MATCH_BUILD_INFO"
+        const val SEM_VER_REGEX_STRING = "$MATCH_VERSION$MATCH_OPTION$MATCH_BUILD_INFO"
 
         /**
          * A [Regex] matching a valid semantic version.
          */
-        val semVerRegex = Regex("^$semVerRegexString$")
+        val semVerRegex = Regex("^$SEM_VER_REGEX_STRING$")
 
         /**
          * Parses a [String] producing a [SemanticVersion], or null if the version can't be parsed.
          */
-        fun fromStringOrNull(input: String): SemanticVersion? = semVerRegex.matchEntire(input)?.let { match ->
-            val (major, minor, patch, preRelease, buildInfo) = match.destructured
-            SemanticVersion(major, minor, patch, preRelease, buildInfo)
-        }
+        fun fromStringOrNull(input: String): SemanticVersion? =
+            semVerRegex.matchEntire(input)?.let { match ->
+                val (major, minor, patch, preRelease, buildInfo) = match.destructured
+                SemanticVersion(major, minor, patch, preRelease, buildInfo)
+            }
     }
 }
 
@@ -108,7 +112,6 @@ data class PreReleaseIdentifier(
     val prefix: String = "-",
     private val segments: List<DotSeparatedIdentifier> = emptyList(),
 ) : Comparable<PreReleaseIdentifier> {
-
     init {
         require(prefix in validPrefixes) {
             "Invalid prefix $prefix. Valid prefixes: $validPrefixes"
@@ -117,10 +120,12 @@ data class PreReleaseIdentifier(
 
     constructor(prefix: String, identifier: String) : this(
         prefix,
-        identifier.split(".")
+        identifier
+            .split(".")
             .filter { it.isNotBlank() }
             .map { segment ->
-                segment.toULongOrNull()
+                segment
+                    .toULongOrNull()
                     ?.let { DotSeparatedIdentifier.NumericIdentifier(it) }
                     ?: DotSeparatedIdentifier.AlphanumericIdentifier(segment)
             },
@@ -131,9 +136,11 @@ data class PreReleaseIdentifier(
      */
     fun isEmpty(): Boolean = segments.isEmpty()
 
-    override fun toString() = segments.takeIf { it.isNotEmpty() }
-        ?.joinToString(separator = ".", prefix = prefix)
-        .orEmpty()
+    override fun toString() =
+        segments
+            .takeIf { it.isNotEmpty() }
+            ?.joinToString(separator = ".", prefix = prefix)
+            .orEmpty()
 
     override fun compareTo(other: PreReleaseIdentifier): Int =
         /*
@@ -149,7 +156,9 @@ data class PreReleaseIdentifier(
          *   1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta
          *   < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0.
          */
-        segments.asSequence().zip(other.segments.asSequence())
+        segments
+            .asSequence()
+            .zip(other.segments.asSequence())
             .map { it.first.compareTo(it.second) }
             .find { it != 0 }
             ?: segments.size.compareTo(other.segments.size)
@@ -158,19 +167,21 @@ data class PreReleaseIdentifier(
      * A dot-separated identifier.
      */
     sealed class DotSeparatedIdentifier : Comparable<DotSeparatedIdentifier> {
-
         /**
          * Numeric [identifier].
          */
-        data class NumericIdentifier(val identifier: ULong) : DotSeparatedIdentifier() {
+        data class NumericIdentifier(
+            val identifier: ULong,
+        ) : DotSeparatedIdentifier() {
             override fun toString() = identifier.toString()
         }
 
         /**
          * Alphanumeric [identifier].
          */
-        data class AlphanumericIdentifier(val identifier: String) : DotSeparatedIdentifier() {
-
+        data class AlphanumericIdentifier(
+            val identifier: String,
+        ) : DotSeparatedIdentifier() {
             init {
                 require(!identifier.contains(".")) {
                     "Sub-identifiers in semVer cannot contain dots. Error at: $identifier"
@@ -183,22 +194,26 @@ data class PreReleaseIdentifier(
             override fun toString() = identifier
         }
 
-        override fun compareTo(other: DotSeparatedIdentifier) = when (this) {
-            is NumericIdentifier -> {
-                when (other) {
-                    is NumericIdentifier -> identifier.compareTo(other.identifier)
-                    else -> -1
+        override fun compareTo(other: DotSeparatedIdentifier) =
+            when (this) {
+                is NumericIdentifier -> {
+                    when (other) {
+                        is NumericIdentifier -> identifier.compareTo(other.identifier)
+                        else -> -1
+                    }
+                }
+                is AlphanumericIdentifier -> {
+                    when (other) {
+                        is AlphanumericIdentifier -> identifier.compareTo(other.identifier)
+                        else -> 1
+                    }
                 }
             }
-            is AlphanumericIdentifier -> {
-                when (other) {
-                    is AlphanumericIdentifier -> identifier.compareTo(other.identifier)
-                    else -> 1
-                }
-            }
-        }
     }
 
+    /**
+     * Constants and utilities for working with pre-release identifiers.
+     */
     companion object {
         private val validPrefixes = listOf("+", "-")
 

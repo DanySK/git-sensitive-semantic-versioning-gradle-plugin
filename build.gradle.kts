@@ -17,6 +17,7 @@ plugins {
 }
 
 group = "org.danilopianini"
+
 class ProjectInfo {
     val projectId = "$group.$name"
     val fullName = "Gradle Git-Sensitive Semantic Versioning Plugin"
