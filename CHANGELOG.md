@@ -1,3 +1,22 @@
+## [3.1.10](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.1.9...3.1.10) (2025-01-27)
+
+### Dependency updates
+
+* **deps:** update plugin gitsemver to v3.1.9 ([#856](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/856)) ([60316bd](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/60316bdc7a38932fe68ab15639933008de1a23d5))
+* **deps:** update plugin multijvmtesting to v1 ([455d1a6](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/455d1a62d9b81f0d0d454cf035e4fb0f4321daf1))
+
+### Documentation
+
+* **deps:** update dependency org.jetbrains.dokka to v2 ([#858](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/858)) ([0cf5ea1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/0cf5ea1bc7470a61f955e44dbda8f593f34f40b6))
+
+### Build and continuous integration
+
+* **deps:** update actions/setup-node action to v4.2.0 ([#857](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/857)) ([6d5f2f5](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6d5f2f5b35991fd39dbe8cb5c7ba0431f476a879))
+* **deps:** update danysk/action-checkout action to v0.2.22 ([ebf64ce](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ebf64ceafa7de77a2479fee055db48f6d7874151))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.7.6 ([#847](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/847)) ([950de3d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/950de3d09a4b82776f290ee288b4bc0d61ee388e))
+* **deps:** update dependency ubuntu github actions runner to v24 ([#854](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/854)) ([3d17cab](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/3d17cabe911fe4bd31122dd579bc3d7f61347026))
+* provide a codecov token ([#851](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/851)) ([c33e155](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c33e1550a4313a86caa3b38a61c64a6edcbccbd5))
+
 ## [3.1.9](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.1.8...3.1.9) (2025-01-27)
 
 ### Dependency updates
