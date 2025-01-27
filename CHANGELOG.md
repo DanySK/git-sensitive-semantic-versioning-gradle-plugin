@@ -1,3 +1,14 @@
+## [4.0.1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/4.0.0...4.0.1) (2025-01-27)
+
+### Dependency updates
+
+* **core-deps:** update dependency gradle to v8.11.1 ([#811](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/811)) ([8190632](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/81906324d1ae600d232e7df51e8e441d4e5fc53c))
+* **deps:** update plugin multijvmtesting to v2 ([#848](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/848)) ([f871e67](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/f871e67e45218f09bcf3889aae7c69220b4a9647))
+
+### Build and continuous integration
+
+* drop unreleased staging repos on OSSRH ([ef1e3c9](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/ef1e3c99778faca891d6a8aca1cf4658474015df))
+
 ## [4.0.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/3.1.10...4.0.0) (2025-01-27)
 
 ### ⚠ BREAKING CHANGES
