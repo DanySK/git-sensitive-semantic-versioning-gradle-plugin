@@ -12,7 +12,27 @@ package org.danilopianini.gradle.gitsemver
  * [NONE] < [PATCH] < [MINOR] < [MAJOR]
  */
 enum class UpdateType {
-    NONE, PATCH, MINOR, MAJOR;
+    /**
+     * No update.
+     */
+    NONE,
+
+    /**
+     * A patch update.
+     */
+    PATCH,
+
+    /**
+     * A minor update.
+     */
+    MINOR,
+
+    /**
+     * A major update.
+     */
+    MAJOR,
+
+    ;
 
     /**
      * Increments the [version] according to the enum value.

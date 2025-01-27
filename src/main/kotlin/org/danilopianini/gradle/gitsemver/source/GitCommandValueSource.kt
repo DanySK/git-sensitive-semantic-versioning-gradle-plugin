@@ -14,7 +14,6 @@ import javax.inject.Inject
  * Value source for reading results of external git commands.
  */
 abstract class GitCommandValueSource : ValueSource<String, Parameters> {
-
     /**
      * Execution operations instance to execute external process.
      */
@@ -40,7 +39,6 @@ abstract class GitCommandValueSource : ValueSource<String, Parameters> {
  * Parameters for passing down git command list.
  */
 interface Parameters : ValueSourceParameters {
-
     /**
      * List of commands to execute in an external process.
      */
