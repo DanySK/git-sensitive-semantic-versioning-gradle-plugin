@@ -1,5 +1,5 @@
 const publishCmd = `
-./gradlew uploadKotlin uploadPluginMavenToMavenCentralNexus release --parallel || exit 1
+./gradlew uploadAllToMavenCentralNexus release --parallel || exit 1
 ./gradlew publishPlugins -Pgradle.publish.key=$GRADLE_PUBLISH_KEY -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET || exit 2
 ./gradlew publishKotlinMavenPublicationToGithubRepository || true
 `;
