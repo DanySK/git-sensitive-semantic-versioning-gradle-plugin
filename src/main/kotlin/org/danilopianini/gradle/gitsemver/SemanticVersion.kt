@@ -54,24 +54,23 @@ data class SemanticVersion(
      */
     fun withoutBuildMetadata(): SemanticVersion = copy(buildMetadata = PreReleaseIdentifier("+", ""))
 
-    override fun compareTo(other: SemanticVersion): Int =
-        /*
-         * Precedence refers to how versions are compared to each other when ordered.
-         * Precedence MUST be calculated by separating the version into major, minor, patch and pre-release identifiers
-         * in that order (Build metadata does not figure into precedence).
-         * Precedence is determined by the first difference when comparing each of these identifiers from left to right
-         * as follows: Major, minor, and patch versions are always compared numerically.
-         * - Example: 1.0.0 < 2.0.0 < 2.1.0 < 2.1.1.
-         *
-         */
-        when {
-            major != other.major -> major.compareTo(other.major)
-            minor != other.minor -> minor.compareTo(other.minor)
-            patch != other.patch -> patch.compareTo(other.patch)
-            else ->
-                preRelease.compareTo(other.preRelease).takeUnless { it == 0 }
-                    ?: buildMetadata.compareTo(buildMetadata)
-        }
+    /*
+     * Precedence refers to how versions are compared to each other when ordered.
+     * Precedence MUST be calculated by separating the version into major, minor, patch and pre-release identifiers
+     * in that order (Build metadata does not figure into precedence).
+     * Precedence is determined by the first difference when comparing each of these identifiers from left to right
+     * as follows: Major, minor, and patch versions are always compared numerically.
+     * - Example: 1.0.0 < 2.0.0 < 2.1.0 < 2.1.1.
+     *
+     */
+    override fun compareTo(other: SemanticVersion): Int = when {
+        major != other.major -> major.compareTo(other.major)
+        minor != other.minor -> minor.compareTo(other.minor)
+        patch != other.patch -> patch.compareTo(other.patch)
+        else ->
+            preRelease.compareTo(other.preRelease).takeUnless { it == 0 }
+                ?: buildMetadata.compareTo(buildMetadata)
+    }
 
     /**
      * Constants and utilities for working with semantic versions.
@@ -97,11 +96,10 @@ data class SemanticVersion(
         /**
          * Parses a [String] producing a [SemanticVersion], or null if the version can't be parsed.
          */
-        fun fromStringOrNull(input: String): SemanticVersion? =
-            semVerRegex.matchEntire(input)?.let { match ->
-                val (major, minor, patch, preRelease, buildInfo) = match.destructured
-                SemanticVersion(major, minor, patch, preRelease, buildInfo)
-            }
+        fun fromStringOrNull(input: String): SemanticVersion? = semVerRegex.matchEntire(input)?.let { match ->
+            val (major, minor, patch, preRelease, buildInfo) = match.destructured
+            SemanticVersion(major, minor, patch, preRelease, buildInfo)
+        }
     }
 }
 
@@ -136,32 +134,30 @@ data class PreReleaseIdentifier(
      */
     fun isEmpty(): Boolean = segments.isEmpty()
 
-    override fun toString() =
-        segments
-            .takeIf { it.isNotEmpty() }
-            ?.joinToString(separator = ".", prefix = prefix)
-            .orEmpty()
+    override fun toString() = segments
+        .takeIf { it.isNotEmpty() }
+        ?.joinToString(separator = ".", prefix = prefix)
+        .orEmpty()
 
-    override fun compareTo(other: PreReleaseIdentifier): Int =
-        /*
-         * Precedence for two pre-release versions with the same major, minor, and patch version MUST be determined by
-         * comparing each dot separated identifier from left to right until a difference is found as follows:
-         * - Identifiers consisting of only digits are compared numerically.
-         * - Identifiers with letters or hyphens are compared lexically in ASCII sort order.
-         * - Numeric identifiers always have lower precedence than non-numeric identifiers.
-         * - A larger set of pre-release fields has a higher precedence than a smaller set, if all of the preceding
-         *   identifiers are equal.
-         *
-         * - Example:
-         *   1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta
-         *   < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0.
-         */
-        segments
-            .asSequence()
-            .zip(other.segments.asSequence())
-            .map { it.first.compareTo(it.second) }
-            .find { it != 0 }
-            ?: segments.size.compareTo(other.segments.size)
+    /*
+     * Precedence for two pre-release versions with the same major, minor, and patch version MUST be determined by
+     * comparing each dot separated identifier from left to right until a difference is found as follows:
+     * - Identifiers consisting of only digits are compared numerically.
+     * - Identifiers with letters or hyphens are compared lexically in ASCII sort order.
+     * - Numeric identifiers always have lower precedence than non-numeric identifiers.
+     * - A larger set of pre-release fields has a higher precedence than a smaller set, if all of the preceding
+     *   identifiers are equal.
+     *
+     * - Example:
+     *   1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta
+     *   < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0.
+     */
+    override fun compareTo(other: PreReleaseIdentifier): Int = segments
+        .asSequence()
+        .zip(other.segments.asSequence())
+        .map { it.first.compareTo(it.second) }
+        .find { it != 0 }
+        ?: segments.size.compareTo(other.segments.size)
 
     /**
      * A dot-separated identifier.
@@ -170,18 +166,14 @@ data class PreReleaseIdentifier(
         /**
          * Numeric [identifier].
          */
-        data class NumericIdentifier(
-            val identifier: ULong,
-        ) : DotSeparatedIdentifier() {
+        data class NumericIdentifier(val identifier: ULong) : DotSeparatedIdentifier() {
             override fun toString() = identifier.toString()
         }
 
         /**
          * Alphanumeric [identifier].
          */
-        data class AlphanumericIdentifier(
-            val identifier: String,
-        ) : DotSeparatedIdentifier() {
+        data class AlphanumericIdentifier(val identifier: String) : DotSeparatedIdentifier() {
             init {
                 require(!identifier.contains(".")) {
                     "Sub-identifiers in semVer cannot contain dots. Error at: $identifier"
@@ -194,21 +186,20 @@ data class PreReleaseIdentifier(
             override fun toString() = identifier
         }
 
-        override fun compareTo(other: DotSeparatedIdentifier) =
-            when (this) {
-                is NumericIdentifier -> {
-                    when (other) {
-                        is NumericIdentifier -> identifier.compareTo(other.identifier)
-                        else -> -1
-                    }
-                }
-                is AlphanumericIdentifier -> {
-                    when (other) {
-                        is AlphanumericIdentifier -> identifier.compareTo(other.identifier)
-                        else -> 1
-                    }
+        override fun compareTo(other: DotSeparatedIdentifier) = when (this) {
+            is NumericIdentifier -> {
+                when (other) {
+                    is NumericIdentifier -> identifier.compareTo(other.identifier)
+                    else -> -1
                 }
             }
+            is AlphanumericIdentifier -> {
+                when (other) {
+                    is AlphanumericIdentifier -> identifier.compareTo(other.identifier)
+                    else -> 1
+                }
+            }
+        }
     }
 
     /**

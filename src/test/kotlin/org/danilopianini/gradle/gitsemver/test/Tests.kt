@@ -159,21 +159,14 @@ internal class Tests :
         },
     ) {
     companion object {
-        fun folder(closure: TemporaryFolder.() -> Unit) =
-            TemporaryFolder().apply {
-                create()
-                closure()
-            }
+        fun folder(closure: TemporaryFolder.() -> Unit) = TemporaryFolder().apply {
+            create()
+            closure()
+        }
 
-        fun TemporaryFolder.file(
-            name: String,
-            content: () -> String,
-        ) = newFile(name).writeText(content().trimIndent())
+        fun TemporaryFolder.file(name: String, content: () -> String) = newFile(name).writeText(content().trimIndent())
 
-        fun TemporaryFolder.runCommand(
-            vararg command: String,
-            wait: Long = 10,
-        ) {
+        fun TemporaryFolder.runCommand(vararg command: String, wait: Long = 10) {
             val process =
                 ProcessBuilder(*command)
                     .directory(root)
@@ -186,10 +179,7 @@ internal class Tests :
             }
         }
 
-        fun TemporaryFolder.runCommand(
-            command: String,
-            wait: Long = 10,
-        ) = runCommand(
+        fun TemporaryFolder.runCommand(command: String, wait: Long = 10) = runCommand(
             *command.split(" ").toTypedArray(),
             wait = wait,
         )
@@ -226,11 +216,10 @@ internal class Tests :
         fun configuredPlugin(
             pluginConfiguration: String = "",
             otherChecks: TemporaryFolder.() -> Unit = {},
-        ): TemporaryFolder =
-            folder {
-                file("settings.gradle") { "rootProject.name = 'testproject'" }
-                file("build.gradle.kts") {
-                    """
+        ): TemporaryFolder = folder {
+            file("settings.gradle") { "rootProject.name = 'testproject'" }
+            file("build.gradle.kts") {
+                """
                     import org.danilopianini.gradle.gitsemver.*    
                         
                     plugins {
@@ -239,9 +228,9 @@ internal class Tests :
                     gitSemVer {
                         $pluginConfiguration
                     }
-                    """.trimIndent()
-                }
-                otherChecks()
+                """.trimIndent()
             }
+            otherChecks()
+        }
     }
 }

@@ -41,13 +41,15 @@ repositories {
 }
 
 multiJvm {
-    maximumSupportedJvmVersion.set(latestJavaSupportedByGradle)
+    jvmVersionForCompilation = 11
+    maximumSupportedJvmVersion = latestJavaSupportedByGradle
 }
 
 dependencies {
     api(gradleApi())
     api(gradleKotlinDsl())
     implementation(kotlin("stdlib-jdk8"))
+    implementation(libs.caffeine)
     testImplementation(gradleTestKit())
     testImplementation(libs.bundles.kotlin.testing)
 }

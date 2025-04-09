@@ -43,11 +43,10 @@ enum class UpdateType {
      *
      * @param version the last tagged version
      */
-    fun incrementVersion(version: SemanticVersion): SemanticVersion =
-        when (this) {
-            NONE -> version
-            PATCH -> version.incrementPatch()
-            MINOR -> version.incrementMinor()
-            MAJOR -> version.incrementMajor()
-        }
+    fun incrementVersion(version: SemanticVersion): SemanticVersion = when (this) {
+        NONE -> version
+        PATCH -> version.incrementPatch()
+        MINOR -> version.incrementMinor()
+        MAJOR -> version.incrementMajor()
+    }
 }
