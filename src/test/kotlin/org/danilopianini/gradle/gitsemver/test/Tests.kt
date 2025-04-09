@@ -110,7 +110,7 @@ internal class Tests :
                 val workingDirectory =
                     configuredPlugin(
                         """
-                        excludeLightweightTags() 
+                        excludeLightweightTags()
                         """.trimIndent(),
                     )
                 with(workingDirectory) {
