@@ -199,7 +199,8 @@ internal class Tests :
             runCommand("git add .")
             runCommand("git config user.name gitsemver")
             runCommand("git config user.email none@test.com")
-            runCommand("git config --global init.defaultBranch master")
+            runCommand("git config init.defaultBranch master")
+            runCommand("git config commit.gpgsign no")
             runCommand("git", "commit", "-m", "\"Test commit\"")
         }
 
