@@ -172,6 +172,15 @@ internal class Tests :
                     .directory(root)
                     .redirectError(ProcessBuilder.Redirect.INHERIT)
                     .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                    .apply {
+                        // git command isolation from the operating system environment
+                        environment().let { env ->
+                            env.clear()
+                            env["PATH"] = System.getenv("PATH")
+                            env["HOME"] = root.resolve(".git/.home.d/").absolutePath
+                            env["GIT_CONFIG_NOSYSTEM"] = "true"
+                        }
+                    }
                     .start()
             process.waitFor(wait, TimeUnit.SECONDS)
             require(process.exitValue() == 0) {
