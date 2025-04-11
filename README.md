@@ -40,6 +40,7 @@ gitSemVer {
     maxVersionLength.set(Int.MAX_VALUE) // Useful to limit the maximum version length, e.g. Gradle Plugins have a limit on 20
     developmentCounterLength.set(2) // How many digits after `dev`
     enforceSemanticVersioning.set(true) // Whether the plugin should stop if the resulting version is not a valid SemVer, or just warn
+    computeReleaseVersion.set(false) // You can decide whether the generated version should be for releases or pre-releases (default behaviour)
     // The separator for the pre-release block.
     // Changing it to something else than "+" may result in non-SemVer compatible versions
     preReleaseSeparator.set("-")
@@ -91,6 +92,40 @@ gitSemVer {
 ```
 
 `./gradlew -PmyCustomPropertyVersion=1.2.3 <task list>` will result in the project version being set to `1.2.3`.
+
+### Compute the version for release
+
+By default, the extension calculates the version for pre-releases, but you can
+force the calculation of the version for releases by setting the `computeReleaseVersion`
+property to `true`. However, manually forcing the version (as described in
+[Manually force the version](#manually-force-the-version)) still takes priority
+over this property.
+
+Consider the following configuration example:
+
+```kotlin
+// task that the release fulfils
+project.tasks.register("release")
+
+gitSemVer {
+    computeReleaseVersion.set(
+        project.tasks.named("release").map {
+            project.gradle.taskGraph.hasTask(it)
+        }
+    )
+}
+```
+
+With this configuration, the extension will calculate the pre-release version
+until you force the release by executing the ‘release’ task. As soon as you
+decide to release the project, the extension will calculate the release version
+for you.
+
+In combination with conventional commits, which will be described below, this
+almost completely frees you from manually determining the project version. You
+only have to decide what the ‘release’ task should do during execution. Probably
+`git commit ...` and `git tag ...`, using `project.version` for this, but that's
+up to you.
 
 ### Using conventional commits?
 
