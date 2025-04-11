@@ -77,6 +77,37 @@ internal class Tests :
                     newResult.lineSequence().find { it.matches(".*1.2.4$".toRegex()) } shouldNotBe null
                 }
             }
+            "git tagged first release commit with release task" {
+                val workingDirectory =
+                    configuredPlugin(
+                        """
+                        computeReleaseVersion.set(
+                            project.tasks.named("release").map {
+                                project.gradle.taskGraph.hasTask(it)
+                            }
+                        )
+                        """.trimIndent()
+                    ) {
+                        initGit()
+                    }
+                val result = workingDirectory.runGradle()
+                println(result)
+                val expectedVersion = "0.1.0"
+                result.lines().any { it.endsWith(expectedVersion) } shouldBe false
+                val newResult = workingDirectory.runGradle("release", "printGitSemVer", "--stacktrace")
+                println(newResult)
+                newResult.lines().any { it.endsWith(expectedVersion) } shouldBe true
+            }
+            "git tagged release commit" {
+                val result =
+                    configuredPlugin("computeReleaseVersion.set(true)") {
+                        initGitWithTag()
+                        runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+                    }.runGradle()
+                println(result)
+                val expectedVersion = "1.2.4"
+                result.lines().any { it.endsWith(expectedVersion) } shouldBe true
+            }
             "manual assignment of version" {
                 val workingDirectory = configuredPlugin("assignGitSemanticVersion()")
                 val result = workingDirectory.runGradle()
@@ -234,6 +265,7 @@ internal class Tests :
                     plugins {
                         id("org.danilopianini.git-semver")
                     }
+                    project.tasks.register("release")
                     gitSemVer {
                         $pluginConfiguration
                     }

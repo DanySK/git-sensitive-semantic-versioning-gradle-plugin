@@ -25,6 +25,7 @@ import kotlin.time.toJavaDuration
  * - [developmentCounterLength], how many digits to use for the counter
  * - [enforceSemanticVersioning], whether the system should fail or just warn
  *      in case a non-SemVer compatible version gets produced
+ * - [computeReleaseVersion], determines whether the version is to be calculated for the release or pre-release (default behavior)
  * - [preReleaseSeparator], how to separate the pre-relase information.
  *      Changing this value may generate non-SemVer-compatible versions.
  * - [buildMetadataSeparator], how to separate the pre-relase information.
@@ -53,6 +54,7 @@ constructor(
     val maxVersionLength: Property<Int> = objectFactory.propertyWithDefault(Int.MAX_VALUE),
     val developmentCounterLength: Property<Int> = objectFactory.propertyWithDefault(2),
     val enforceSemanticVersioning: Property<Boolean> = objectFactory.propertyWithDefault(true),
+    val computeReleaseVersion: Property<Boolean> = objectFactory.propertyWithDefault(false),
     val preReleaseSeparator: Property<String> = objectFactory.propertyWithDefault("-"),
     val buildMetadataSeparator: Property<String> = objectFactory.propertyWithDefault("+"),
     val distanceCounterRadix: Property<Int> = objectFactory.propertyWithDefault(DEFAULT_RADIX),
@@ -135,8 +137,15 @@ constructor(
             null -> {
                 val base = computeMinVersion()
                 val identifier = noTagIdentifier.orElse("").get()
+                val computeReleaseVersion = computeReleaseVersion.get()
                 val separator = if (identifier.isBlank()) "" else preReleaseSeparator.get()
-                return "$base$separator$identifier${buildMetadataSeparator.get()}$hash"
+                val buildSeparator = buildMetadataSeparator.get()
+
+                if (computeReleaseVersion) {
+                    return "$base".take(maxVersionLength.get())
+                } else {
+                    return "$base$separator$identifier$buildSeparator$hash".take(maxVersionLength.get())
+                }
             }
 
             else -> {
@@ -169,6 +178,7 @@ constructor(
                             )?.lines().orEmpty()
                         val currentVersion = updateStrategy(lastCommits).incrementVersion(base)
                         val devString = developmentIdentifier.get()
+                        val computeReleaseVersion = computeReleaseVersion.get()
                         val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
                         val distanceString =
                             distance.withRadix(
@@ -176,8 +186,13 @@ constructor(
                                 developmentCounterLength.get(),
                             )
                         val buildSeparator = buildMetadataSeparator.get()
-                        "$currentVersion$separator$devString$distanceString$buildSeparator$hash"
-                            .take(maxVersionLength.get())
+
+                        if (computeReleaseVersion) {
+                            return "$currentVersion".take(maxVersionLength.get())
+                        } else {
+                            return "$currentVersion$separator$devString$distanceString$buildSeparator$hash"
+                                .take(maxVersionLength.get())
+                        }
                     }
                 }
             }
