@@ -25,7 +25,8 @@ import kotlin.time.toJavaDuration
  * - [developmentCounterLength], how many digits to use for the counter
  * - [enforceSemanticVersioning], whether the system should fail or just warn
  *      in case a non-SemVer compatible version gets produced
- * - [computeReleaseVersion], determines whether the version is to be calculated for the release or pre-release (default behavior)
+ * - [computeReleaseVersion], determines whether the version is to be calculated for the release or pre-release
+ *      (default behavior)
  * - [preReleaseSeparator], how to separate the pre-relase information.
  *      Changing this value may generate non-SemVer-compatible versions.
  * - [buildMetadataSeparator], how to separate the pre-relase information.
@@ -142,9 +143,9 @@ constructor(
                 val buildSeparator = buildMetadataSeparator.get()
 
                 if (computeReleaseVersion) {
-                    return "$base".take(maxVersionLength.get())
+                    "$base".take(maxVersionLength.get())
                 } else {
-                    return "$base$separator$identifier$buildSeparator$hash".take(maxVersionLength.get())
+                    "$base$separator$identifier$buildSeparator$hash".take(maxVersionLength.get())
                 }
             }
 
@@ -188,9 +189,9 @@ constructor(
                         val buildSeparator = buildMetadataSeparator.get()
 
                         if (computeReleaseVersion) {
-                            return "$currentVersion".take(maxVersionLength.get())
+                            "$currentVersion".take(maxVersionLength.get())
                         } else {
-                            return "$currentVersion$separator$devString$distanceString$buildSeparator$hash"
+                            "$currentVersion$separator$devString$distanceString$buildSeparator$hash"
                                 .take(maxVersionLength.get())
                         }
                     }

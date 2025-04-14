@@ -86,7 +86,7 @@ internal class Tests :
                                 project.gradle.taskGraph.hasTask(it)
                             }
                         )
-                        """.trimIndent()
+                        """.trimIndent(),
                     ) {
                         initGit()
                     }
