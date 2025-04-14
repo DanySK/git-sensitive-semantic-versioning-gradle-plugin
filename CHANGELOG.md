@@ -1,3 +1,19 @@
+## [5.1.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/5.0.0...5.1.0) (2025-04-14)
+
+### Features
+
+* add computeReleaseVersion property to support release versions ([#910](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/910)) ([8284517](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/82845177ac9102bf5188af51e2ee8457299d789f))
+
+### Dependency updates
+
+* **deps:** update plugin org.gradle.toolchains.foojay-resolver-convention to v0.10.0 ([#909](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/909)) ([2ed04ef](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/2ed04efdf837f6248d7e37357d62c2e7cb1b0285))
+
+### Build and continuous integration
+
+* **deps:** update actions/setup-node action to v4.4.0 ([#911](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/911)) ([4827a02](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/4827a02685d98ea531bb7cb30601379416f88604))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.7.16 ([#908](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/908)) ([4de2b3a](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/4de2b3a944e0b3fb8082d03ff90c58c1df19b52c))
+* **deps:** update dependency windows github actions runner to v2025 ([#907](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/907)) ([bcd87e7](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/bcd87e799cf807731ad154308040ac0c067f5226))
+
 ## [5.0.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/4.0.5...5.0.0) (2025-04-09)
 
 ### ⚠ BREAKING CHANGES
