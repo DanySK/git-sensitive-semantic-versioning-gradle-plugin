@@ -1,3 +1,9 @@
+## [5.1.1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/5.1.0...5.1.1) (2025-04-14)
+
+### Bug Fixes
+
+* **ci:** fix the release task name ([9b18cd6](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/9b18cd6982a808ebf87bab28429cc56898cecb1b))
+
 ## [5.1.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/5.0.0...5.1.0) (2025-04-14)
 
 ### Features
