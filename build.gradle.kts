@@ -1,7 +1,6 @@
 @file:Suppress("SuspiciousCollectionReassignment")
 
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION as KOTLIN_VERSION
 
 plugins {
@@ -54,6 +53,12 @@ dependencies {
     testImplementation(libs.bundles.kotlin.testing)
 }
 
+kotlin {
+    compilerOptions {
+        allWarningsAsErrors = true
+    }
+}
+
 // Enforce Kotlin version coherence
 configurations.matching { it.name != "detekt" }.all {
     resolutionStrategy.eachDependency {
@@ -83,12 +88,6 @@ tasks {
             showStackTraces = true
             showStandardStreams = true
             events(*TestLogEvent.values())
-        }
-    }
-    withType<KotlinCompile> {
-        kotlinOptions {
-            allWarningsAsErrors = true
-            freeCompilerArgs += listOf("-opt-in=kotlin.RequiresOptIn", "-Xinline-classes")
         }
     }
 }
