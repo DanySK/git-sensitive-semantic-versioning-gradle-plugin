@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION as KOTLIN_VERSI
 
 plugins {
     `java-gradle-plugin`
+    groovy
     alias(libs.plugins.dokka)
     alias(libs.plugins.gitSemVer)
     alias(libs.plugins.gradle.plugin.publish)
@@ -37,6 +38,34 @@ gitSemVer {
 repositories {
     mavenCentral()
     gradlePluginPortal()
+}
+
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {}
+
+        val functionalTest by registering(JvmTestSuite::class) {
+            useSpock("2.3-groovy-3.0")
+
+            dependencies {
+                implementation(project())
+            }
+
+            targets {
+                all {
+                    testTask.configure {
+                        shouldRunAfter(test)
+                        project.providers
+                            .systemPropertiesPrefixedBy("spock.")
+                            .get()
+                            .forEach { (key, value) ->
+                                systemProperty(key, value)
+                            }
+                    }
+                }
+            }
+        }
+    }
 }
 
 multiJvm {
@@ -134,5 +163,9 @@ gradlePlugin {
             implementationClass = info.pluginImplementationClass
             tags.set(info.tags)
         }
+        testSourceSets(
+            sourceSets.test.get(),
+            sourceSets.named("functionalTest").get(),
+        )
     }
 }
