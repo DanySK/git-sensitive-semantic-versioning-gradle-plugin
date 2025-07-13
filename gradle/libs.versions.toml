@@ -4,7 +4,7 @@ kotlin = "2.2.0"
 kotest = "6.0.0.M5"
 
 [libraries]
-caffeine = "com.github.ben-manes.caffeine:caffeine:3.2.1"
+caffeine = "com.github.ben-manes.caffeine:caffeine:3.2.2"
 kotest-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
 
