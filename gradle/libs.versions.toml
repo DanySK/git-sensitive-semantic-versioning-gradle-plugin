@@ -1,7 +1,7 @@
 [versions]
 dokka = "2.0.0"
 kotlin = "2.2.0"
-kotest = "6.0.0.M10"
+kotest = "6.0.0.M11"
 
 [libraries]
 caffeine = "com.github.ben-manes.caffeine:caffeine:3.2.2"
