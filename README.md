@@ -14,7 +14,7 @@ The plugin generates the following:
 * "Archeo" versions for the development before initializing git, in the form of `0.1.0-archeo+time`
 * "Pre-development" versions for the development before marking the first release, in the form of `0.1.0-dev+hash`
 * "Stable" versions if a tag is present, in the form `0.1.0`
-* "Development" versions for changes over a tag, in the form `0.1.1-dev01-hash`, with the number after `dev` counting the distance in commits since the last tag.
+* "Development" versions for changes over a tag, in the form `0.1.1-dev01+hash`, with the number after `dev` counting the distance in commits since the last tag.
 
 ## Usage
 
