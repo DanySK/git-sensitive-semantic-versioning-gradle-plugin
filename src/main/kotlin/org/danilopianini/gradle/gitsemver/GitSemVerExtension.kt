@@ -108,7 +108,7 @@ constructor(
                     SemanticVersion.SEM_VER_REGEX_STRING
                 })$""",
             )
-        logger.debug("Reachable commits: $reachableCommits")
+        logger.debug("Reachable commits: {}", reachableCommits)
         return runCommand("git", "for-each-ref", "refs/tags", "--sort=-version:refname")
             ?.lineSequence()
             ?.mapNotNull { tagMatcher.matchEntire(it)?.destructured }
@@ -130,7 +130,7 @@ constructor(
      */
     fun computeVersion(): String {
         val closestTag = findClosestTag()
-        logger.debug("Closest SemVer tag: $closestTag")
+        logger.debug("Closest SemVer tag: {}", closestTag)
         val fullHash = fullHash.get()
         val printCommitCommand = "git rev-parse ${if (fullHash) "" else "--short "}HEAD".split(" ")
         val hash = runCommand(*printCommitCommand.toTypedArray()) ?: System.currentTimeMillis().toString()
