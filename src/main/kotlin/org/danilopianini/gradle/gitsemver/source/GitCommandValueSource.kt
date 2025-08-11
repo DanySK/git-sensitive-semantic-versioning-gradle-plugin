@@ -1,14 +1,14 @@
 package org.danilopianini.gradle.gitsemver.source
 
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.nio.charset.Charset
+import javax.inject.Inject
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.ValueSource
 import org.gradle.api.provider.ValueSourceParameters
 import org.gradle.process.ExecOperations
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.nio.charset.Charset
-import javax.inject.Inject
 
 /**
  * Value source for reading results of external git commands.

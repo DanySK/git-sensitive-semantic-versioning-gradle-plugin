@@ -1,10 +1,10 @@
 package org.danilopianini.gradle.gitsemver
 
+import javax.inject.Inject
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ProviderFactory
-import javax.inject.Inject
 
 /**
  * A Plugin for computing the project version based on the status of the local git repository.
