@@ -1,6 +1,9 @@
 package org.danilopianini.gradle.gitsemver
 
 import com.github.benmanes.caffeine.cache.Caffeine
+import java.io.File
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 import org.danilopianini.gradle.gitsemver.source.GitCommandValueSource
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
@@ -8,9 +11,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.slf4j.Logger
-import java.io.File
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.toJavaDuration
 
 /**
  * The plugin extension with the DSL.
