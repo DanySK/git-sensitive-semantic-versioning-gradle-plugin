@@ -6,10 +6,13 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
-import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.UnexpectedBuildFailure
+import java.nio.file.Path
 import java.util.concurrent.TimeUnit
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.createFile
+import kotlin.io.path.createTempDirectory
 
 internal class Tests :
     StringSpec(
@@ -190,17 +193,16 @@ internal class Tests :
         },
     ) {
     companion object {
-        fun folder(closure: TemporaryFolder.() -> Unit) = TemporaryFolder().apply {
-            create()
-            closure()
-        }
+        fun folder(closure: Path.() -> Unit) = createTempDirectory("gitSemVerTest").apply(closure)
 
-        fun TemporaryFolder.file(name: String, content: () -> String) = newFile(name).writeText(content().trimIndent())
+        fun Path.file(name: String, content: () -> String) = resolve(name)
+            .createFile()
+            .toFile().writeText(content().trimIndent())
 
-        fun TemporaryFolder.runCommand(vararg command: String, wait: Long = 10) {
+        fun Path.runCommand(vararg command: String, wait: Long = 10) {
             val process =
                 ProcessBuilder(*command)
-                    .directory(root)
+                    .directory(toFile())
                     .redirectError(ProcessBuilder.Redirect.INHERIT)
                     .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                     .apply {
@@ -208,7 +210,7 @@ internal class Tests :
                         environment().let { env ->
                             env.clear()
                             env["PATH"] = System.getenv("PATH")
-                            env["HOME"] = root.resolve(".git/.home.d/").absolutePath
+                            env["HOME"] = resolve(".git/.home.d/").absolutePathString()
                             env["GIT_CONFIG_NOSYSTEM"] = "true"
                         }
                     }
@@ -219,12 +221,12 @@ internal class Tests :
             }
         }
 
-        fun TemporaryFolder.runCommand(command: String, wait: Long = 10) = runCommand(
+        fun Path.runCommand(command: String, wait: Long = 10) = runCommand(
             *command.split(" ").toTypedArray(),
             wait = wait,
         )
 
-        fun TemporaryFolder.initGit() {
+        fun Path.initGit() {
             runCommand("git init")
             runCommand("git add .")
             runCommand("git config user.name gitsemver")
@@ -234,29 +236,25 @@ internal class Tests :
             runCommand("git", "commit", "-m", "\"Test commit\"")
         }
 
-        fun TemporaryFolder.initGitWithTag() {
+        fun Path.initGitWithTag() {
             initGit()
             runCommand("git", "tag", "-a", "1.2.3", "-m", "\"test\"")
         }
 
-        fun TemporaryFolder.initGitWithPrefixedTag() {
+        fun Path.initGitWithPrefixedTag() {
             initGit()
             runCommand("git", "tag", "-a", "v1.2.3", "-m", "\"test\"")
         }
 
-        fun TemporaryFolder.runGradle(vararg arguments: String = arrayOf("printGitSemVer", "--stacktrace")): String =
-            GradleRunner
-                .create()
-                .withProjectDir(root)
-                .withPluginClasspath()
-                .withArguments(*arguments)
-                .build()
-                .output
+        fun Path.runGradle(vararg arguments: String = arrayOf("printGitSemVer", "--stacktrace")): String = GradleRunner
+            .create()
+            .withProjectDir(toFile())
+            .withPluginClasspath()
+            .withArguments(*arguments)
+            .build()
+            .output
 
-        fun configuredPlugin(
-            pluginConfiguration: String = "",
-            otherChecks: TemporaryFolder.() -> Unit = {},
-        ): TemporaryFolder = folder {
+        fun configuredPlugin(pluginConfiguration: String = "", otherChecks: Path.() -> Unit = {}): Path = folder {
             file("settings.gradle") { "rootProject.name = 'testproject'" }
             file("build.gradle.kts") {
                 """
