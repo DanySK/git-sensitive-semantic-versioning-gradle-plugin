@@ -1,3 +1,31 @@
+## [6.0.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/5.1.8...6.0.0) (2025-08-11)
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Java older than 17. Java 17 will be required by Gradle 9 (#1006)
+
+### Features
+
+* drop support for Java older than 17. Java 17 will be required by Gradle 9 ([#1006](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1006)) ([28264c0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/28264c00f9ffc45fa44a316c8ca30f37dabc2ca6))
+
+### Dependency updates
+
+* **core-deps:** update dependency gradle to v9 ([#988](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/988)) ([14755dd](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/14755dd14122d39d818e915ee470c01c569c96cd))
+* **deps:** update plugin gitsemver to v5.1.8 ([#1010](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1010)) ([c9da5da](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c9da5dae84f6448cb2dee9fb4776a76c675a5659))
+
+### Performance improvements
+
+* avoid string concatenation in logger prints ([#1005](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1005)) ([82c51fc](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/82c51fca1b7bc6af4f106d427b344ede064bea44))
+
+### Build and continuous integration
+
+* **deps:** update danysk/action-checkout action to v0.2.24 ([#1002](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1002)) ([cb07969](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/cb079699263dd9b301e3bd2ca8d7293ea99b6722))
+* drop the use of deprecated `KotlinCompilerVersion.VERSION` ([#1004](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1004)) ([dd70ab9](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/dd70ab9dfaa50cddaf082631e8d940bb218f8275))
+
+### Style improvements
+
+* import the linting rules from AlchemistSimulator/alchemist ([#1008](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1008)) ([6af5d78](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6af5d78d4561d1a04d928fdda269248664bfda60))
+
 ## [5.1.8](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/5.1.7...5.1.8) (2025-08-11)
 
 ### Dependency updates
