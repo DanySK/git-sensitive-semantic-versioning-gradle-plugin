@@ -40,7 +40,7 @@ constructor(
     }
 
     private companion object {
-        private inline fun <reified T> Project.createExtension(name: String, vararg args: Any?): T =
+        private inline fun <reified T : Any> Project.createExtension(name: String, vararg args: Any): T =
             project.extensions.create(name, T::class.java, *args)
     }
 }

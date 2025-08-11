@@ -281,7 +281,7 @@ constructor(
 
         private const val DEFAULT_RADIX = 36
 
-        private inline fun <reified T> ObjectFactory.propertyWithDefault(default: T): Property<T> =
+        private inline fun <reified T : Any> ObjectFactory.propertyWithDefault(default: T): Property<T> =
             property(T::class.java).apply { convention(default) }
 
         private fun Long.withRadix(radix: Int, digits: Int? = null) = toString(radix).let {
