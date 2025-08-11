@@ -7,7 +7,7 @@ import org.gradle.api.provider.ProviderFactory
 import javax.inject.Inject
 
 /**
- * A Plugin for comuting the project version based on the status of the local git repository.
+ * A Plugin for computing the project version based on the status of the local git repository.
  */
 class GitSemVer
 @Inject
