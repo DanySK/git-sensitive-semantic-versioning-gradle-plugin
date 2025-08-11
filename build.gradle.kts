@@ -1,7 +1,6 @@
 @file:Suppress("SuspiciousCollectionReassignment")
 
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION as KOTLIN_VERSION
 
 plugins {
     `java-gradle-plugin`
@@ -56,16 +55,6 @@ dependencies {
 kotlin {
     compilerOptions {
         allWarningsAsErrors = true
-    }
-}
-
-// Enforce Kotlin version coherence
-configurations.matching { it.name != "detekt" }.all {
-    resolutionStrategy.eachDependency {
-        if (requested.group == "org.jetbrains.kotlin" && requested.name.startsWith("kotlin")) {
-            useVersion(KOTLIN_VERSION)
-            because("All Kotlin modules should use the same version, and compiler uses $KOTLIN_VERSION")
-        }
     }
 }
 
