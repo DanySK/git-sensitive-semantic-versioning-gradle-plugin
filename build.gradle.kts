@@ -40,7 +40,7 @@ repositories {
 }
 
 multiJvm {
-    jvmVersionForCompilation = 11
+    jvmVersionForCompilation = 17
     maximumSupportedJvmVersion = latestJavaSupportedByGradle
 }
 
