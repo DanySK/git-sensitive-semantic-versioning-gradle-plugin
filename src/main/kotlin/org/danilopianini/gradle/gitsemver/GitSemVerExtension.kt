@@ -27,9 +27,9 @@ import kotlin.time.toJavaDuration
  *      in case a non-SemVer compatible version gets produced
  * - [computeReleaseVersion], determines whether the version is to be calculated for the release or pre-release
  *      (default behavior)
- * - [preReleaseSeparator], how to separate the pre-relase information.
+ * - [preReleaseSeparator], how to separate the pre-release information.
  *      Changing this value may generate non-SemVer-compatible versions.
- * - [buildMetadataSeparator], how to separate the pre-relase information.
+ * - [buildMetadataSeparator], how to separate the pre-release information.
  *      Some destinations (e.g., the Gradle Plugin Portal) do not support the default value '+'.
  *      A reasonable alternative is using '-', lifting the build metadata to a pre-release segment.
  * - [distanceCounterRadix], the radix for the commit counter. Defaults to base 36. Bases from 2 to 36 allowed.
@@ -37,7 +37,7 @@ import kotlin.time.toJavaDuration
  *      (e.g., v1.0.0 is prefixed with "v").
  * - [includeLightweightTags], to be used in case lightweight tags should be considered.
  * - [forceVersionPropertyName], the name of the property that, if set, will force the plugin to use the specified
- *      version. By default the property name is "forceVersion".
+ *      version. By default, the property name is "forceVersion".
  */
 open class GitSemVerExtension
 @JvmOverloads
