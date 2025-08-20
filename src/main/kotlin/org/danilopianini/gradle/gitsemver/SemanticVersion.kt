@@ -1,5 +1,7 @@
 package org.danilopianini.gradle.gitsemver
 
+import java.math.BigInteger
+
 /**
  * A class representing semantic versions:
  * [major].[minor].[patch]-[preRelease]+[buildMetadata].
@@ -63,14 +65,12 @@ data class SemanticVersion(
      * - Example: 1.0.0 < 2.0.0 < 2.1.0 < 2.1.1.
      *
      */
-    override fun compareTo(other: SemanticVersion): Int = when {
-        major != other.major -> major.compareTo(other.major)
-        minor != other.minor -> minor.compareTo(other.minor)
-        patch != other.patch -> patch.compareTo(other.patch)
-        else ->
-            preRelease.compareTo(other.preRelease).takeUnless { it == 0 }
-                ?: buildMetadata.compareTo(buildMetadata)
-    }
+    override fun compareTo(other: SemanticVersion): Int = compareBy<SemanticVersion> { it.major }
+        .thenBy { it.minor }
+        .thenBy { it.patch }
+        .thenBy { it.preRelease }
+        .thenBy { it.buildMetadata }
+        .compare(this, other)
 
     /**
      * Constants and utilities for working with semantic versions.
@@ -97,7 +97,7 @@ data class SemanticVersion(
          * Parses a [String] producing a [SemanticVersion], or null if the version can't be parsed.
          */
         fun fromStringOrNull(input: String): SemanticVersion? = semVerRegex.matchEntire(input)?.let { match ->
-            val (major, minor, patch, preRelease, buildInfo) = match.destructured
+            val (major, minor, patch, preRelease, buildInfo: String) = match.destructured
             SemanticVersion(major, minor, patch, preRelease, buildInfo)
         }
     }
@@ -122,8 +122,9 @@ data class PreReleaseIdentifier(
             .split(".")
             .filter { it.isNotBlank() }
             .map { segment ->
-                segment
-                    .toULongOrNull()
+                // leading zeroes indicate an alphanumeric identifier
+                segment.takeIf { segment == "0" || segment.first() in '1'..'9' }
+                    ?.toBigIntegerOrNull()
                     ?.let { DotSeparatedIdentifier.NumericIdentifier(it) }
                     ?: DotSeparatedIdentifier.AlphanumericIdentifier(segment)
             },
@@ -134,10 +135,8 @@ data class PreReleaseIdentifier(
      */
     fun isEmpty(): Boolean = segments.isEmpty()
 
-    override fun toString() = segments
-        .takeIf { it.isNotEmpty() }
-        ?.joinToString(separator = ".", prefix = prefix)
-        .orEmpty()
+    override fun toString() = segments.takeIf { it.isNotEmpty() }
+        ?.joinToString(separator = ".", prefix = prefix).orEmpty()
 
     /*
      * Precedence for two pre-release versions with the same major, minor, and patch version MUST be determined by
@@ -152,12 +151,15 @@ data class PreReleaseIdentifier(
      *   1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta
      *   < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0.
      */
-    override fun compareTo(other: PreReleaseIdentifier): Int = segments
-        .asSequence()
-        .zip(other.segments.asSequence())
-        .map { it.first.compareTo(it.second) }
-        .find { it != 0 }
-        ?: segments.size.compareTo(other.segments.size)
+    override fun compareTo(other: PreReleaseIdentifier): Int = when {
+        this.isEmpty() && other.isEmpty() -> 0
+        segments.isEmpty() -> 1 // this is empty, other is not
+        other.segments.isEmpty() -> -1 // this is not empty, other is
+        else -> segments.asSequence().zip(other.segments.asSequence())
+            .map { (thisSegment, otherSegment) -> thisSegment.compareTo(otherSegment) }
+            .firstOrNull { it != 0 }
+            ?: compareValues(segments.size, other.segments.size)
+    }
 
     /**
      * A dot-separated identifier.
@@ -166,7 +168,7 @@ data class PreReleaseIdentifier(
         /**
          * Numeric [identifier].
          */
-        data class NumericIdentifier(val identifier: ULong) : DotSeparatedIdentifier() {
+        data class NumericIdentifier(val identifier: BigInteger) : DotSeparatedIdentifier() {
             override fun toString() = identifier.toString()
         }
 
@@ -190,13 +192,13 @@ data class PreReleaseIdentifier(
             is NumericIdentifier -> {
                 when (other) {
                     is NumericIdentifier -> identifier.compareTo(other.identifier)
-                    else -> -1
+                    is AlphanumericIdentifier -> -1
                 }
             }
             is AlphanumericIdentifier -> {
                 when (other) {
                     is AlphanumericIdentifier -> identifier.compareTo(other.identifier)
-                    else -> 1
+                    is NumericIdentifier -> 1
                 }
             }
         }
