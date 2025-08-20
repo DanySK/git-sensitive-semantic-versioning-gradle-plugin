@@ -10,9 +10,9 @@ import java.util.regex.Pattern
 @Use([StringExtensions, ProcessExtensions])
 class GitSemVerFunctionalTest extends GradleBuildFunctionalTest {
 
-    public static final Pattern ARCHEO_TIME = ~/0\.1\.0-archeo\+[0-9]+/
-    public static final Pattern ARCHEO_HASH = ~/0\.1\.0-archeo\+[0-9a-f]{7}/
-    public static final Pattern DEV_HASH = ~/0\.1\.1-dev01\+[0-9a-f]{7}/
+    static final Pattern ARCHEO_TIME = ~/0\.1\.0-archeo\+[0-9]+/
+    static final Pattern ARCHEO_HASH = ~/0\.1\.0-archeo\+[0-9a-f]{7}/
+    static final Pattern DEV_HASH = ~/0\.1\.1-dev01\+[0-9a-f]{7}/
 
     def setup() {
         buildFile << '''\
