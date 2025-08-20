@@ -4,6 +4,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     `java-gradle-plugin`
+    groovy
     alias(libs.plugins.dokka)
     alias(libs.plugins.gitSemVer)
     alias(libs.plugins.gradle.plugin.publish)
@@ -38,16 +39,35 @@ repositories {
     gradlePluginPortal()
 }
 
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class)
+        val functionalTest by registering(JvmTestSuite::class) {
+            useSpock(libs.versions.spock)
+            dependencies { implementation(project()) }
+            targets {
+                all {
+                    testTask.configure {
+                        shouldRunAfter(test)
+                        project.providers.systemPropertiesPrefixedBy("spock.").get().forEach { (key, value) ->
+                            systemProperty(key, value)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 multiJvm {
-    jvmVersionForCompilation = 17
+    jvmVersionForCompilation = oldestJavaSupportedByGradle
     maximumSupportedJvmVersion = latestJavaSupportedByGradle
 }
 
 dependencies {
     api(gradleApi())
     api(gradleKotlinDsl())
-    implementation(kotlin("stdlib-jdk8"))
-    implementation(libs.caffeine)
+    implementation(kotlin("stdlib"))
     testImplementation(gradleTestKit())
     testImplementation(kotlin("test"))
     testImplementation(libs.bundles.kotlin.testing)
@@ -101,6 +121,12 @@ publishing {
                         url.set("http://www.danilopianini.org/")
                     }
                 }
+                contributors {
+                    contributor {
+                        name = "Piotr Minkina"
+                        url = "http://www.piotrminkina.pl"
+                    }
+                }
             }
         }
     }
@@ -124,5 +150,9 @@ gradlePlugin {
             implementationClass = info.pluginImplementationClass
             tags.set(info.tags)
         }
+        testSourceSets(
+            sourceSets.test.get(),
+            sourceSets.named("functionalTest").get(),
+        )
     }
 }

@@ -9,9 +9,7 @@ import org.gradle.api.provider.ProviderFactory
 /**
  * A Plugin for computing the project version based on the status of the local git repository.
  */
-class GitSemVer
-@Inject
-constructor(
+class GitSemVer @Inject constructor(
     private val providerFactory: ProviderFactory,
     private val objectFactory: ObjectFactory,
 ) : Plugin<Project> {
@@ -25,15 +23,11 @@ constructor(
             version,
             logger,
         )
-        afterEvaluate {
-            extension.assignGitSemanticVersion()
-        }
+        project.version = extension.gitSensitiveSemanticVersion
         tasks.register("printGitSemVer") {
-            val forceVersion = properties[extension.forceVersionPropertyName.get()]
             it.doLast {
                 println(
-                    "Version computed by ${GitSemVer::class.java.simpleName}: " +
-                        "${forceVersion ?: extension.computeVersion()}",
+                    "Version computed by ${GitSemVer::class.java.simpleName}: ${extension.gitSensitiveSemanticVersion}",
                 )
             }
         }
