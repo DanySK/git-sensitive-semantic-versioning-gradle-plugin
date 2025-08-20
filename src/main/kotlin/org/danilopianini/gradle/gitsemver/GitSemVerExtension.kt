@@ -222,8 +222,7 @@ constructor(
                     }
                 }
             }
-        }.also { println("Pre-cut: XXX${it}XXX") }.take(maxVersionLength.get())
-            .also { println("Post-cut: XXX${it}XXX") }
+        }.take(maxVersionLength.get()).also { logger.info("Version computed as: {}", it) }
     }
 
     /**
