@@ -1,3 +1,17 @@
+## [7.0.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/6.0.2...7.0.0) (2025-08-20)
+
+### ⚠ BREAKING CHANGES
+
+* change the overall behavior of the plugin, fixing all bugs discovered by @piotrminkina in #916 (#1029)
+
+### Dependency updates
+
+* **deps:** update plugin gitsemver to v6.0.2 ([#1031](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1031)) ([71989ab](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/71989abc28873d4bad35b6de6b7fcda070cef945))
+
+### Bug Fixes
+
+* change the overall behavior of the plugin, fixing all bugs discovered by [@piotrminkina](https://github.com/piotrminkina) in [#916](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/916) ([#1029](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1029)) ([b7be9a0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/b7be9a01f574941a9bf90497b7e3e1c3ef8108ea))
+
 ## [6.0.2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/6.0.1...6.0.2) (2025-08-20)
 
 ### Dependency updates
