@@ -76,7 +76,6 @@ dependencies {
     api(gradleApi())
     api(gradleKotlinDsl())
     implementation(kotlin("stdlib-jdk8"))
-    implementation(libs.caffeine)
     testImplementation(gradleTestKit())
     testImplementation(kotlin("test"))
     testImplementation(libs.bundles.kotlin.testing)
