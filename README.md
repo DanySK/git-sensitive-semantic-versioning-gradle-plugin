@@ -12,7 +12,7 @@ It then uses git to compute the version, in terms of both git hash and distance 
 The plugin generates the following:
 
 * "Archeo" versions for the development before initializing git, in the form of `0.1.0-archeo+time`
-* "Pre-development" versions for the development before marking the first release, in the form of `0.1.0-dev+hash`
+* "Pre-development" versions for the development before marking the first release, in the form of `0.1.0-archeo+hash`
 * "Stable" versions if a tag is present, in the form `0.1.0`
 * "Development" versions for changes over a tag, in the form `0.1.1-dev01+hash`, with the number after `dev` counting the distance in commits since the last tag.
 
@@ -22,7 +22,7 @@ The plugin generates the following:
 
 ```kotlin
 plugins {
-    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0"
+    id("org.danilopianini.git-sensitive-semantic-versioning") version "..."
 }
 // Rest of your buildscript using project.version
 ```
@@ -62,19 +62,15 @@ gitSemVer {
 
 ### Manually forcing the version computation early
 
-The plugin sets the project version by scheduling a call to the `assignGitSemanticVersion()` using `project.afterEvaluate`.
-This should be fine for most use cases, but you might need the version of the project to be set early in the configuration phase.
-If so, you can manually call `assignGitSemanticVersion()` from within the plugin configuration block *after* all options have been configured
-(if any configuration was performed):
+The plugin sets the project version by associating it with a special object that computes lazily on the first version read.
+If you want to enforce the version computation early in the configuration phase, you can:
 ```kotlin
 gitSemVer {
     // Your configuration
-    assignGitSemanticVersion()
+    gitSensitiveSemanticVersion.toString() // Forces the version computation
 }
 ```
-
-Inside the configuration block is also available the `computeVersion()` is also available to recompute (but do not set)
-the version.
+Inside the configuration block is also available the `computeVersion()` is also available to recompute the version.
 
 ### Manually force the version
 

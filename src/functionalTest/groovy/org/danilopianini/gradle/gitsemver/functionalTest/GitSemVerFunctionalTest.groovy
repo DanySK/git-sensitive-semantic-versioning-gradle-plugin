@@ -21,7 +21,6 @@ class GitSemVerFunctionalTest extends GradleBuildFunctionalTest {
             }
 
             gitSemVer {
-                assignGitSemanticVersion()
                 enforceSemanticVersioning = false
             }
 

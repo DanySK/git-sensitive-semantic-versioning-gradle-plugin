@@ -1,9 +1,6 @@
 package org.danilopianini.gradle.gitsemver
 
-import com.github.benmanes.caffeine.cache.Caffeine
 import java.io.File
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.toJavaDuration
 import org.danilopianini.gradle.gitsemver.source.GitCommandValueSource
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
@@ -65,10 +62,6 @@ constructor(
     private var updateStrategy: (List<String>) -> UpdateType = { _ -> UpdateType.PATCH },
 ) {
 
-    private val versions = Caffeine.newBuilder()
-        .expireAfterAccess(1.minutes.toJavaDuration())
-        .build<Pair<String, String>, String> { _ -> computeVersion() }
-
     private fun minSemanticVersion(): SemanticVersion = minimumVersion.map {
         checkNotNull(SemanticVersion.fromStringOrNull(it)) {
             "Invalid minimum version does not conform to Semantic Versioning 2.0: $it"
@@ -80,7 +73,7 @@ constructor(
      * Avoid calling this property's `toString()` method during the configuration phase,
      * as it will trigger the computation of the version, which should happen as late as possible.
      */
-    val gitSensitiveSemanticVersion = object {
+    val gitSensitiveSemanticVersion = object : CharSequence {
         val version: String by lazy {
             val forcedVersion = project.properties[forceVersionPropertyName.get()]?.toString()
                 ?.also { forcedVersion ->
@@ -91,31 +84,18 @@ constructor(
                         forceVersionPropertyName.get(),
                     )
                 }
-            val computedVersion = forcedVersion ?: run {
-                val repoLocation = runCommand("git", "rev-parse", "--show-toplevel")
-                val headCommitHash = runCommand("git", "rev-parse", "HEAD")
-                when {
-                    repoLocation != null && headCommitHash != null -> versions[repoLocation to headCommitHash]
-                    else -> {
-                        project.logger.warn(
-                            "Could not detect the git repository location ({}) and the HEAD commit hash ({}). " +
-                                "The version will be forcibly recomputed.",
-                            repoLocation,
-                            headCommitHash,
-                        )
-                        computeVersion()
-                    }
-                }
-            }
+            val computedVersion = forcedVersion ?: computeVersion()
             when (val resultingVersion = SemanticVersion.fromStringOrNull(computedVersion)) {
                 null -> {
-                    val error = "Invalid Semantic Versioning 2.0 version: $resultingVersion"
+                    val error = "Invalid Semantic Versioning 2.0 version: $computedVersion"
                     if (enforceSemanticVersioning.get()) error(error) else logger.warn(error)
                     computedVersion
                 }
                 else -> resultingVersion.toString()
             }
         }
+
+        override val length: Int get() = version.length
 
         override fun equals(other: Any?): Boolean = when (other) {
             is GitSemVerExtension -> toString() == other.toString()
@@ -125,9 +105,14 @@ constructor(
             )
         }
 
+        override fun get(index: Int): Char = version[index]
+
         override fun hashCode(): Int = toString().hashCode()
 
         override fun toString(): String = version
+
+        override fun subSequence(startIndex: Int, endIndex: Int): CharSequence =
+            version.subSequence(startIndex, endIndex)
     }
 
     /**
@@ -157,78 +142,57 @@ constructor(
     /**
      * Finds the closest tag compatible with Semantic Version, or returns null if none is available.
      */
-    fun findClosestTag(): SemanticVersion? {
-        val reachableCommits = runCommand("git", "rev-list", "HEAD")?.lines()?.toSet().orEmpty()
-        val tagMatcher = Regex(
-            """^(\w*)\s+(${
-                if (includeLightweightTags.get()) "commit|" else ""
-            }tag)\s+refs/tags/${
-                versionPrefix.get()
-            }(${
-                SemanticVersion.SEM_VER_REGEX_STRING
-            })$""",
-        )
-        logger.debug("Reachable commits: {}", reachableCommits)
-        return runCommand("git", "for-each-ref", "refs/tags", "--sort=-version:refname")
-            ?.lineSequence()
-            ?.mapNotNull { tagMatcher.matchEntire(it)?.destructured }
-            ?.mapNotNull { (commit, type: String, semVer, major, minor, patch, option, build) ->
-                val actualRef = when (type) {
-                    "commit" -> commit
-                    "tag" -> runCommand("git", "rev-list", "-n1", versionPrefix.get() + semVer)
-                    else -> error("Unknown tag ref type '$type' (expected 'tag' or 'commit')")
-                }
-                actualRef.takeIf { it in reachableCommits }?.let {
-                    SemanticVersion(major, minor, patch, option, build)
-                }
-            }?.firstOrNull()
+    fun latestReachableVersion(): SemanticVersion? {
+        val reachableTags = when {
+            includeLightweightTags.get() ->
+                runCommand("git", "tag", "--merged", "HEAD")
+            else ->
+                runCommand("git", "for-each-ref", "--merged", "HEAD", "--format='%(refname:short)'", "refs/tags")
+        }
+        logger.info("Reachable tags: {}", reachableTags)
+        return reachableTags?.lineSequence()
+            ?.filter { it.startsWith(versionPrefix.get()) }
+            ?.map { it.removePrefix(versionPrefix.get()) }
+            ?.mapNotNull { SemanticVersion.fromStringOrNull(it) }
+            ?.maxOrNull()
     }
 
     /**
      * Computes a valid Semantic Versioning 2.0 version based on the status of the current git repository.
      */
     fun computeVersion(): String {
-        val closestTag = findClosestTag()
-        logger.debug("Closest SemVer tag: {}", closestTag)
-        val fullHash = fullHash.get()
-        val printCommitCommand = "git log -1 --format=%${if (fullHash) "H" else "h"}".split(" ")
-        val hash = runCommand(*printCommitCommand.toTypedArray())
-            ?.takeIf { it.isNotBlank() }
-            ?.also {
-                val regex = "[0-9a-f]{${if (fullHash) GIT_HASH_LENGTH else GIT_SHORT_HASH_LENGTH}}"
-                check(it.matches(regex.toRegex())) {
-                    "Invalid commit hash (should have matched $regex): $it"
-                }
-            }
-            ?: System.currentTimeMillis().toString()
-        return when (closestTag) {
+        val latestReachableVersion = latestReachableVersion()
+        logger.debug("Closest Semantic Version: {}", latestReachableVersion)
+        val hash: String = hashOrTimeStamp()
+        return when (latestReachableVersion) {
             null -> {
-                /**
+                /*
                  * No tags found, the version is the minimum version, with the hash as build metadata.
                  */
                 val base = computeMinVersion()
-                val identifier = noTagIdentifier.getOrElse("")
-                val computeReleaseVersion = computeReleaseVersion.get()
-                val separator = if (identifier.isBlank()) "" else preReleaseSeparator.get()
-                val buildSeparator = buildMetadataSeparator.get()
-                if (computeReleaseVersion) {
-                    "$base".take(maxVersionLength.get())
-                } else {
-                    "$base$separator$identifier$buildSeparator$hash".take(maxVersionLength.get())
+                when {
+                    computeReleaseVersion.get() -> base.toString()
+                    else -> {
+                        val preRelease = noTagIdentifier.get()
+                            .takeIf { it.isNotBlank() }
+                            ?.let { preReleaseSeparator.get() + it }
+                            .orEmpty()
+                        "$base${preRelease}${buildMetadataSeparator.get()}$hash"
+                    }
                 }
             }
             else -> {
-                if (!closestTag.buildMetadata.isEmpty()) {
-                    logger.warn("Build metadata of closest tag $closestTag will be ignored.")
+                if (!latestReachableVersion.buildMetadata.isEmpty()) {
+                    logger.warn("Build metadata of closest tag $latestReachableVersion will be ignored.")
                 }
-                val commitRange = "${versionPrefix.get()}$closestTag..HEAD"
+                val commitRange = "${versionPrefix.get()}$latestReachableVersion..HEAD"
                 val distance = runCommand("git", "rev-list", "--count", commitRange)?.toLong()
                 requireNotNull(distance) {
                     "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
                         "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
                 }
                 when (distance) {
-                    0L -> closestTag.toString()
+                    0L -> latestReachableVersion.toString()
                     else -> {
                         val lastCommits = runCommand(
                             "git",
@@ -239,34 +203,27 @@ constructor(
                             "--format=%s",
                         )?.lines().orEmpty()
                         val currentVersion = maxOf(
-                            updateStrategy(lastCommits).incrementVersion(closestTag),
+                            updateStrategy(lastCommits).incrementVersion(latestReachableVersion),
                             minSemanticVersion(),
                         ).withoutBuildMetadata()
-                        val devString = developmentIdentifier.get()
-                        val computeReleaseVersion = computeReleaseVersion.get()
-                        val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
-                        val distanceString = distance.withRadix(
-                            distanceCounterRadix.get(),
-                            developmentCounterLength.get(),
-                        )
-                        val buildSeparator = buildMetadataSeparator.get()
-                        if (computeReleaseVersion) {
-                            "$currentVersion".take(maxVersionLength.get())
-                        } else {
-                            "$currentVersion$separator$devString$distanceString$buildSeparator$hash"
-                                .take(maxVersionLength.get())
+                        when {
+                            computeReleaseVersion.get() -> currentVersion.toString()
+                            else -> {
+                                val devString = developmentIdentifier.get()
+                                val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
+                                val distanceString = distance.withRadix(
+                                    distanceCounterRadix.get(),
+                                    developmentCounterLength.get(),
+                                )
+                                val buildSeparator = buildMetadataSeparator.get()
+                                "$currentVersion$separator$devString$distanceString$buildSeparator$hash"
+                            }
                         }
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * modifies the version of the current project, assigning the value computed by [computeVersion].
-     */
-    fun assignGitSemanticVersion() {
-        project.version = gitSensitiveSemanticVersion
+        }.also { println("Pre-cut: XXX${it}XXX") }.take(maxVersionLength.get())
+            .also { println("Post-cut: XXX${it}XXX") }
     }
 
     /**
@@ -309,6 +266,24 @@ constructor(
                 params.directory.set(projectDir)
             }
         }
+
+    private fun hashOrTimeStamp(): String {
+        val printCommitCommand = "git log -1 --format=%${if (fullHash.get()) "H" else "h"}".split(" ")
+        val hash: String = runCommand(*printCommitCommand.toTypedArray())
+            ?.takeIf { it.isNotBlank() }
+            ?.trim()
+            ?.also {
+                val regex = "[0-9a-f]{$GIT_SHORT_HASH_LENGTH,$GIT_HASH_LENGTH}"
+                check(it.matches(regex.toRegex())) {
+                    "Invalid commit hash (should have matched $regex): $it"
+                }
+            }
+            ?: System.currentTimeMillis().toString()
+        check(hash.none { it.isWhitespace() }) {
+            "Invalid commit hash/timestamp: $hash (whitespace characters are not allowed)"
+        }
+        return hash
+    }
 
     /**
      * The name of the extension, namely of the DSL entry-point.

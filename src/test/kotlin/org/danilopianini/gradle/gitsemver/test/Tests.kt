@@ -104,7 +104,7 @@ internal class Tests : StringSpec({
         result.lines().any { it.endsWith(expectedVersion) } shouldBe true
     }
     "manual assignment of version" {
-        val workingDirectory = configuredPlugin("assignGitSemanticVersion()")
+        val workingDirectory = configuredPlugin("project.version = gitSensitiveSemanticVersion")
         val result = workingDirectory.runGradle()
         println(result)
         val expectedVersion = "0.1.0-archeo"

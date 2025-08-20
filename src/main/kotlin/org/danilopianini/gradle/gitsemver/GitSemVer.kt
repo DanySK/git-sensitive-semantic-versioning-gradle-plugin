@@ -23,7 +23,7 @@ class GitSemVer @Inject constructor(
             version,
             logger,
         )
-        extension.assignGitSemanticVersion()
+        project.version = extension.gitSensitiveSemanticVersion
         tasks.register("printGitSemVer") {
             it.doLast {
                 println(
