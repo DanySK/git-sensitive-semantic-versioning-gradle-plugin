@@ -2,13 +2,15 @@
 dokka = "2.0.0"
 kotlin = "2.2.10"
 kotest = "6.0.0"
+spock = "2.3-groovy-4.0"
 
 [libraries]
 kotest-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
+spock = { module = "org.spockframework:spock-core", version.ref = "spock" }
 
 [bundles]
-kotlin-testing = [ "kotest-junit5-jvm", "kotest-assertions-core-jvm" ]
+kotlin-testing = [ "kotest-junit5-jvm", "kotest-assertions-core-jvm", "spock" ]
 
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

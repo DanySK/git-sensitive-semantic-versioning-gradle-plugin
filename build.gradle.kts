@@ -41,25 +41,17 @@ repositories {
 
 testing {
     suites {
-        val test by getting(JvmTestSuite::class) {}
-
+        val test by getting(JvmTestSuite::class)
         val functionalTest by registering(JvmTestSuite::class) {
-            useSpock("2.3-groovy-4.0")
-
-            dependencies {
-                implementation(project())
-            }
-
+            useSpock(libs.versions.spock)
+            dependencies { implementation(project()) }
             targets {
                 all {
                     testTask.configure {
                         shouldRunAfter(test)
-                        project.providers
-                            .systemPropertiesPrefixedBy("spock.")
-                            .get()
-                            .forEach { (key, value) ->
-                                systemProperty(key, value)
-                            }
+                        project.providers.systemPropertiesPrefixedBy("spock.").get().forEach { (key, value) ->
+                            systemProperty(key, value)
+                        }
                     }
                 }
             }
@@ -68,14 +60,14 @@ testing {
 }
 
 multiJvm {
-    jvmVersionForCompilation = 17
+    jvmVersionForCompilation = oldestJavaSupportedByGradle
     maximumSupportedJvmVersion = latestJavaSupportedByGradle
 }
 
 dependencies {
     api(gradleApi())
     api(gradleKotlinDsl())
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib"))
     testImplementation(gradleTestKit())
     testImplementation(kotlin("test"))
     testImplementation(libs.bundles.kotlin.testing)
