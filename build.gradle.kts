@@ -130,6 +130,12 @@ publishing {
                         url.set("http://www.danilopianini.org/")
                     }
                 }
+                contributors {
+                    contributor {
+                        name = "Piotr Minkina"
+                        url = "http://www.piotrminkina.pl"
+                    }
+                }
             }
         }
     }
