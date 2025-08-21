@@ -20,7 +20,6 @@ class GitSemVer @Inject constructor(
             providerFactory,
             objectFactory,
             projectDir,
-            version,
             logger,
         )
         project.version = extension.gitSensitiveSemanticVersion

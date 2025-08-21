@@ -43,7 +43,6 @@ constructor(
     private val providerFactory: ProviderFactory,
     private val objectFactory: ObjectFactory,
     private val projectDir: File,
-    private val version: String,
     private val logger: Logger,
     val buildMetadataSeparator: Property<String> = objectFactory.propertyWithDefault("+"),
     val computeReleaseVersion: Property<Boolean> = objectFactory.propertyWithDefault(false),
