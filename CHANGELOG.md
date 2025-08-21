@@ -1,3 +1,10 @@
+## [7.0.2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.0.1...7.0.2) (2025-08-21)
+
+### Bug Fixes
+
+* delay the finalization of the version computation until after the configuration phase ([0320f29](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/0320f29adb4dacb209150c18a6740703a2b77bc6))
+* do not pass unused parameter on extension construction ([7cf81b1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/7cf81b1c0f823f458c5a6b18d21f1a675696823f))
+
 ## [7.0.1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.0.0...7.0.1) (2025-08-21)
 
 ### Dependency updates
