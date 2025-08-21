@@ -73,7 +73,18 @@ constructor(
      * as it will trigger the computation of the version, which should happen as late as possible.
      */
     val gitSensitiveSemanticVersion = object : CharSequence {
-        val version: String by lazy {
+
+        @Volatile private var configurationReady = false
+
+        init {
+            project.gradle.taskGraph.whenReady { configurationReady = true }
+        }
+
+        private val finalVersion: String by lazy { forcedOrComputed() }
+
+        override val length: Int get() = finalVersion.length
+
+        private fun forcedOrComputed(): String {
             val forcedVersion = project.properties[forceVersionPropertyName.get()]?.toString()
                 ?.also { forcedVersion ->
                     project.logger.lifecycle(
@@ -83,7 +94,7 @@ constructor(
                         forceVersionPropertyName.get(),
                     )
                 }
-            (forcedVersion ?: computeVersion()).also {
+            return (forcedVersion ?: computeVersion()).also {
                 val resultingVersion = SemanticVersion.fromStringOrNull(it)
                 if (resultingVersion == null) {
                     val error = "Invalid Semantic Versioning 2.0 version: $it"
@@ -91,8 +102,6 @@ constructor(
                 }
             }
         }
-
-        override val length: Int get() = version.length
 
         override fun equals(other: Any?): Boolean = when (other) {
             is GitSemVerExtension -> toString() == other.toString()
@@ -102,14 +111,35 @@ constructor(
             )
         }
 
-        override fun get(index: Int): Char = version[index]
+        override fun get(index: Int): Char = toString()[index]
 
         override fun hashCode(): Int = toString().hashCode()
 
-        override fun toString(): String = version
+        override fun toString(): String = when {
+            configurationReady -> finalVersion
+            else -> forcedOrComputed()
+        }
 
         override fun subSequence(startIndex: Int, endIndex: Int): CharSequence =
-            version.subSequence(startIndex, endIndex)
+            toString().subSequence(startIndex, endIndex)
+    }
+
+    /**
+     * Finds the closest tag compatible with Semantic Version, or returns null if none is available.
+     */
+    val latestReachableVersion: SemanticVersion? by lazy {
+        val reachableTags = when {
+            includeLightweightTags.get() ->
+                runCommand("git", "tag", "--merged", "HEAD")
+            else ->
+                runCommand("git", "for-each-ref", "--merged", "HEAD", "--format='%(refname:short)'", "refs/tags")
+        }
+        logger.info("Reachable tags: {}", reachableTags)
+        reachableTags?.lineSequence()
+            ?.filter { it.startsWith(versionPrefix.get()) }
+            ?.map { it.removePrefix(versionPrefix.get()) }
+            ?.mapNotNull { SemanticVersion.fromStringOrNull(it) }
+            ?.maxOrNull()
     }
 
     /**
@@ -137,28 +167,10 @@ constructor(
     }
 
     /**
-     * Finds the closest tag compatible with Semantic Version, or returns null if none is available.
-     */
-    fun latestReachableVersion(): SemanticVersion? {
-        val reachableTags = when {
-            includeLightweightTags.get() ->
-                runCommand("git", "tag", "--merged", "HEAD")
-            else ->
-                runCommand("git", "for-each-ref", "--merged", "HEAD", "--format='%(refname:short)'", "refs/tags")
-        }
-        logger.info("Reachable tags: {}", reachableTags)
-        return reachableTags?.lineSequence()
-            ?.filter { it.startsWith(versionPrefix.get()) }
-            ?.map { it.removePrefix(versionPrefix.get()) }
-            ?.mapNotNull { SemanticVersion.fromStringOrNull(it) }
-            ?.maxOrNull()
-    }
-
-    /**
      * Computes a valid Semantic Versioning 2.0 version based on the status of the current git repository.
      */
     fun computeVersion(): String {
-        val latestReachableVersion = latestReachableVersion()
+        val latestReachableVersion = this.latestReachableVersion
         logger.debug("Closest Semantic Version: {}", latestReachableVersion)
         val hash: String = hashOrTimeStamp()
         return when (latestReachableVersion) {
@@ -250,10 +262,8 @@ constructor(
 
     protected fun runCommand(vararg cmd: String) = processCommand(*cmd)
 
-    private fun processCommand(vararg cmd: String) = createValueSourceProvider(*cmd)
-        .get()
-        .trim()
-        .takeIf { it.isNotEmpty() }
+    private fun processCommand(vararg cmd: String) =
+        createValueSourceProvider(*cmd).get().trim().takeIf { it.isNotEmpty() }
 
     private fun createValueSourceProvider(vararg cmd: String): Provider<String> =
         providerFactory.of(GitCommandValueSource::class.java) {
