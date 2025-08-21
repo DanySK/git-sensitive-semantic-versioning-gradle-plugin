@@ -104,6 +104,7 @@ class GitSemVerFunctionalTest extends GradleBuildFunctionalTest {
         'computeReleaseVersion = true'       | '0.1.0'  || ~/0\.1\.0/                    | ~/0\.1\.0/                         | ~/0\.1\.0/                     | ~/0\.1\.1/
         'preReleaseSeparator = "#"'          | '0.1.0'  || ~/0\.1\.0#archeo\+[0-9]+/     | ~/0\.1\.0#archeo\+[0-9a-f]{7}/     | ~/0\.1\.0/                     | ~/0\.1\.1#dev01\+[0-9a-f]{7}/
         'buildMetadataSeparator = "@"'       | '0.1.0'  || ~/0\.1\.0-archeo@[0-9]+/      | ~/0\.1\.0-archeo@[0-9a-f]{7}/      | ~/0\.1\.0/                     | ~/0\.1\.1-dev01@[0-9a-f]{7}/
+        'buildMetadataSeparator = "."'       | '1.0.0'  || ~/0\.1\.0-archeo.[0-9]+/      | ~/0\.1\.0-archeo.[0-9a-f]{7}/      | ~/1\.0\.0/                     | ~/1\.0\.1-dev01.[0-9a-f]{7}/
         'distanceCounterRadix = 2'           | '0.1.0'  || ARCHEO_TIME                   | ARCHEO_HASH                        | ~/0\.1\.0/                     | DEV_HASH
         'versionPrefix = "v"'                | '0.1.0'  || ARCHEO_TIME                   | ARCHEO_HASH                        | ~/0\.1\.0-archeo\+[0-9a-f]{7}/ | ~/0\.1\.0-archeo\+[0-9a-f]{7}/
         'versionPrefix = "v"'                | 'v0.1.0' || ARCHEO_TIME                   | ARCHEO_HASH                        | ~/0\.1\.0/                     | ~/0\.1\.1-dev01\+[0-9a-f]{7}/

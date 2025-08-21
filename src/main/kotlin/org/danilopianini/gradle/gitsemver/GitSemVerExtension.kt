@@ -84,14 +84,12 @@ constructor(
                         forceVersionPropertyName.get(),
                     )
                 }
-            val computedVersion = forcedVersion ?: computeVersion()
-            when (val resultingVersion = SemanticVersion.fromStringOrNull(computedVersion)) {
-                null -> {
-                    val error = "Invalid Semantic Versioning 2.0 version: $computedVersion"
+            (forcedVersion ?: computeVersion()).also {
+                val resultingVersion = SemanticVersion.fromStringOrNull(it)
+                if (resultingVersion == null) {
+                    val error = "Invalid Semantic Versioning 2.0 version: $it"
                     if (enforceSemanticVersioning.get()) error(error) else logger.warn(error)
-                    computedVersion
                 }
-                else -> resultingVersion.toString()
             }
         }
 
