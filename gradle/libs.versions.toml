@@ -1,6 +1,6 @@
 [versions]
 dokka = "2.0.0"
-kotlin = "2.2.20"
+kotlin = "2.2.21"
 kotest = "6.0.4"
 spock = "2.3-groovy-4.0"
 
