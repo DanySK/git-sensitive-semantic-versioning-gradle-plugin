@@ -1,3 +1,18 @@
+## [7.0.15](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.0.14...7.0.15) (2026-03-19)
+
+### Dependency updates
+
+* **core-deps:** update gradle to v9.4.1 ([#1188](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1188)) ([1512065](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/15120655b203b928f202073d8a97c0870510da63))
+* **deps:** update plugin gradle-plugin-publish to v2.1.1 ([#1189](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1189)) ([401ca05](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/401ca0547507dd7a7f2de7a334730d127fd7060b))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.11 ([#1184](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1184)) ([a8bfce5](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a8bfce5adee7c6e8563c991f9875e3575aeecb07))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.12 ([#1190](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1190)) ([a600734](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a6007346fdf1fd8bb76ccb9f318a694412041899))
+* **deps:** update plugin publishoncentral to v9.1.14 ([#1187](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1187)) ([9a9a65a](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/9a9a65a277b490a384d597398bf50fbd8b1a8922))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.25 ([#1185](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1185)) ([2bdbf51](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/2bdbf515fbee5f423c6d88945aa1264a460df49c))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.26 ([#1186](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1186)) ([043e9f9](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/043e9f91b9ee4685c80bedb5db9ea6edd56679c9))
+
 ## [7.0.14](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.0.13...7.0.14) (2026-03-16)
 
 ### Dependency updates
