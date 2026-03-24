@@ -134,3 +134,7 @@ Visit the [conventional commits extension for git-sensitive-semantic-versioning-
 I gladly review pull requests and I'm happy to improve the work.
 If the software was useful to you, please consider supporting my development activity
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5P4DSZE5DV4H2&currency_code=EUR)
+
+## Links
+
+[![Hypercommit](https://img.shields.io/badge/Hypercommit-DB2475)](https://hypercommit.com/git-sensitive-semantic-versioning-gradle-plugin)
