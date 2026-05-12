@@ -1,3 +1,17 @@
+## [7.0.19](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.0.18...7.0.19) (2026-05-12)
+
+### Dependency updates
+
+* **core-deps:** update gradle to v9.5.1 ([#1232](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1232)) ([9db8a1d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/9db8a1d760149b431135c8720bd5a4bceba88b14))
+* **deps:** update plugin gitsemver to v7.0.18 ([#1224](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1224)) ([1f666de](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/1f666de520360a32d1101c9813caf901ddd33714))
+* **deps:** update plugin kotlin-qa to v1.6.1 ([#1227](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1227)) ([85bcdaf](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/85bcdaf5d9a0d780bfad2186c0add01c3cbcfe1c))
+* **deps:** update plugin multijvmtesting to v4.3.3 ([#1228](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1228)) ([6ede542](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6ede5429b1e3985b5c23405ae8a5540d32cab86e))
+* **deps:** update plugin multijvmtesting to v4.3.4 ([#1229](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1229)) ([7a15950](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/7a15950107f72e0e1fe8f3b7b129541b02d82064))
+* **deps:** update plugin multijvmtesting to v4.3.5 ([#1230](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1230)) ([73277cf](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/73277cfd1ddd7fffdb27851293b56dcb7bd514c7))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.16 ([#1225](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1225)) ([23c6668](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/23c6668ecfc5b7e6262fbac3696a0b139566a995))
+* **deps:** update plugin publishoncentral to v9.2.2 ([#1226](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1226)) ([3a3a099](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/3a3a09912b55ed03ceaf54aa346f11448b1772ec))
+* **deps:** update plugin publishoncentral to v9.2.3 ([#1231](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1231)) ([640605f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/640605f7f4232c90c658c1c87e5af5f0b1b45242))
+
 ## [7.0.18](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.0.17...7.0.18) (2026-04-28)
 
 ### Dependency updates
