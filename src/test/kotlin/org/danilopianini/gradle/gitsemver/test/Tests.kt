@@ -9,6 +9,7 @@ import io.kotest.matchers.string.shouldNotContain
 import java.nio.file.Path
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.absolutePathString
+import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
 import kotlin.io.path.createTempDirectory
 import org.gradle.testkit.runner.GradleRunner
@@ -148,6 +149,39 @@ internal class Tests : StringSpec({
         print(result)
         result shouldContain "1.2.3"
     }
+    "log the forced version once when all projects share the same forced version" {
+        val result = configuredMultiplatformLikePlugin().runGradle(
+            "-PforceVersion=1.2.3",
+            "printGitSemVer",
+            "--stacktrace",
+        )
+        print(result)
+        result.lines().count { it == "Forcing version to 1.2.3 as per property 'forceVersion'" } shouldBe 1
+        result shouldNotContain "Forced versions:"
+    }
+    "log every project forced version when any forced version differs" {
+        val result = configuredMultiplatformLikePlugin(
+            """
+                project(":b") {
+                    extensions.configure<GitSemVerExtension>("gitSemVer") {
+                        forceVersionPropertyName.set("moduleBVersion")
+                    }
+                }
+            """.trimIndent(),
+        ).runGradle(
+            "-PforceVersion=1.2.3",
+            "-PmoduleBVersion=1.2.4",
+            "printGitSemVer",
+            "--stacktrace",
+        )
+        print(result)
+        result shouldContain "Forced versions:"
+        result shouldContain "  : -> 1.2.3 as per property 'forceVersion'"
+        result shouldContain "  :a -> 1.2.3 as per property 'forceVersion'"
+        result shouldContain "  :b -> 1.2.4 as per property 'moduleBVersion'"
+        result shouldContain "  :c -> 1.2.3 as per property 'forceVersion'"
+        result shouldNotContain "Forcing version to 1.2.3 as per property 'forceVersion'"
+    }
     "force the version with a non compliant version" {
         shouldThrowUnit<UnexpectedBuildFailure> {
             configuredPlugin().runGradle("-PforceVersion=a.b.c", "printGitSemVer", "--stacktrace")
@@ -255,6 +289,32 @@ internal class Tests : StringSpec({
                 """.trimIndent()
             }
             otherChecks()
+        }
+
+        fun configuredMultiplatformLikePlugin(extraConfiguration: String = ""): Path = folder {
+            listOf("a", "b", "c").forEach { resolve(it).createDirectories() }
+            file("settings.gradle") {
+                """
+                    rootProject.name = 'testproject'
+                    include("a", "b", "c")
+                """
+            }
+            file("build.gradle.kts") {
+                """
+                    import org.danilopianini.gradle.gitsemver.*
+
+                    plugins {
+                        id("org.danilopianini.git-semver") apply false
+                    }
+
+                    allprojects {
+                        apply(plugin = "org.danilopianini.git-semver")
+                        tasks.register("release")
+                    }
+
+                    $extraConfiguration
+                """.trimIndent()
+            }
         }
     }
 }

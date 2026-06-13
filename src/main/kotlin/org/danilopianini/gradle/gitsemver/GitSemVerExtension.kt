@@ -44,6 +44,7 @@ constructor(
     private val objectFactory: ObjectFactory,
     private val projectDir: File,
     private val logger: Logger,
+    private val forcedVersionLogger: Provider<ForcedVersionLoggerService>,
     val buildMetadataSeparator: Property<String> = objectFactory.propertyWithDefault("+"),
     val computeReleaseVersion: Property<Boolean> = objectFactory.propertyWithDefault(false),
     val developmentCounterLength: Property<Int> = objectFactory.propertyWithDefault(2),
@@ -85,13 +86,13 @@ constructor(
         override val length: Int get() = finalVersion.length
 
         private fun forcedOrComputed(): String {
-            val forcedVersion = project.properties[forceVersionPropertyName.get()]?.toString()
+            val forcedVersionPropertyName = forceVersionPropertyName.get()
+            val forcedVersion = project.properties[forcedVersionPropertyName]?.toString()
                 ?.also { forcedVersion ->
-                    project.logger.lifecycle(
-                        "Forcing {} version to {} as per property '{}'",
-                        project.name,
+                    forcedVersionLogger.get().record(
+                        project.path,
+                        forcedVersionPropertyName,
                         forcedVersion,
-                        forceVersionPropertyName.get(),
                     )
                 }
             return (forcedVersion ?: computeVersion()).also {
