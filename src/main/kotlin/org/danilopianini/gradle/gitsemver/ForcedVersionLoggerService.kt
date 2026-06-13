@@ -26,9 +26,9 @@ abstract class ForcedVersionLoggerService :
         if (entries.isEmpty()) {
             return
         }
-        val versions = entries.map { it.value.version }.distinct()
-        if (versions.size == 1) {
-            entries.first().value.let { forcedVersion ->
+        val forced = entries.map { it.value }.distinct()
+        if (forced.size == 1) {
+            forced.single().let { forcedVersion ->
                 logger.lifecycle(
                     "Forcing version to {} as per property '{}'",
                     forcedVersion.version,
