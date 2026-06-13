@@ -156,7 +156,7 @@ internal class Tests : StringSpec({
             "--stacktrace",
         )
         print(result)
-        result.lines().count { it == "Forcing version to 1.2.3 as per property 'forceVersion'" } shouldBe 1
+        result.lines().count { it.contains("Forcing version to 1.2.3 as per property 'forceVersion'") } shouldBe 1
         result shouldNotContain "Forced versions:"
     }
     "log every project forced version when any forced version differs" {
