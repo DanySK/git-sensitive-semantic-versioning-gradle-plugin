@@ -51,6 +51,8 @@ gitSemVer {
     distanceCounterRadix.set(36) // The radix for the commit-distance counter. Must be in the 2-36 range.
     enableDistanceCounter.set(true) // Whether to append the commit distance from the latest tag (e.g., the `01` in `dev01`)
     enableBuildMetadata.set(true) // Whether to append the build metadata (the commit hash, or a timestamp if git is unavailable)
+    enableDirtyMarker.set(false) // Whether to mark versions built with uncommitted changes to tracked files
+    dirtyIdentifier.set("dirty") // The build metadata identifier used by the marker above
     // A prefix on tags that should be ignored when computing the Semantic Version.
     // Many project are versioned with tags named "vX.Y.Z", de-facto building valid SemVer versions but for the leading "v".
     // If it is the case for some project, setting this property to "v" would make these tags readable as SemVer tags.
@@ -78,6 +80,16 @@ gitSemVer {
 With the latest tag being `1.2.3`, any following commit is versioned `1.2.4-SNAPSHOT`
 (or `1.3.0-SNAPSHOT`/`2.0.0-SNAPSHOT`, depending on the configured `commitNameBasedUpdateStrategy`).
 Note that, in this configuration, different commits share the same version.
+
+### Marking uncommitted changes
+
+When `enableDirtyMarker` is set, versions built while tracked files have uncommitted changes
+(staged or not) get `dirtyIdentifier` appended to their build metadata,
+e.g., `1.2.4-dev01+abc1234.dirty`, or `1.2.3+dirty` on a tagged commit.
+Untracked files are ignored, as in `git describe --dirty`.
+If `maxVersionLength` is set, the commit hash is shortened (or dropped) before the marker is touched.
+
+Note that, with the configuration cache enabled, every change to a tracked file invalidates the cache entry.
 
 ### Manually forcing the version computation early
 

@@ -1,22 +1,28 @@
 package org.danilopianini.gradle.gitsemver
 
-import java.math.BigInteger
-
 /**
  * A class representing semantic versions:
  * [major].[minor].[patch]-[preRelease]+[buildMetadata].
+ * It is a [Version] whose [preRelease] and [buildMetadata] use the standard SemVer prefixes,
+ * delegating its structure to a [GeneralizedSemanticVersion], and ordered by the SemVer 2.0 precedence.
  */
-data class SemanticVersion(
-    val major: ULong,
-    val minor: ULong,
-    val patch: ULong,
-    val preRelease: PreReleaseIdentifier = PreReleaseIdentifier.EMPTY,
-    val buildMetadata: PreReleaseIdentifier = PreReleaseIdentifier.EMPTY,
-) : Comparable<SemanticVersion> {
-    /**
-     * True if this version is in the form [major].[minor].[patch], with no further identifiers.
-     */
-    val isStable: Boolean get() = preRelease.isEmpty() && buildMetadata.isEmpty()
+class SemanticVersion private constructor(private val generalized: GeneralizedSemanticVersion) :
+    Version by generalized,
+    Comparable<SemanticVersion> {
+
+    init {
+        require(preRelease.prefix == "-" && buildMetadata.prefix == "+") {
+            "Semantic versions must prefix the pre-release with '-' and the build metadata with '+': $generalized"
+        }
+    }
+
+    constructor(
+        major: ULong,
+        minor: ULong,
+        patch: ULong,
+        preRelease: PreReleaseIdentifier = PreReleaseIdentifier.EMPTY,
+        buildMetadata: PreReleaseIdentifier = PreReleaseIdentifier.EMPTY,
+    ) : this(GeneralizedSemanticVersion(major, minor, patch, preRelease.withPrefix("-"), buildMetadata.withPrefix("+")))
 
     constructor(
         major: String,
@@ -31,30 +37,6 @@ data class SemanticVersion(
         PreReleaseIdentifier("-", preRelease),
         PreReleaseIdentifier("+", buildMetadata),
     )
-
-    /**
-     * Creates a new [SemanticVersion] with the [major] version increased by 1 and the [minor] and [patch] reset to 0.
-     */
-    fun incrementMajor(): SemanticVersion = copy(major = major + 1u, minor = 0u, patch = 0u)
-
-    /**
-     * Creates a new [SemanticVersion] with the [minor] version increased by 1 and the [patch] reset to 0, while
-     * keeping the [major] version.
-     */
-    fun incrementMinor(): SemanticVersion = copy(minor = minor + 1u, patch = 0u)
-
-    /**
-     * Creates a new [SemanticVersion] with the [patch] version increased by 1, while keeping the [major] and [minor]
-     * versions.
-     */
-    fun incrementPatch(): SemanticVersion = copy(patch = patch + 1u)
-
-    override fun toString() = "$major.$minor.$patch$preRelease$buildMetadata"
-
-    /**
-     * Creates the same SemanticVersion, but without build metadata.
-     */
-    fun withoutBuildMetadata(): SemanticVersion = copy(buildMetadata = PreReleaseIdentifier("+", ""))
 
     /*
      * Precedence refers to how versions are compared to each other when ordered.
@@ -71,6 +53,36 @@ data class SemanticVersion(
         .thenBy { it.preRelease }
         .thenBy { it.buildMetadata }
         .compare(this, other)
+
+    override fun equals(other: Any?): Boolean = other is SemanticVersion && generalized == other.generalized
+
+    override fun hashCode(): Int = generalized.hashCode()
+
+    /**
+     * Creates a new [SemanticVersion] with the [major] version increased by 1 and the [minor] and [patch] reset to 0.
+     */
+    fun incrementMajor(): SemanticVersion =
+        SemanticVersion(generalized.copy(major = major + 1u, minor = 0u, patch = 0u))
+
+    /**
+     * Creates a new [SemanticVersion] with the [minor] version increased by 1 and the [patch] reset to 0, while
+     * keeping the [major] version.
+     */
+    fun incrementMinor(): SemanticVersion = SemanticVersion(generalized.copy(minor = minor + 1u, patch = 0u))
+
+    /**
+     * Creates a new [SemanticVersion] with the [patch] version increased by 1, while keeping the [major] and [minor]
+     * versions.
+     */
+    fun incrementPatch(): SemanticVersion = SemanticVersion(generalized.copy(patch = patch + 1u))
+
+    override fun toString() = generalized.toString()
+
+    /**
+     * Creates the same SemanticVersion, but without build metadata.
+     */
+    fun withoutBuildMetadata(): SemanticVersion =
+        SemanticVersion(generalized.copy(buildMetadata = PreReleaseIdentifier("+", "")))
 
     /**
      * Constants and utilities for working with semantic versions.
@@ -100,119 +112,5 @@ data class SemanticVersion(
             val (major, minor, patch, preRelease, buildInfo: String) = match.destructured
             SemanticVersion(major, minor, patch, preRelease, buildInfo)
         }
-    }
-}
-
-/**
- * A SemVer 2.0 pre-release identifier, with a selectable [prefix].
- */
-data class PreReleaseIdentifier(
-    val prefix: String = "-",
-    private val segments: List<DotSeparatedIdentifier> = emptyList(),
-) : Comparable<PreReleaseIdentifier> {
-    init {
-        require(prefix in validPrefixes) {
-            "Invalid prefix $prefix. Valid prefixes: $validPrefixes"
-        }
-    }
-
-    constructor(prefix: String, identifier: String) : this(
-        prefix,
-        identifier
-            .split(".")
-            .filter { it.isNotBlank() }
-            .map { segment ->
-                // leading zeroes indicate an alphanumeric identifier
-                segment.takeIf { segment == "0" || segment.first() in '1'..'9' }
-                    ?.toBigIntegerOrNull()
-                    ?.let { DotSeparatedIdentifier.NumericIdentifier(it) }
-                    ?: DotSeparatedIdentifier.AlphanumericIdentifier(segment)
-            },
-    )
-
-    /**
-     * Whether this pre-release identifier contains anything.
-     */
-    fun isEmpty(): Boolean = segments.isEmpty()
-
-    override fun toString() = segments.takeIf { it.isNotEmpty() }
-        ?.joinToString(separator = ".", prefix = prefix).orEmpty()
-
-    /*
-     * Precedence for two pre-release versions with the same major, minor, and patch version MUST be determined by
-     * comparing each dot separated identifier from left to right until a difference is found as follows:
-     * - Identifiers consisting of only digits are compared numerically.
-     * - Identifiers with letters or hyphens are compared lexically in ASCII sort order.
-     * - Numeric identifiers always have lower precedence than non-numeric identifiers.
-     * - A larger set of pre-release fields has a higher precedence than a smaller set, if all of the preceding
-     *   identifiers are equal.
-     *
-     * - Example:
-     *   1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta
-     *   < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0.
-     */
-    override fun compareTo(other: PreReleaseIdentifier): Int = when {
-        this.isEmpty() && other.isEmpty() -> 0
-        segments.isEmpty() -> 1 // this is empty, other is not
-        other.segments.isEmpty() -> -1 // this is not empty, other is
-        else -> segments.asSequence().zip(other.segments.asSequence())
-            .map { (thisSegment, otherSegment) -> thisSegment.compareTo(otherSegment) }
-            .firstOrNull { it != 0 }
-            ?: compareValues(segments.size, other.segments.size)
-    }
-
-    /**
-     * A dot-separated identifier.
-     */
-    sealed class DotSeparatedIdentifier : Comparable<DotSeparatedIdentifier> {
-        /**
-         * Numeric [identifier].
-         */
-        data class NumericIdentifier(val identifier: BigInteger) : DotSeparatedIdentifier() {
-            override fun toString() = identifier.toString()
-        }
-
-        /**
-         * Alphanumeric [identifier].
-         */
-        data class AlphanumericIdentifier(val identifier: String) : DotSeparatedIdentifier() {
-            init {
-                require(!identifier.contains(".")) {
-                    "Sub-identifiers in semVer cannot contain dots. Error at: $identifier"
-                }
-                require(identifier.isNotBlank()) {
-                    "Sub-identifiers can't be empty or blank: '$identifier'."
-                }
-            }
-
-            override fun toString() = identifier
-        }
-
-        override fun compareTo(other: DotSeparatedIdentifier) = when (this) {
-            is NumericIdentifier -> {
-                when (other) {
-                    is NumericIdentifier -> identifier.compareTo(other.identifier)
-                    is AlphanumericIdentifier -> -1
-                }
-            }
-            is AlphanumericIdentifier -> {
-                when (other) {
-                    is AlphanumericIdentifier -> identifier.compareTo(other.identifier)
-                    is NumericIdentifier -> 1
-                }
-            }
-        }
-    }
-
-    /**
-     * Constants and utilities for working with pre-release identifiers.
-     */
-    companion object {
-        private val validPrefixes = listOf("+", "-")
-
-        /**
-         * An empty pre-release identifier.
-         */
-        val EMPTY: PreReleaseIdentifier = PreReleaseIdentifier()
     }
 }

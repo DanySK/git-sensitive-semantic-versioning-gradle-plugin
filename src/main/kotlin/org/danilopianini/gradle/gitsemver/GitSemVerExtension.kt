@@ -36,6 +36,9 @@ import org.slf4j.Logger
  *      (e.g., 1.2.4-SNAPSHOT, with [developmentIdentifier] set to "SNAPSHOT").
  * - [enableDistanceCounter], whether to append the commit distance from the latest tag to the
  *      [developmentIdentifier] in development versions.
+ * - [enableDirtyMarker], whether to append [dirtyIdentifier] to the build metadata when tracked files
+ *      have uncommitted changes (untracked files are ignored, as in `git describe --dirty`).
+ * - [dirtyIdentifier], the build metadata identifier marking uncommitted changes, defaulting to "dirty".
  * - [versionPrefix], to be used in case tags are prefixed with some symbols before the semantic version
  *      (e.g., v1.0.0 is prefixed with "v").
  * - [includeLightweightTags], to be used in case lightweight tags should be considered.
@@ -57,8 +60,10 @@ constructor(
     val computeReleaseVersion: Property<Boolean> = objectFactory.propertyWithDefault(false),
     val developmentCounterLength: Property<Int> = objectFactory.propertyWithDefault(2),
     val developmentIdentifier: Property<String> = objectFactory.propertyWithDefault("dev"),
+    val dirtyIdentifier: Property<String> = objectFactory.propertyWithDefault("dirty"),
     val distanceCounterRadix: Property<Int> = objectFactory.propertyWithDefault(DEFAULT_RADIX),
     val enableBuildMetadata: Property<Boolean> = objectFactory.propertyWithDefault(true),
+    val enableDirtyMarker: Property<Boolean> = objectFactory.propertyWithDefault(false),
     val enableDistanceCounter: Property<Boolean> = objectFactory.propertyWithDefault(true),
     val enforceSemanticVersioning: Property<Boolean> = objectFactory.propertyWithDefault(true),
     val forceVersionPropertyName: Property<String> = objectFactory.propertyWithDefault("forceVersion"),
@@ -181,81 +186,12 @@ constructor(
      * Computes a valid Semantic Versioning 2.0 version based on the status of the current git repository.
      */
     fun computeVersion(): String {
-        val latestReachableVersion = this.latestReachableVersion
-        logger.debug("Closest Semantic Version: {}", latestReachableVersion)
-        return when (latestReachableVersion) {
-            null -> {
-                /*
-                 * No tags found, the version is the minimum version, with the hash as build metadata.
-                 */
-                val base = computeMinVersion()
-                when {
-                    computeReleaseVersion.get() -> base.toString()
-                    else -> {
-                        val preRelease = noTagIdentifier.get()
-                            .takeIf { it.isNotBlank() }
-                            ?.let { preReleaseSeparator.get() + it }
-                            .orEmpty()
-                        "$base$preRelease${buildMetadata()}"
-                    }
-                }
-            }
-            else -> {
-                if (!latestReachableVersion.buildMetadata.isEmpty()) {
-                    logger.warn("Build metadata of closest tag $latestReachableVersion will be ignored.")
-                }
-                val commitRange = "${versionPrefix.get()}$latestReachableVersion..HEAD"
-                val distance = runCommand("git", "rev-list", "--count", commitRange)?.toLong()
-                requireNotNull(distance) {
-                    "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
-                        "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
-                }
-                when (distance) {
-                    0L -> latestReachableVersion.toString()
-                    else -> {
-                        val lastCommits = runCommand(
-                            "git",
-                            "log",
-                            "--oneline",
-                            "-$distance",
-                            "--no-decorate",
-                            "--format=%s",
-                        )?.lines().orEmpty()
-                        val currentVersion = maxOf(
-                            updateStrategy(lastCommits).incrementVersion(latestReachableVersion),
-                            minSemanticVersion(),
-                        ).withoutBuildMetadata()
-                        when {
-                            computeReleaseVersion.get() -> currentVersion.toString()
-                            else -> {
-                                val devString = developmentIdentifier.get()
-                                require(devString.isNotBlank() || !enableDistanceCounter.get()) {
-                                    "gitSemVer: developmentIdentifier is blank but enableDistanceCounter is true. " +
-                                        "The distance counter alone cannot form a valid Semantic Versioning " +
-                                        "pre-release identifier (e.g., '01' has a leading zero). " +
-                                        "Either set a non-blank developmentIdentifier, " +
-                                        "or disable the counter with enableDistanceCounter.set(false)."
-                                }
-                                val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
-                                val distanceString = when {
-                                    enableDistanceCounter.get() -> distance.withRadix(
-                                        distanceCounterRadix.get(),
-                                        developmentCounterLength.get(),
-                                    )
-                                    else -> ""
-                                }
-                                "$currentVersion$separator$devString$distanceString${buildMetadata()}"
-                            }
-                        }
-                    }
-                }
-            }
-        }.take(maxVersionLength.get()).also { logger.info("Version computed as: {}", it) }
-    }
-
-    private fun buildMetadata(): String = when {
-        enableBuildMetadata.get() -> buildMetadataSeparator.get() + hashOrTimeStamp()
-        else -> ""
+        val version = computeVersionFromHistory()
+        val marked: Version = when {
+            enableDirtyMarker.get() && isWorkingTreeDirty() -> version.withBuildMetadata(dirtyIdentifier.get())
+            else -> version
+        }
+        return marked.toString(maxVersionLength.get()).also { logger.info("Version computed as: {}", it) }
     }
 
     /**
@@ -271,8 +207,10 @@ constructor(
             computeReleaseVersion = ${computeReleaseVersion.get()}
             developmentCounterLength = ${developmentCounterLength.get()}
             developmentIdentifier = "${developmentIdentifier.get()}"
+            dirtyIdentifier = "${dirtyIdentifier.get()}"
             distanceCounterRadix = ${distanceCounterRadix.get()}
             enableBuildMetadata = ${enableBuildMetadata.get()}
+            enableDirtyMarker = ${enableDirtyMarker.get()}
             enableDistanceCounter = ${enableDistanceCounter.get()}
             enforceSemanticVersioning = "${enforceSemanticVersioning.get()}"
             forceVersionPropertyName = "${forceVersionPropertyName.get()}"
@@ -287,6 +225,72 @@ constructor(
     """.trimIndent()
 
     protected fun runCommand(vararg cmd: String) = processCommand(*cmd)
+
+    private fun computeVersionFromHistory(): Version {
+        val latestReachableVersion = this.latestReachableVersion
+        logger.debug("Closest Semantic Version: {}", latestReachableVersion)
+        return when (latestReachableVersion) {
+            null -> {
+                /*
+                 * No tags found, the version is the minimum version, with the hash as build metadata.
+                 */
+                val base = computeMinVersion()
+                when {
+                    computeReleaseVersion.get() -> base.toGeneralizedVersion()
+                    else -> base.toDevelopmentVersion(noTagIdentifier.get())
+                }
+            }
+            else -> {
+                if (!latestReachableVersion.buildMetadata.isEmpty()) {
+                    logger.warn("Build metadata of closest tag $latestReachableVersion will be ignored.")
+                }
+                val commitRange = "${versionPrefix.get()}$latestReachableVersion..HEAD"
+                val distance = runCommand("git", "rev-list", "--count", commitRange)?.toLong()
+                requireNotNull(distance) {
+                    "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
+                        "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
+                }
+                when (distance) {
+                    0L -> latestReachableVersion.toGeneralizedVersion()
+                    else -> {
+                        val lastCommits = runCommand(
+                            "git",
+                            "log",
+                            "--oneline",
+                            "-$distance",
+                            "--no-decorate",
+                            "--format=%s",
+                        )?.lines().orEmpty()
+                        val currentVersion = maxOf(
+                            updateStrategy(lastCommits).incrementVersion(latestReachableVersion),
+                            minSemanticVersion(),
+                        ).withoutBuildMetadata()
+                        when {
+                            computeReleaseVersion.get() -> currentVersion.toGeneralizedVersion()
+                            else -> {
+                                val devString = developmentIdentifier.get()
+                                require(devString.isNotBlank() || !enableDistanceCounter.get()) {
+                                    "gitSemVer: developmentIdentifier is blank but enableDistanceCounter is true. " +
+                                        "The distance counter alone cannot form a valid Semantic Versioning " +
+                                        "pre-release identifier (e.g., '01' has a leading zero). " +
+                                        "Either set a non-blank developmentIdentifier, " +
+                                        "or disable the counter with enableDistanceCounter.set(false)."
+                                }
+                                val distanceString = when {
+                                    enableDistanceCounter.get() -> distance.withRadix(
+                                        distanceCounterRadix.get(),
+                                        developmentCounterLength.get(),
+                                    )
+                                    else -> ""
+                                }
+                                currentVersion.toDevelopmentVersion(devString.trim() + distanceString)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private fun processCommand(vararg cmd: String) =
         createValueSourceProvider(*cmd).get().trim().takeIf { it.isNotEmpty() }
@@ -316,6 +320,25 @@ constructor(
         }
         return hash
     }
+
+    private fun isWorkingTreeDirty(): Boolean =
+        runCommand("git", "status", "--porcelain", "--untracked-files=no") != null
+
+    private fun SemanticVersion.toDevelopmentVersion(identifier: String): Version {
+        val version = GeneralizedSemanticVersion.from(this, preReleaseSeparator.get(), buildMetadataSeparator.get())
+            .withPreRelease(identifier.trim())
+        return when {
+            enableBuildMetadata.get() -> version.withBuildMetadata(hashOrTimeStamp())
+            else -> version
+        }
+    }
+
+    /*
+     * Used for tagged commits and release versions, which keep their SemVer pre-release separator.
+     * The configured build metadata separator is used, as metadata (e.g., the dirty marker) may be appended.
+     */
+    private fun SemanticVersion.toGeneralizedVersion(): GeneralizedSemanticVersion =
+        GeneralizedSemanticVersion.from(this, buildMetadataPrefix = buildMetadataSeparator.get())
 
     /**
      * The name of the extension, namely of the DSL entry-point.

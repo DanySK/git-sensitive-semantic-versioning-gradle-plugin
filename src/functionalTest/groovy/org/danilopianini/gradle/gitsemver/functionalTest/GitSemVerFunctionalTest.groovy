@@ -112,6 +112,7 @@ class GitSemVerFunctionalTest extends GradleBuildFunctionalTest {
         'versionPrefix = "v"'                | 'v0.1.0' || ARCHEO_TIME                   | ARCHEO_HASH                        | ~/0\.1\.0/                     | ~/0\.1\.1-dev01\+[0-9a-f]{7}/
         'enableDistanceCounter = false'      | '0.1.0'  || ARCHEO_TIME                   | ARCHEO_HASH                        | ~/0\.1\.0/                     | ~/0\.1\.1-dev\+[0-9a-f]{7}/
         'enableBuildMetadata = false'        | '0.1.0'  || ~/0\.1\.0-archeo/             | ~/0\.1\.0-archeo/                  | ~/0\.1\.0/                     | ~/0\.1\.1-dev01/
+        'enableDirtyMarker = true'           | '0.1.0'  || ARCHEO_TIME                   | ARCHEO_HASH                        | ~/0\.1\.0/                     | DEV_HASH
         SNAPSHOT_CONFIGURATION               | '0.1.0'  || ~/0\.1\.0-archeo/             | ~/0\.1\.0-archeo/                  | ~/0\.1\.0/                     | ~/0\.1\.1-SNAPSHOT/
     }
 }
