@@ -13,6 +13,8 @@ class GitSemVerFunctionalTest extends GradleBuildFunctionalTest {
     static final Pattern ARCHEO_TIME = ~/0\.1\.0-archeo\+[0-9]+/
     static final Pattern ARCHEO_HASH = ~/0\.1\.0-archeo\+[0-9a-f]{7}/
     static final Pattern DEV_HASH = ~/0\.1\.1-dev01\+[0-9a-f]{7}/
+    static final String SNAPSHOT_CONFIGURATION =
+        'developmentIdentifier = "SNAPSHOT"; enableDistanceCounter = false; enableBuildMetadata = false'
 
     def setup() {
         buildFile << '''\
@@ -108,5 +110,8 @@ class GitSemVerFunctionalTest extends GradleBuildFunctionalTest {
         'distanceCounterRadix = 2'           | '0.1.0'  || ARCHEO_TIME                   | ARCHEO_HASH                        | ~/0\.1\.0/                     | DEV_HASH
         'versionPrefix = "v"'                | '0.1.0'  || ARCHEO_TIME                   | ARCHEO_HASH                        | ~/0\.1\.0-archeo\+[0-9a-f]{7}/ | ~/0\.1\.0-archeo\+[0-9a-f]{7}/
         'versionPrefix = "v"'                | 'v0.1.0' || ARCHEO_TIME                   | ARCHEO_HASH                        | ~/0\.1\.0/                     | ~/0\.1\.1-dev01\+[0-9a-f]{7}/
+        'enableDistanceCounter = false'      | '0.1.0'  || ARCHEO_TIME                   | ARCHEO_HASH                        | ~/0\.1\.0/                     | ~/0\.1\.1-dev\+[0-9a-f]{7}/
+        'enableBuildMetadata = false'        | '0.1.0'  || ~/0\.1\.0-archeo/             | ~/0\.1\.0-archeo/                  | ~/0\.1\.0/                     | ~/0\.1\.1-dev01/
+        SNAPSHOT_CONFIGURATION               | '0.1.0'  || ~/0\.1\.0-archeo/             | ~/0\.1\.0-archeo/                  | ~/0\.1\.0/                     | ~/0\.1\.1-SNAPSHOT/
     }
 }
