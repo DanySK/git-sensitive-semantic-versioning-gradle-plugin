@@ -1,4 +1,4 @@
-@file:Suppress("SuspiciousCollectionReassignment")
+@file:Suppress("SuspiciousCollectionReassignment", "UnstableApiUsage")
 
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
@@ -41,8 +41,8 @@ repositories {
 
 testing {
     suites {
-        val test by getting(JvmTestSuite::class)
-        val functionalTest by registering(JvmTestSuite::class) {
+        val test = getByName<JvmTestSuite>("test")
+        register<JvmTestSuite>("functionalTest") {
             useSpock(libs.versions.spock)
             dependencies { implementation(project()) }
             targets {
@@ -97,15 +97,15 @@ tasks {
             showCauses = true
             showStackTraces = true
             showStandardStreams = true
-            events(*TestLogEvent.values())
+            events(*TestLogEvent.entries.toTypedArray())
         }
     }
 }
 
 if ("true" == System.getenv("CI")) {
     signing {
-        val signingKey: String? by project
-        val signingPassword: String? by project
+        val signingKey = findProperty("signingKey")?.toString()
+        val signingPassword = findProperty("signingPassword")?.toString()
         useInMemoryPgpKeys(signingKey, signingPassword)
     }
 }

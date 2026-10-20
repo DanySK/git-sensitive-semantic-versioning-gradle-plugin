@@ -97,7 +97,7 @@ constructor(
 
         private fun forcedOrComputed(): String {
             val forcedVersionPropertyName = forceVersionPropertyName.get()
-            val forcedVersion = project.properties[forcedVersionPropertyName]?.toString()
+            val forcedVersion = project.findProperty(forcedVersionPropertyName)?.toString()
                 ?.also { forcedVersion ->
                     forcedVersionLogger.get().record(
                         project.path,
