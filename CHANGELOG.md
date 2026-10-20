@@ -1,3 +1,18 @@
+## [7.2.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.1.0...7.2.0) (2026-10-20)
+
+### Dependency updates
+
+* **api-deps:** update Gradle to v9.8.1 ([#1343](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1343)) ([46bab46](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/46bab4689ea52671f3fab852f0c0bdeb520649ce))
+* **core-deps:** update gradle to v9.8.2 ([af04301](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/af04301d685f56fe2464fc8803b916daa1514d61))
+* **deps:** update plugin com.gradle.develocity to v4.6.1 ([#1346](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1346)) ([d8ae619](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/d8ae61965be3c6ae50d82a431ed1c264ca3bfaa7))
+* **deps:** update plugin gitsemver to v7.1.0 ([#1348](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1348)) ([229902d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/229902d52dcc0820911b4bb5992b910f92eebb20))
+* **deps:** update plugin publishoncentral to v9.2.15 ([e422b31](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/e422b315c9a763855d6095703e29eb500fa16acb))
+
+### Build and continuous integration
+
+* **deps:** update dependency ubuntu github actions runner to v26 ([6a36dae](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/6a36daee4fb7c8bce366fee61db4a3fa6023de77))
+* integrate TestKit Jacoco plugin for test coverage reporting ([#1349](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1349)) ([28a5f00](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/28a5f00aac63a17152fe1ea14a823c5288893e04))
+
 ## [7.1.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.0.25...7.1.0) (2026-10-20)
 
 ### Features
