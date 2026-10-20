@@ -1,3 +1,18 @@
+## [7.3.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.2.0...7.3.0) (2026-10-20)
+
+### Features
+
+* add options to mark uncommited source, fixes [#823](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/823) ([#1352](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1352)) ([9fcca48](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/9fcca485a149d52e7ed29b3f124d96a3c493363b))
+
+### Dependency updates
+
+* **deps:** update plugin gitsemver to v7.2.0 ([71438d0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/71438d013a0e4b716df35cfc31cc0e7c60d23c7b))
+* **deps:** update plugin multijvmtesting to v4.5.11 ([c82c2b0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c82c2b044254c646dc2f7fd9d875111151246d67))
+
+### Build and continuous integration
+
+* **agents:** update coding guidelines for member ordering in `AGENTS.md` ([70f6c7f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/70f6c7f179244bbc9fd61539eef9d439edeeee03))
+
 ## [7.2.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.1.0...7.2.0) (2026-10-20)
 
 ### Dependency updates
