@@ -251,6 +251,28 @@ internal class Tests : StringSpec({
         val expectedVersion = "2.0.0"
         result shouldContain expectedVersion
     }
+    "blank development identifier with distance counter fails clearly" {
+        val failure = shouldThrowUnit<UnexpectedBuildFailure> {
+            configuredPlugin("developmentIdentifier.set(\"\")") {
+                initGitWithTag()
+                runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+            }.runGradle()
+        }
+        failure.message shouldContain "developmentIdentifier is blank but enableDistanceCounter is true"
+    }
+    "blank development identifier without distance counter" {
+        val result = configuredPlugin(
+            """
+                developmentIdentifier.set("")
+                enableDistanceCounter.set(false)
+            """.trimIndent(),
+        ) {
+            initGitWithTag()
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+        }.runGradle()
+        println(result)
+        result.lines().any { it.matches(Regex(""".*: 1\.2\.4\+[0-9a-f]{7}$""")) } shouldBe true
+    }
 }) {
     companion object {
         fun folder(closure: Path.() -> Unit) = createTempDirectory("gitSemVerTest").apply(closure)

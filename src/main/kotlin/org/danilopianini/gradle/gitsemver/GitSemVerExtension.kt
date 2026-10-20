@@ -14,7 +14,8 @@ import org.slf4j.Logger
  *
  * Supports the following properties:
  * - [minimumVersion], defaulting to 0.1.0
- * - [developmentIdentifier], the identifier for the in-development versions
+ * - [developmentIdentifier], the identifier for the in-development versions.
+ *      It can be blank only if [enableDistanceCounter] is false
  * - [noTagIdentifier], the identifier for early versions of the project, when no tags are available yet
  * - [fullHash], whether to use the full commit hash as build metadata
  * - [maxVersionLength], cuts the version to the specified length. Useful for some destinations,
@@ -228,6 +229,13 @@ constructor(
                             computeReleaseVersion.get() -> currentVersion.toString()
                             else -> {
                                 val devString = developmentIdentifier.get()
+                                require(devString.isNotBlank() || !enableDistanceCounter.get()) {
+                                    "gitSemVer: developmentIdentifier is blank but enableDistanceCounter is true. " +
+                                        "The distance counter alone cannot form a valid Semantic Versioning " +
+                                        "pre-release identifier (e.g., '01' has a leading zero). " +
+                                        "Either set a non-blank developmentIdentifier, " +
+                                        "or disable the counter with enableDistanceCounter.set(false)."
+                                }
                                 val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
                                 val distanceString = when {
                                     enableDistanceCounter.get() -> distance.withRadix(

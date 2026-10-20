@@ -34,7 +34,7 @@ import org.danilopianini.gradle.gitsemver.UpdateType
 ...
 gitSemVer {
     minimumVersion.set("0.1.0")
-    developmentIdentifier.set("dev")
+    developmentIdentifier.set("dev") // Can be blank only if enableDistanceCounter is false
     noTagIdentifier.set("archeo")
     fullHash.set(false) // set to true if you want to use the full git hash
     maxVersionLength.set(Int.MAX_VALUE) // Useful to limit the maximum version length, e.g. Gradle Plugins have a limit on 20
