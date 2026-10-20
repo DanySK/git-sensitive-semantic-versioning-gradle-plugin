@@ -1,3 +1,28 @@
+## [7.1.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.0.25...7.1.0) (2026-10-20)
+
+### Features
+
+* add options to disable distance counter and build metadata (fixes [#519](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/519)) ([#1345](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1345)) ([3dfd989](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/3dfd98912c2797efa0a20f44ccd87745709b4c8f))
+
+### Dependency updates
+
+* **deps:** update dependency org.spockframework:spock-core to v2.5-groovy-4.0 ([#1344](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1344)) ([eca9b3f](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/eca9b3ff167b2abe88a7a91a49cba8d5643fb6dd))
+* **deps:** update kotest to v6.2.6 ([2e43205](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/2e43205d456b43b0a6c5b076ccf0e99bf357193d))
+* **deps:** update node.js to 24.22 ([442c416](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/442c416bd6c71e81db62b4720eb40b5cc46e91dd))
+* **deps:** update plugin gitsemver to v7.0.25 ([#1336](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1336)) ([a94f957](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a94f957a9ab1b095177cbdd2a03c11c65df8f903))
+* **deps:** update plugin kotlin-qa to v1.10.2 ([9dfe65b](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/9dfe65bde288cbeaee17e6a40e3066ba18905d2a))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.27 ([#1337](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1337)) ([fbac042](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/fbac042188c39c8a990983240570ed8231d3c449))
+
+### Build and continuous integration
+
+* add AGENTS.md ([133ef4b](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/133ef4b10897167298af53356a290e94c53bbe01))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.49 ([#1339](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1339)) ([0d9bf1c](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/0d9bf1ced65f69c4e5121ce0104af78c617113a6))
+* **deps:** update dependency macos github actions runner to v26 ([#1341](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1341)) ([e90fa78](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/e90fa78c843de4ab6d2af350e7060cdb889ee05b))
+
+### General maintenance
+
+* add `*.salive` to `.gitignore` ([c2d3fb8](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c2d3fb8db3f69d39f272e01c1bfb6301008cdc4f))
+
 ## [7.0.25](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.0.24...7.0.25) (2026-10-08)
 
 ### Dependency updates
