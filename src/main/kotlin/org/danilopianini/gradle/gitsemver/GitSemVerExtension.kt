@@ -182,7 +182,6 @@ constructor(
     fun computeVersion(): String {
         val latestReachableVersion = this.latestReachableVersion
         logger.debug("Closest Semantic Version: {}", latestReachableVersion)
-        val hash: String = hashOrTimeStamp()
         return when (latestReachableVersion) {
             null -> {
                 /*
@@ -196,7 +195,7 @@ constructor(
                             .takeIf { it.isNotBlank() }
                             ?.let { preReleaseSeparator.get() + it }
                             .orEmpty()
-                        "$base$preRelease${buildMetadata(hash)}"
+                        "$base$preRelease${buildMetadata()}"
                     }
                 }
             }
@@ -237,7 +236,7 @@ constructor(
                                     )
                                     else -> ""
                                 }
-                                "$currentVersion$separator$devString$distanceString${buildMetadata(hash)}"
+                                "$currentVersion$separator$devString$distanceString${buildMetadata()}"
                             }
                         }
                     }
@@ -246,8 +245,8 @@ constructor(
         }.take(maxVersionLength.get()).also { logger.info("Version computed as: {}", it) }
     }
 
-    private fun buildMetadata(hash: String): String = when {
-        enableBuildMetadata.get() -> buildMetadataSeparator.get() + hash
+    private fun buildMetadata(): String = when {
+        enableBuildMetadata.get() -> buildMetadataSeparator.get() + hashOrTimeStamp()
         else -> ""
     }
 
