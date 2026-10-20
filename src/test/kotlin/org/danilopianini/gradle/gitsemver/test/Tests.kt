@@ -335,7 +335,12 @@ internal class Tests : StringSpec({
             .output
 
         fun configuredPlugin(pluginConfiguration: String = "", otherChecks: Path.() -> Unit = {}): Path = folder {
-            file("settings.gradle") { "rootProject.name = 'testproject'" }
+            file("settings.gradle") {
+                """
+                    plugins { id("jacoco-testkit-coverage") }
+                    rootProject.name = 'testproject'
+                """.trimIndent()
+            }
             file("build.gradle.kts") {
                 """
                     import org.danilopianini.gradle.gitsemver.*    
@@ -356,6 +361,7 @@ internal class Tests : StringSpec({
             listOf("a", "b", "c").forEach { resolve(it).createDirectories() }
             file("settings.gradle") {
                 """
+                    plugins { id("jacoco-testkit-coverage") }
                     rootProject.name = 'testproject'
                     include("a", "b", "c")
                 """

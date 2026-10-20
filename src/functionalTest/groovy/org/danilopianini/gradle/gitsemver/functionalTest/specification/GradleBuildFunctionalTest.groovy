@@ -36,7 +36,8 @@ class GradleBuildFunctionalTest extends Specification {
 
         buildFile = new File(projectDir, 'build.gradle.kts')
         settingsFile = new File(projectDir, 'settings.gradle.kts').tap {
-            createNewFile()
+            // Dumps the TestKit coverage data at the end of each build
+            text = 'plugins { id("jacoco-testkit-coverage") }\n'
         }
     }
 }
