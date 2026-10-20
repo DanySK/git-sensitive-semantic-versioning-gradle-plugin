@@ -39,12 +39,14 @@ import org.slf4j.Logger
 open class GitSemVerExtension
 @JvmOverloads
 constructor(
-    private val project: Project,
+    // Detekt false positive TODO: remove once fixed upstream
+    @Suppress("UnusedPrivateProperty") private val project: Project,
     private val providerFactory: ProviderFactory,
     private val objectFactory: ObjectFactory,
     private val projectDir: File,
     private val logger: Logger,
-    private val forcedVersionLogger: Provider<ForcedVersionLoggerService>,
+    // Detekt false positive. TODO: remove once fixed upstream
+    @Suppress("UnusedPrivateProperty") private val forcedVersionLogger: Provider<ForcedVersionLoggerService>,
     val buildMetadataSeparator: Property<String> = objectFactory.propertyWithDefault("+"),
     val computeReleaseVersion: Property<Boolean> = objectFactory.propertyWithDefault(false),
     val developmentCounterLength: Property<Int> = objectFactory.propertyWithDefault(2),
