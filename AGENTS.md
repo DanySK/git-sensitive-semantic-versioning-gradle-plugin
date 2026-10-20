@@ -61,6 +61,38 @@ Notes:
 - Public API (extension properties, classes) must have KDoc; keep the extension's KDoc and the
   README's option list in sync when adding or changing options.
 - Add tests for behavior changes: TestKit/Kotest in `src/test`, end-to-end scenarios in `src/functionalTest`.
+- Reuse the concepts the codebase already has (e.g., `PreReleaseIdentifier` for dot-separated identifiers)
+  instead of introducing parallel representations; if a concept does not fit, change it.
+
+### Member ordering
+
+Order the members of classes, interfaces, and objects as follows, in Kotlin and Groovy alike
+(the order extends the Checkstyle `DeclarationOrder` and `InnerTypeLast` checks,
+and keeps Kotlin companion objects last as in the Kotlin coding conventions):
+
+1. Groovy static fields.
+2. Groovy static initializers.
+3. Fields and Kotlin properties, other than extension properties.
+4. Initializer blocks and Kotlin `init` blocks.
+5. Constructors (in Kotlin, secondary constructors).
+6. Methods and Kotlin functions, including overrides, other than extension functions.
+7. Kotlin member extensions, grouped by receiver type, the groups sorted alphabetically by the simple name
+   of the receiver type; within each group, extension properties come before extension functions.
+   Grouping by receiver takes precedence over keeping overloads adjacent.
+8. Groovy static methods.
+9. Nested types, including Kotlin nested objects other than the companion.
+10. The Kotlin companion object, whose members follow these same rules.
+
+Within every group, sort members by visibility (public, then protected and Kotlin `internal`,
+then Groovy package-private, then private), fields and properties sharing a visibility by mutability
+(`val`s and `final` fields before `var`s and non-final fields), and then alphabetically by name,
+keeping overloads adjacent.
+
+- Initialization order overrides alphabetical order: fields, properties, and initializer blocks run in
+  declaration order, so a member that reads another one during initialization must stay after it.
+- Properties declared in a primary constructor keep the constructor's parameter order,
+  which is part of its signature.
+- Reorder members only in the classes a change already touches, in a separate `style` commit unless asked otherwise.
 
 ## Commits and releases
 
