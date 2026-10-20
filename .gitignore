@@ -5,3 +5,4 @@ build/
 node_modules/
 out/
 prepare_environment.sh
+*.salive
