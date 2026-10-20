@@ -124,6 +124,45 @@ internal class Tests : StringSpec({
         val expectedVersion = "0.1.0+"
         result shouldContain expectedVersion
     }
+    "snapshot versions (#519)" {
+        val workingDirectory = configuredPlugin(
+            """
+                developmentIdentifier.set("SNAPSHOT")
+                enableDistanceCounter.set(false)
+                enableBuildMetadata.set(false)
+            """.trimIndent(),
+        ) {
+            initGitWithTag()
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 3\"")
+        }
+        val result = workingDirectory.runGradle()
+        println(result)
+        result.lines().any { it.endsWith(": 1.2.4-SNAPSHOT") } shouldBe true
+    }
+    "disabled distance counter keeps build metadata (#519)" {
+        val result = configuredPlugin("enableDistanceCounter.set(false)") {
+            initGitWithTag()
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+        }.runGradle()
+        println(result)
+        result.lines().any { it.matches(Regex(""".*: 1\.2\.4-dev\+[0-9a-f]{7}$""")) } shouldBe true
+    }
+    "disabled build metadata keeps distance counter (#519)" {
+        val result = configuredPlugin("enableBuildMetadata.set(false)") {
+            initGitWithTag()
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+        }.runGradle()
+        println(result)
+        result.lines().any { it.endsWith(": 1.2.4-dev01") } shouldBe true
+    }
+    "disabled build metadata without tags (#519)" {
+        val result = configuredPlugin("enableBuildMetadata.set(false)") {
+            initGit()
+        }.runGradle()
+        println(result)
+        result.lines().any { it.endsWith(": 0.1.0-archeo") } shouldBe true
+    }
     "support for lightweight tags (#323)" {
         val workingDirectory = configuredPlugin()
         with(workingDirectory) {
@@ -211,6 +250,28 @@ internal class Tests : StringSpec({
         println(result)
         val expectedVersion = "2.0.0"
         result shouldContain expectedVersion
+    }
+    "blank development identifier with distance counter fails clearly" {
+        val failure = shouldThrowUnit<UnexpectedBuildFailure> {
+            configuredPlugin("developmentIdentifier.set(\"\")") {
+                initGitWithTag()
+                runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+            }.runGradle()
+        }
+        failure.message shouldContain "developmentIdentifier is blank but enableDistanceCounter is true"
+    }
+    "blank development identifier without distance counter" {
+        val result = configuredPlugin(
+            """
+                developmentIdentifier.set("")
+                enableDistanceCounter.set(false)
+            """.trimIndent(),
+        ) {
+            initGitWithTag()
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+        }.runGradle()
+        println(result)
+        result.lines().any { it.matches(Regex(""".*: 1\.2\.4\+[0-9a-f]{7}$""")) } shouldBe true
     }
 }) {
     companion object {

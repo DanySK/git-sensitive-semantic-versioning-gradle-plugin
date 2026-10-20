@@ -34,7 +34,7 @@ import org.danilopianini.gradle.gitsemver.UpdateType
 ...
 gitSemVer {
     minimumVersion.set("0.1.0")
-    developmentIdentifier.set("dev")
+    developmentIdentifier.set("dev") // Can be blank only if enableDistanceCounter is false
     noTagIdentifier.set("archeo")
     fullHash.set(false) // set to true if you want to use the full git hash
     maxVersionLength.set(Int.MAX_VALUE) // Useful to limit the maximum version length, e.g. Gradle Plugins have a limit on 20
@@ -49,6 +49,8 @@ gitSemVer {
     // In these cases, changing it to "-" is appropriate.
     buildMetadataSeparator.set("+")
     distanceCounterRadix.set(36) // The radix for the commit-distance counter. Must be in the 2-36 range.
+    enableDistanceCounter.set(true) // Whether to append the commit distance from the latest tag (e.g., the `01` in `dev01`)
+    enableBuildMetadata.set(true) // Whether to append the build metadata (the commit hash, or a timestamp if git is unavailable)
     // A prefix on tags that should be ignored when computing the Semantic Version.
     // Many project are versioned with tags named "vX.Y.Z", de-facto building valid SemVer versions but for the leading "v".
     // If it is the case for some project, setting this property to "v" would make these tags readable as SemVer tags.
@@ -59,6 +61,23 @@ gitSemVer {
     commitNameBasedUpdateStrategy { UpdateType.PATCH }
 }
 ```
+
+### Maven-style snapshot versions
+
+Some repositories (e.g., the Maven Central snapshot repository) require development versions to end with `-SNAPSHOT`.
+The distance counter and the build metadata can be disabled to obtain such versions:
+
+```kotlin
+gitSemVer {
+    developmentIdentifier.set("SNAPSHOT")
+    enableDistanceCounter.set(false)
+    enableBuildMetadata.set(false)
+}
+```
+
+With the latest tag being `1.2.3`, any following commit is versioned `1.2.4-SNAPSHOT`
+(or `1.3.0-SNAPSHOT`/`2.0.0-SNAPSHOT`, depending on the configured `commitNameBasedUpdateStrategy`).
+Note that, in this configuration, different commits share the same version.
 
 ### Manually forcing the version computation early
 

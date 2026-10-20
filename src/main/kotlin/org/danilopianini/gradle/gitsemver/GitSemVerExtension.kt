@@ -14,7 +14,8 @@ import org.slf4j.Logger
  *
  * Supports the following properties:
  * - [minimumVersion], defaulting to 0.1.0
- * - [developmentIdentifier], the identifier for the in-development versions
+ * - [developmentIdentifier], the identifier for the in-development versions.
+ *      It can be blank only if [enableDistanceCounter] is false
  * - [noTagIdentifier], the identifier for early versions of the project, when no tags are available yet
  * - [fullHash], whether to use the full commit hash as build metadata
  * - [maxVersionLength], cuts the version to the specified length. Useful for some destinations,
@@ -30,6 +31,11 @@ import org.slf4j.Logger
  *      Some destinations (e.g., the Gradle Plugin Portal) do not support the default value '+'.
  *      A reasonable alternative is using '-', lifting the build metadata to a pre-release segment.
  * - [distanceCounterRadix], the radix for the commit counter. Defaults to base 36. Bases from 2 to 36 allowed.
+ * - [enableBuildMetadata], whether to append the build metadata (commit hash or timestamp) to non-release versions.
+ *      Disabling it, along with [enableDistanceCounter], allows generating Maven-style snapshot versions
+ *      (e.g., 1.2.4-SNAPSHOT, with [developmentIdentifier] set to "SNAPSHOT").
+ * - [enableDistanceCounter], whether to append the commit distance from the latest tag to the
+ *      [developmentIdentifier] in development versions.
  * - [versionPrefix], to be used in case tags are prefixed with some symbols before the semantic version
  *      (e.g., v1.0.0 is prefixed with "v").
  * - [includeLightweightTags], to be used in case lightweight tags should be considered.
@@ -52,6 +58,8 @@ constructor(
     val developmentCounterLength: Property<Int> = objectFactory.propertyWithDefault(2),
     val developmentIdentifier: Property<String> = objectFactory.propertyWithDefault("dev"),
     val distanceCounterRadix: Property<Int> = objectFactory.propertyWithDefault(DEFAULT_RADIX),
+    val enableBuildMetadata: Property<Boolean> = objectFactory.propertyWithDefault(true),
+    val enableDistanceCounter: Property<Boolean> = objectFactory.propertyWithDefault(true),
     val enforceSemanticVersioning: Property<Boolean> = objectFactory.propertyWithDefault(true),
     val forceVersionPropertyName: Property<String> = objectFactory.propertyWithDefault("forceVersion"),
     val fullHash: Property<Boolean> = objectFactory.propertyWithDefault(false),
@@ -175,7 +183,6 @@ constructor(
     fun computeVersion(): String {
         val latestReachableVersion = this.latestReachableVersion
         logger.debug("Closest Semantic Version: {}", latestReachableVersion)
-        val hash: String = hashOrTimeStamp()
         return when (latestReachableVersion) {
             null -> {
                 /*
@@ -189,7 +196,7 @@ constructor(
                             .takeIf { it.isNotBlank() }
                             ?.let { preReleaseSeparator.get() + it }
                             .orEmpty()
-                        "$base${preRelease}${buildMetadataSeparator.get()}$hash"
+                        "$base$preRelease${buildMetadata()}"
                     }
                 }
             }
@@ -222,19 +229,33 @@ constructor(
                             computeReleaseVersion.get() -> currentVersion.toString()
                             else -> {
                                 val devString = developmentIdentifier.get()
+                                require(devString.isNotBlank() || !enableDistanceCounter.get()) {
+                                    "gitSemVer: developmentIdentifier is blank but enableDistanceCounter is true. " +
+                                        "The distance counter alone cannot form a valid Semantic Versioning " +
+                                        "pre-release identifier (e.g., '01' has a leading zero). " +
+                                        "Either set a non-blank developmentIdentifier, " +
+                                        "or disable the counter with enableDistanceCounter.set(false)."
+                                }
                                 val separator = if (devString.isBlank()) "" else preReleaseSeparator.get()
-                                val distanceString = distance.withRadix(
-                                    distanceCounterRadix.get(),
-                                    developmentCounterLength.get(),
-                                )
-                                val buildSeparator = buildMetadataSeparator.get()
-                                "$currentVersion$separator$devString$distanceString$buildSeparator$hash"
+                                val distanceString = when {
+                                    enableDistanceCounter.get() -> distance.withRadix(
+                                        distanceCounterRadix.get(),
+                                        developmentCounterLength.get(),
+                                    )
+                                    else -> ""
+                                }
+                                "$currentVersion$separator$devString$distanceString${buildMetadata()}"
                             }
                         }
                     }
                 }
             }
         }.take(maxVersionLength.get()).also { logger.info("Version computed as: {}", it) }
+    }
+
+    private fun buildMetadata(): String = when {
+        enableBuildMetadata.get() -> buildMetadataSeparator.get() + hashOrTimeStamp()
+        else -> ""
     }
 
     /**
@@ -251,6 +272,8 @@ constructor(
             developmentCounterLength = ${developmentCounterLength.get()}
             developmentIdentifier = "${developmentIdentifier.get()}"
             distanceCounterRadix = ${distanceCounterRadix.get()}
+            enableBuildMetadata = ${enableBuildMetadata.get()}
+            enableDistanceCounter = ${enableDistanceCounter.get()}
             enforceSemanticVersioning = "${enforceSemanticVersioning.get()}"
             forceVersionPropertyName = "${forceVersionPropertyName.get()}"
             fullHash = ${fullHash.get()}
