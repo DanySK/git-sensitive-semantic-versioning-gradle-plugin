@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.publishOnCentral)
     alias(libs.plugins.multiJvmTesting)
     alias(libs.plugins.taskTree)
+    alias(libs.plugins.testkitJacoco)
 }
 
 group = "org.danilopianini"
@@ -39,10 +40,11 @@ repositories {
     gradlePluginPortal()
 }
 
+val functionalTest = "functionalTest"
 testing {
     suites {
         val test = getByName<JvmTestSuite>("test")
-        register<JvmTestSuite>("functionalTest") {
+        register<JvmTestSuite>(functionalTest) {
             useSpock(libs.versions.spock)
             dependencies { implementation(project()) }
             targets {
@@ -100,6 +102,10 @@ tasks {
             events(*TestLogEvent.entries.toTypedArray())
         }
     }
+    jacocoTestReport {
+        // TestKit coverage from every test task is dumped into the execution data of `test`
+        dependsOn(test, functionalTest)
+    }
 }
 
 if ("true" == System.getenv("CI")) {
@@ -152,7 +158,7 @@ gradlePlugin {
         }
         testSourceSets(
             sourceSets.test.get(),
-            sourceSets.named("functionalTest").get(),
+            sourceSets.named(functionalTest).get(),
         )
     }
 }
