@@ -163,6 +163,74 @@ internal class Tests : StringSpec({
         println(result)
         result.lines().any { it.endsWith(": 0.1.0-archeo") } shouldBe true
     }
+    "dirty marker on a tagged commit (#823)" {
+        val result = configuredPlugin("enableDirtyMarker.set(true)") {
+            initGitWithTag()
+            changeTrackedFile()
+        }.runGradle()
+        println(result)
+        result.lines().any { it.endsWith(": 1.2.3+dirty") } shouldBe true
+    }
+    "dirty marker on a development version (#823)" {
+        val result = configuredPlugin("enableDirtyMarker.set(true)") {
+            initGitWithTag()
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+            changeTrackedFile()
+        }.runGradle()
+        println(result)
+        result.lines().any { it.matches(Regex(""".*: 1\.2\.4-dev01\+[0-9a-f]{7}\.dirty$""")) } shouldBe true
+    }
+    "staged changes are dirty, untracked files are not (#823)" {
+        val workingDirectory = configuredPlugin("enableDirtyMarker.set(true)") {
+            initGitWithTag()
+            file("untracked") { "untracked" }
+        }
+        val result = workingDirectory.runGradle()
+        println(result)
+        result.lines().any { it.endsWith(": 1.2.3") } shouldBe true
+        workingDirectory.runCommand("git add untracked")
+        val newResult = workingDirectory.runGradle()
+        println(newResult)
+        newResult.lines().any { it.endsWith(": 1.2.3+dirty") } shouldBe true
+    }
+    "dirty marker is disabled by default (#823)" {
+        val result = configuredPlugin {
+            initGitWithTag()
+            changeTrackedFile()
+        }.runGradle()
+        println(result)
+        result.lines().any { it.endsWith(": 1.2.3") } shouldBe true
+    }
+    "custom dirty identifier without build metadata (#823)" {
+        val result = configuredPlugin(
+            """
+                enableDirtyMarker.set(true)
+                dirtyIdentifier.set("local")
+                enableBuildMetadata.set(false)
+            """.trimIndent(),
+        ) {
+            initGitWithTag()
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+            changeTrackedFile()
+        }.runGradle()
+        println(result)
+        result.lines().any { it.endsWith(": 1.2.4-dev01+local") } shouldBe true
+    }
+    "dirty marker survives maxVersionLength (#823)" {
+        val result = configuredPlugin(
+            """
+                enableDirtyMarker.set(true)
+                maxVersionLength.set(20)
+                buildMetadataSeparator.set("-")
+            """.trimIndent(),
+        ) {
+            initGitWithTag()
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+            changeTrackedFile()
+        }.runGradle()
+        println(result)
+        result.lines().any { it.matches(Regex(""".*: 1\.2\.4-dev01-[0-9a-f]{2}\.dirty$""")) } shouldBe true
+    }
     "support for lightweight tags (#323)" {
         val workingDirectory = configuredPlugin()
         with(workingDirectory) {
@@ -276,6 +344,8 @@ internal class Tests : StringSpec({
 }) {
     companion object {
         fun folder(closure: Path.() -> Unit) = createTempDirectory("gitSemVerTest").apply(closure)
+
+        fun Path.changeTrackedFile() = resolve("settings.gradle").toFile().appendText("\n// uncommitted change\n")
 
         fun Path.file(name: String, content: () -> String) = resolve(name).createFile()
             .toFile().writeText(content().trimIndent())
