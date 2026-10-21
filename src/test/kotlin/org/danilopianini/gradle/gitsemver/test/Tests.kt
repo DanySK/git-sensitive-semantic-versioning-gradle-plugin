@@ -2,6 +2,7 @@ package org.danilopianini.gradle.gitsemver.test
 
 import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.ints.shouldBeAtMost
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
@@ -12,6 +13,9 @@ import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
 import kotlin.io.path.createTempDirectory
+import kotlin.io.path.createTempFile
+import kotlin.io.path.exists
+import kotlin.io.path.readLines
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 
@@ -341,8 +345,22 @@ internal class Tests : StringSpec({
         println(result)
         result.lines().any { it.matches(Regex(""".*: 1\.2\.4\+[0-9a-f]{7}$""")) } shouldBe true
     }
+    "git invocations in a multi-project build" {
+        val workingDirectory = configuredMultiplatformLikePlugin {
+            initGitWithTag()
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+        }
+        val (output, gitCommands) = workingDirectory.runGradleTracingGit()
+        println(output)
+        println(gitCommands.joinToString(separator = "\n", prefix = "git invocations:\n"))
+        output.lines().count { it.matches(Regex(""".*: 1\.2\.4-dev01\+[0-9a-f]{7}$""")) } shouldBe 4
+        gitCommands.size shouldBeAtMost BASELINE_GIT_INVOCATIONS
+    }
 }) {
     companion object {
+        // Four projects, each running the same four git commands independently
+        private const val BASELINE_GIT_INVOCATIONS = 16
+
         fun folder(closure: Path.() -> Unit) = createTempDirectory("gitSemVerTest").apply(closure)
 
         fun Path.changeTrackedFile() = resolve("settings.gradle").toFile().appendText("\n// uncommitted change\n")
@@ -404,6 +422,29 @@ internal class Tests : StringSpec({
             .build()
             .output
 
+        /**
+         * Runs Gradle with git tracing enabled, returning the build output
+         * and the list of git commands that the build executed.
+         */
+        fun Path.runGradleTracingGit(
+            vararg arguments: String = arrayOf("printGitSemVer", "--stacktrace"),
+        ): Pair<String, List<String>> {
+            val traceFile = createTempFile("gitSemVerTrace", ".log")
+            val output = GradleRunner
+                .create()
+                .withProjectDir(toFile())
+                .withPluginClasspath()
+                .withEnvironment(System.getenv() + ("GIT_TRACE" to traceFile.absolutePathString()))
+                .withArguments(*arguments)
+                .build()
+                .output
+            val gitCommands = traceFile.takeIf { it.exists() }
+                ?.readLines()
+                ?.mapNotNull { line -> line.substringAfter("trace: built-in: ", "").takeIf { it.isNotEmpty() } }
+                .orEmpty()
+            return output to gitCommands
+        }
+
         fun configuredPlugin(pluginConfiguration: String = "", otherChecks: Path.() -> Unit = {}): Path = folder {
             file("settings.gradle") {
                 """
@@ -427,7 +468,10 @@ internal class Tests : StringSpec({
             otherChecks()
         }
 
-        fun configuredMultiplatformLikePlugin(extraConfiguration: String = ""): Path = folder {
+        fun configuredMultiplatformLikePlugin(
+            extraConfiguration: String = "",
+            otherChecks: Path.() -> Unit = {},
+        ): Path = folder {
             listOf("a", "b", "c").forEach { resolve(it).createDirectories() }
             file("settings.gradle") {
                 """
@@ -452,6 +496,7 @@ internal class Tests : StringSpec({
                     $extraConfiguration
                 """.trimIndent()
             }
+            otherChecks()
         }
     }
 }
