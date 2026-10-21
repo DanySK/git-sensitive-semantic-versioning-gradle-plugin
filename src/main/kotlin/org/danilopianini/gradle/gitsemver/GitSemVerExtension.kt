@@ -146,12 +146,22 @@ constructor(
     val latestReachableVersion: SemanticVersion? by lazy {
         val reachableTags = when {
             includeLightweightTags.get() ->
-                runCommand("git", "tag", "--merged", "HEAD")
+                runCommand("git", "tag", "--merged", "HEAD")?.lineSequence()
             else ->
-                runCommand("git", "for-each-ref", "--merged", "HEAD", "--format='%(refname:short)'", "refs/tags")
-        }
+                // Annotated tags are tag objects, lightweight tags point directly to a commit
+                runCommand(
+                    "git",
+                    "for-each-ref",
+                    "--merged",
+                    "HEAD",
+                    "--format=%(objecttype) %(refname:short)",
+                    "refs/tags",
+                )?.lineSequence()
+                    ?.filter { it.startsWith("tag ") }
+                    ?.map { it.removePrefix("tag ") }
+        }?.toList()
         logger.info("Reachable tags: {}", reachableTags)
-        reachableTags?.lineSequence()
+        reachableTags?.asSequence()
             ?.filter { it.startsWith(versionPrefix.get()) }
             ?.map { it.removePrefix(versionPrefix.get()) }
             ?.mapNotNull { SemanticVersion.fromStringOrNull(it) }
@@ -195,7 +205,7 @@ constructor(
     }
 
     /**
-     * If called, the system will also consider non-annotated tags.
+     * If called, the system will ignore non-annotated (lightweight) tags, considering only annotated ones.
      */
     fun excludeLightweightTags() {
         includeLightweightTags.set(false)

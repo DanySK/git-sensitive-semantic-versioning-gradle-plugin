@@ -255,6 +255,19 @@ internal class Tests : StringSpec({
         }
         workingDirectory.runGradle() shouldNotContain "1.2.3"
     }
+    "exclusion of lightweight tags keeps annotated tags" {
+        val workingDirectory = configuredPlugin(
+            """
+                excludeLightweightTags()
+            """.trimIndent(),
+        ) {
+            initGitWithTag()
+            runCommand("git", "tag", "2.0.0")
+        }
+        val result = workingDirectory.runGradle()
+        println(result)
+        result.lines().any { it.endsWith(": 1.2.3") } shouldBe true
+    }
     "force the version" {
         val result = configuredPlugin().runGradle("-PforceVersion=1.2.3", "printGitSemVer", "--stacktrace")
         print(result)
