@@ -30,17 +30,30 @@ internal class GitRepositoryState(providerFactory: ProviderFactory, private val 
         }
 
     /**
-     * The number of commits reachable from HEAD but not from [revision].
-     * Fails if git cannot compute it, as [revision] is expected to come from this repository.
+     * The HEAD commit, or null if there is none (e.g., outside a repository, or in a repository with no commits).
+     * Queries that find HEAD (e.g., [commitsSince]) store it, otherwise git is asked for it on first access.
+     * Concurrent accesses may find it more than once, which is harmless.
      */
-    fun distanceFrom(revision: String): Long = runSuccessfully("rev-list", "--count", "$revision..HEAD").output.toLong()
+    @Volatile
+    private var head: Commit? = null
+        get() = field ?: runSuccessfullyOrNull("log", "-1", "--no-decorate", COMMIT_FORMAT)
+            ?.toCommits()
+            ?.firstOrNull()
+            ?.also { field = it }
+
+    /**
+     * The commits reachable from HEAD but not from [revision], most recent first (hence, HEAD first, if any).
+     * Fails if git cannot list them, as [revision] is expected to come from this repository.
+     */
+    fun commitsSince(revision: String): Sequence<Commit> =
+        runSuccessfully("log", "--no-decorate", COMMIT_FORMAT, "$revision..HEAD").output.toCommits()
+            .also { commits -> commits.firstOrNull()?.let { head = it } }
 
     /**
      * The hash of the HEAD commit, abbreviated unless [full] is true,
      * or null if there is no commit to point to (e.g., outside a repository, or in a repository with no commits).
      */
-    fun headHash(full: Boolean): String? =
-        runSuccessfullyOrNull("log", "-1", "--format=%${if (full) "H" else "h"}")?.takeIf { it.isNotEmpty() }
+    fun headHash(full: Boolean): String? = head?.let { if (full) it.hash else it.abbreviatedHash }
 
     /**
      * Whether tracked files have uncommitted changes (untracked files are ignored).
@@ -48,17 +61,6 @@ internal class GitRepositoryState(providerFactory: ProviderFactory, private val 
      */
     fun isWorkingTreeDirty(): Boolean =
         runSuccessfullyOrNull("status", "--porcelain", "--untracked-files=no")?.isNotEmpty() ?: false
-
-    /**
-     * The subjects of the last [count] commits, starting from HEAD.
-     * Fails if git cannot list them, as the caller is expected to know that they exist.
-     */
-    fun lastCommitMessages(count: Long): List<String> =
-        runSuccessfully("log", "--oneline", "-$count", "--no-decorate", "--format=%s")
-            .output
-            .takeIf { it.isNotEmpty() }
-            ?.lines()
-            .orEmpty()
 
     /**
      * The names of the tags reachable from HEAD, or null if git cannot list them (e.g., outside a repository).
@@ -94,4 +96,20 @@ internal class GitRepositoryState(providerFactory: ProviderFactory, private val 
     }
 
     private fun runSuccessfullyOrNull(vararg arguments: String): String? = (run(*arguments) as? Success)?.output
+
+    private fun String.toCommits(): Sequence<Commit> = takeIf { it.isNotEmpty() }
+        ?.lineSequence()
+        ?.map { line ->
+            val (hash, abbreviatedHash, subject) = line.split(FIELD_SEPARATOR, limit = 3)
+            Commit(hash, abbreviatedHash, subject)
+        }
+        .orEmpty()
+
+    private companion object {
+        // Full hash, abbreviated hash, and subject, separated by FIELD_SEPARATOR
+        private const val COMMIT_FORMAT = "--format=%H%x00%h%x00%s"
+
+        // Separates the fields of a commit in the output of git log (%x00), as it cannot appear in a subject
+        private const val FIELD_SEPARATOR = '\u0000'
+    }
 }

@@ -336,6 +336,31 @@ internal class Tests : StringSpec({
         val expectedVersion = "2.0.0"
         result shouldContain expectedVersion
     }
+    "the update strategy receives exactly the commits since the tag in merge histories" {
+        val workingDirectory = configuredPlugin(
+            """
+                commitNameBasedUpdateStrategy { messages ->
+                    if (messages.any { "!" in it }) UpdateType.MAJOR else UpdateType.PATCH
+                }
+            """.trimIndent(),
+        ) {
+            initGit()
+            fun commitOn(date: String, vararg command: String) = runCommand(
+                *command,
+                environment = mapOf("GIT_AUTHOR_DATE" to date, "GIT_COMMITTER_DATE" to date),
+            )
+            runCommand("git", "checkout", "-b", "side")
+            commitOn("2000-01-01T00:00:00Z", "git", "commit", "--allow-empty", "-m", "fix: side change")
+            runCommand("git", "checkout", "-")
+            // Already released, but newer than the side change: `git log -2` from the merge would include it
+            commitOn("2000-01-03T00:00:00Z", "git", "commit", "--allow-empty", "-m", "feat!: breaking change")
+            runCommand("git", "tag", "-a", "1.2.3", "-m", "\"test\"")
+            commitOn("2000-01-04T00:00:00Z", "git", "merge", "--no-ff", "side", "-m", "merge side")
+        }
+        val result = workingDirectory.runGradle()
+        println(result)
+        result.lines().any { it.matches(Regex(""".*GitSemVer: 1\.2\.4-dev02\+[0-9a-f]{7}$""")) } shouldBe true
+    }
     "blank development identifier with distance counter fails clearly" {
         val failure = shouldThrowUnit<UnexpectedBuildFailure> {
             configuredPlugin("developmentIdentifier.set(\"\")") {
@@ -409,11 +434,13 @@ internal class Tests : StringSpec({
     }
 }) {
     companion object {
-        // Four projects, each running the same four git commands once (52 before caching the git output)
-        private const val MULTI_PROJECT_GIT_INVOCATIONS = 16
+        // Four projects, each listing tags and the commits since the latest one
+        // (52 before caching the git output, 16 before reading distance, messages, and hash with a single git log)
+        private const val MULTI_PROJECT_GIT_INVOCATIONS = 8
 
-        // A single project computing a development version runs four distinct git commands
-        private const val SINGLE_PROJECT_GIT_INVOCATIONS = 4
+        // Tags, plus the HEAD hash for the early (untagged) version and the commits since the tag for the final one
+        // (4 before reading distance, messages, and hash with a single git log)
+        private const val SINGLE_PROJECT_GIT_INVOCATIONS = 3
 
         fun folder(closure: Path.() -> Unit) = createTempDirectory("gitSemVerTest").apply(closure)
 
@@ -422,7 +449,7 @@ internal class Tests : StringSpec({
         fun Path.file(name: String, content: () -> String) = resolve(name).createFile()
             .toFile().writeText(content().trimIndent())
 
-        fun Path.runCommand(vararg command: String, wait: Long = 10) {
+        fun Path.runCommand(vararg command: String, wait: Long = 10, environment: Map<String, String> = emptyMap()) {
             val process = ProcessBuilder(*command)
                 .directory(toFile())
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
@@ -434,6 +461,7 @@ internal class Tests : StringSpec({
                         env["PATH"] = System.getenv("PATH")
                         env["HOME"] = resolve(".git/.home.d/").absolutePathString()
                         env["GIT_CONFIG_NOSYSTEM"] = "true"
+                        env.putAll(environment)
                     }
                 }
                 .start()

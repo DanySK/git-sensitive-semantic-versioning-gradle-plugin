@@ -246,13 +246,13 @@ constructor(
                 if (!latestReachableVersion.buildMetadata.isEmpty()) {
                     logger.warn("Build metadata of closest tag $latestReachableVersion will be ignored.")
                 }
-                val distance = repository.distanceFrom("${versionPrefix.get()}$latestReachableVersion")
-                when (distance) {
-                    0L -> latestReachableVersion.toGeneralizedVersion()
+                val commits = repository.commitsSince("${versionPrefix.get()}$latestReachableVersion")
+                val messages = commits.map { it.subject }.toList()
+                when {
+                    messages.isEmpty() -> latestReachableVersion.toGeneralizedVersion()
                     else -> {
-                        val lastCommits = repository.lastCommitMessages(distance)
                         val currentVersion = maxOf(
-                            updateStrategy(lastCommits).incrementVersion(latestReachableVersion),
+                            updateStrategy(messages).incrementVersion(latestReachableVersion),
                             minSemanticVersion(),
                         ).withoutBuildMetadata()
                         when {
@@ -267,7 +267,7 @@ constructor(
                                         "or disable the counter with enableDistanceCounter.set(false)."
                                 }
                                 val distanceString = when {
-                                    enableDistanceCounter.get() -> distance.withRadix(
+                                    enableDistanceCounter.get() -> messages.size.withRadix(
                                         distanceCounterRadix.get(),
                                         developmentCounterLength.get(),
                                     )
@@ -337,7 +337,7 @@ constructor(
         private inline fun <reified T : Any> ObjectFactory.propertyWithDefault(default: T): Property<T> =
             property(T::class.java).apply { convention(default) }
 
-        private fun Long.withRadix(radix: Int, digits: Int? = null) = toString(radix).let {
+        private fun Int.withRadix(radix: Int, digits: Int? = null) = toString(radix).let {
             if (digits == null || it.length >= digits) {
                 it
             } else {
