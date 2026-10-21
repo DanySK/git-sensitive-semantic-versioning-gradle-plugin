@@ -371,8 +371,6 @@ internal class Tests : StringSpec({
             runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
         }
         val (output, gitCommands) = workingDirectory.runGradleTracingGit()
-        println(output)
-        println(gitCommands.joinToString(separator = "\n", prefix = "git invocations:\n"))
         output.lines().count { it.matches(Regex(""".*GitSemVer: 1\.2\.4-dev01\+[0-9a-f]{7}$""")) } shouldBe 4
         output.lines().count {
             it.matches(Regex("""Configuration-time version of .*: 1\.2\.4-dev01\+[0-9a-f]{7}$"""))
@@ -404,8 +402,6 @@ internal class Tests : StringSpec({
             runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
         }
         val (output, gitCommands) = workingDirectory.runGradleTracingGit()
-        println(output)
-        println(gitCommands.joinToString(separator = "\n", prefix = "git invocations:\n"))
         output.lines().count { it.matches(Regex("""Early version: 0\.1\.0-archeo\+[0-9a-f]{7}$""")) } shouldBe 3
         output.lines().any { it.matches(Regex("""Configured version: 1\.2\.4-foo01\+[0-9a-f]{7}$""")) } shouldBe true
         output.lines().any { it.matches(Regex(""".*GitSemVer: 1\.2\.4-foo01\+[0-9a-f]{7}$""")) } shouldBe true
@@ -481,7 +477,7 @@ internal class Tests : StringSpec({
             .output
 
         /**
-         * Runs Gradle with git tracing enabled, returning the build output
+         * Runs Gradle with git tracing enabled, printing and returning the build output
          * and the list of git commands that the build executed.
          */
         fun Path.runGradleTracingGit(
@@ -500,6 +496,8 @@ internal class Tests : StringSpec({
                 ?.readLines()
                 ?.mapNotNull { line -> line.substringAfter("trace: built-in: ", "").takeIf { it.isNotEmpty() } }
                 .orEmpty()
+            println(output)
+            println(gitCommands.joinToString(separator = "\n", prefix = "git invocations:\n"))
             return output to gitCommands
         }
 
