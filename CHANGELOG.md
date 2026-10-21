@@ -1,3 +1,10 @@
+## [7.3.3](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.3.2...7.3.3) (2026-10-21)
+
+### Performance improvements
+
+* pass exactly the commits since the latest tag to the update strategy ([53a73b7](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/53a73b7ff7caef519f4a12f8a140f874c64d86c2))
+* share the git repository state across projects ([@gciatto](https://github.com/gciatto) will now be happy and owe me a beer) ([83f2851](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/83f285164343dda3b308dce23f66775e9a3ac86a))
+
 ## [7.3.2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.3.1...7.3.2) (2026-10-21)
 
 ### Performance improvements
