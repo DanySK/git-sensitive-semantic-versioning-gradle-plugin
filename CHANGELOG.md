@@ -1,3 +1,17 @@
+## [7.3.2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.3.1...7.3.2) (2026-10-21)
+
+### Performance improvements
+
+* run each git command at most once per project ([3e70945](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/3e7094514a75e3b71326edad455da8c238c48719))
+
+### Tests
+
+* print git tracing results from the tracing helper ([5be7fb2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/5be7fb217b97e2bd39cbe684ec6fd13688d94ba8))
+
+### Refactoring
+
+* move git queries to GitRepositoryState ([c44a58c](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c44a58c246007305b96916697d5afcedb8dd531f))
+
 ## [7.3.1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.3.0...7.3.1) (2026-10-21)
 
 ### Dependency updates
