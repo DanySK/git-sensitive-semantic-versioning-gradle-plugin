@@ -70,6 +70,7 @@ dependencies {
     api(gradleApi())
     api(gradleKotlinDsl())
     implementation(kotlin("stdlib"))
+    implementation(libs.caffeine)
     testImplementation(gradleTestKit())
     testImplementation(kotlin("test"))
     testImplementation(libs.bundles.kotlin.testing)

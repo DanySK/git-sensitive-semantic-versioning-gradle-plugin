@@ -1,13 +1,9 @@
 package org.danilopianini.gradle.gitsemver.source
 
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.nio.charset.Charset
 import javax.inject.Inject
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.provider.ValueSource
-import org.gradle.api.provider.ValueSourceParameters
 import org.gradle.process.ExecOperations
 
 /**
@@ -33,19 +29,4 @@ abstract class GitCommandValueSource : ValueSource<String, Parameters> {
         }
         return String(output.toByteArray(), Charset.defaultCharset())
     }
-}
-
-/**
- * Parameters for passing down git command list.
- */
-interface Parameters : ValueSourceParameters {
-    /**
-     * List of commands to execute in an external process.
-     */
-    val commands: ListProperty<String>
-
-    /**
-     * Working directory to execute external process in.
-     */
-    val directory: Property<File>
 }

@@ -359,20 +359,65 @@ internal class Tests : StringSpec({
         result.lines().any { it.matches(Regex(""".*: 1\.2\.4\+[0-9a-f]{7}$""")) } shouldBe true
     }
     "git invocations in a multi-project build" {
-        val workingDirectory = configuredMultiplatformLikePlugin {
+        val workingDirectory = configuredMultiplatformLikePlugin(
+            // Other plugins (e.g., publishing) usually read the version multiple times during configuration
+            $$"""
+                allprojects {
+                    repeat(3) { println("Configuration-time version of $path: $version") }
+                }
+            """.trimIndent(),
+        ) {
             initGitWithTag()
             runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
         }
         val (output, gitCommands) = workingDirectory.runGradleTracingGit()
         println(output)
         println(gitCommands.joinToString(separator = "\n", prefix = "git invocations:\n"))
-        output.lines().count { it.matches(Regex(""".*: 1\.2\.4-dev01\+[0-9a-f]{7}$""")) } shouldBe 4
-        gitCommands.size shouldBeAtMost BASELINE_GIT_INVOCATIONS
+        output.lines().count { it.matches(Regex(""".*GitSemVer: 1\.2\.4-dev01\+[0-9a-f]{7}$""")) } shouldBe 4
+        output.lines().count {
+            it.matches(Regex("""Configuration-time version of .*: 1\.2\.4-dev01\+[0-9a-f]{7}$"""))
+        } shouldBe 12
+        gitCommands.size shouldBeAtMost MULTI_PROJECT_GIT_INVOCATIONS
+    }
+    "reading the version during configuration does not run git again and follows later configuration" {
+        val workingDirectory = folder {
+            file("settings.gradle") {
+                """
+                    plugins { id("jacoco-testkit-coverage") }
+                    rootProject.name = 'testproject'
+                """.trimIndent()
+            }
+            file("build.gradle.kts") {
+                $$"""
+                    plugins {
+                        id("org.danilopianini.git-semver")
+                    }
+                    repeat(3) { println("Early version: $version") }
+                    gitSemVer {
+                        versionPrefix.set("v")
+                        developmentIdentifier.set("foo")
+                    }
+                    println("Configured version: $version")
+                """.trimIndent()
+            }
+            initGitWithPrefixedTag()
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+        }
+        val (output, gitCommands) = workingDirectory.runGradleTracingGit()
+        println(output)
+        println(gitCommands.joinToString(separator = "\n", prefix = "git invocations:\n"))
+        output.lines().count { it.matches(Regex("""Early version: 0\.1\.0-archeo\+[0-9a-f]{7}$""")) } shouldBe 3
+        output.lines().any { it.matches(Regex("""Configured version: 1\.2\.4-foo01\+[0-9a-f]{7}$""")) } shouldBe true
+        output.lines().any { it.matches(Regex(""".*GitSemVer: 1\.2\.4-foo01\+[0-9a-f]{7}$""")) } shouldBe true
+        gitCommands.size shouldBeAtMost SINGLE_PROJECT_GIT_INVOCATIONS
     }
 }) {
     companion object {
-        // Four projects, each running the same four git commands independently
-        private const val BASELINE_GIT_INVOCATIONS = 16
+        // Four projects, each running the same four git commands once (52 before caching the git output)
+        private const val MULTI_PROJECT_GIT_INVOCATIONS = 16
+
+        // A single project computing a development version runs four distinct git commands
+        private const val SINGLE_PROJECT_GIT_INVOCATIONS = 4
 
         fun folder(closure: Path.() -> Unit) = createTempDirectory("gitSemVerTest").apply(closure)
 
