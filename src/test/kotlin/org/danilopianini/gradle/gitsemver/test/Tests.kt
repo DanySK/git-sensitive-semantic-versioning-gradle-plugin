@@ -383,6 +383,29 @@ internal class Tests : StringSpec({
         println(result)
         result.lines().any { it.matches(Regex(""".*: 1\.2\.4\+[0-9a-f]{7}$""")) } shouldBe true
     }
+    "a subproject in a nested git repository gets its own version" {
+        val workingDirectory = configuredMultiplatformLikePlugin(
+            $$"""
+                allprojects {
+                    println("Version of $path: $version")
+                }
+            """.trimIndent(),
+        ) {
+            initGitWithTag()
+            runCommand("git", "commit", "--allow-empty", "-m", "\"Test commit 2\"")
+            with(resolve("a")) {
+                file("README.md") { "Nested repository" }
+                initGit()
+                runCommand("git", "tag", "-a", "5.0.0", "-m", "\"nested\"")
+            }
+        }
+        val result = workingDirectory.runGradle()
+        println(result)
+        result.lines().any { it == "Version of :a: 5.0.0" } shouldBe true
+        listOf(":", ":b", ":c").forEach { path ->
+            result.lines().any { it.matches(Regex("""Version of $path: 1\.2\.4-dev01\+[0-9a-f]{7}""")) } shouldBe true
+        }
+    }
     "git invocations in a multi-project build" {
         val workingDirectory = configuredMultiplatformLikePlugin(
             // Other plugins (e.g., publishing) usually read the version multiple times during configuration
@@ -430,17 +453,18 @@ internal class Tests : StringSpec({
         output.lines().count { it.matches(Regex("""Early version: 0\.1\.0-archeo\+[0-9a-f]{7}$""")) } shouldBe 3
         output.lines().any { it.matches(Regex("""Configured version: 1\.2\.4-foo01\+[0-9a-f]{7}$""")) } shouldBe true
         output.lines().any { it.matches(Regex(""".*GitSemVer: 1\.2\.4-foo01\+[0-9a-f]{7}$""")) } shouldBe true
-        gitCommands.size shouldBeAtMost SINGLE_PROJECT_GIT_INVOCATIONS
+        gitCommands.size shouldBeAtMost RECONFIGURED_PROJECT_GIT_INVOCATIONS
     }
 }) {
     companion object {
-        // Four projects, each listing tags and the commits since the latest one
-        // (52 before caching the git output, 16 before reading distance, messages, and hash with a single git log)
-        private const val MULTI_PROJECT_GIT_INVOCATIONS = 8
+        // Four projects sharing a single repository: tags and the commits since the latest one are read once
+        private const val MULTI_PROJECT_GIT_INVOCATIONS = 2
 
-        // Tags, plus the HEAD hash for the early (untagged) version and the commits since the tag for the final one
+        // A project whose configuration changes between version reads takes two paths, sharing the tag list:
+        // the early reads find no matching tag and need the HEAD hash (git log -1),
+        // the later ones find the tag and need the commits since it (git log <tag>..HEAD).
         // (4 before reading distance, messages, and hash with a single git log)
-        private const val SINGLE_PROJECT_GIT_INVOCATIONS = 3
+        private const val RECONFIGURED_PROJECT_GIT_INVOCATIONS = 3
 
         fun folder(closure: Path.() -> Unit) = createTempDirectory("gitSemVerTest").apply(closure)
 

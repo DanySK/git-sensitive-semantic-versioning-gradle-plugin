@@ -56,6 +56,7 @@ constructor(
     private val logger: Logger,
     // Detekt false positive. TODO: remove once fixed upstream
     @Suppress("UnusedPrivateProperty") private val forcedVersionLogger: Provider<ForcedVersionLoggerService>,
+    repositoryStates: Provider<GitRepositoryStateService>,
     val buildMetadataSeparator: Property<String> = objectFactory.propertyWithDefault("+"),
     val computeReleaseVersion: Property<Boolean> = objectFactory.propertyWithDefault(false),
     val developmentCounterLength: Property<Int> = objectFactory.propertyWithDefault(2),
@@ -77,7 +78,10 @@ constructor(
     private var updateStrategy: (List<String>) -> UpdateType = { _ -> UpdateType.PATCH },
 ) {
 
-    private val repository = GitRepositoryState(providerFactory, projectDir)
+    /*
+     * Shared with the other projects in the same git repository, resolved on the first git query.
+     */
+    private val repository by lazy { repositoryStates.get().stateOf(projectDir) }
 
     /**
      * The version computed by the plugin, computed lazily.

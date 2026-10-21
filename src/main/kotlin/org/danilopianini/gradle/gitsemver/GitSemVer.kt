@@ -18,6 +18,10 @@ class GitSemVer @Inject constructor(
             "gitSemVerForcedVersionLogger",
             ForcedVersionLoggerService::class.java,
         ) {}
+        val repositoryStates = gradle.sharedServices.registerIfAbsent(
+            "gitSemVerRepositoryStates",
+            GitRepositoryStateService::class.java,
+        ) {}
         val extension = createExtension<GitSemVerExtension>(
             GitSemVerExtension.EXTENSION_NAME,
             this,
@@ -26,6 +30,7 @@ class GitSemVer @Inject constructor(
             projectDir,
             logger,
             forcedVersionLogger,
+            repositoryStates,
         )
         project.version = extension.gitSensitiveSemanticVersion
         tasks.register("printGitSemVer") {
