@@ -1,3 +1,17 @@
+## [7.3.1](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.3.0...7.3.1) (2026-10-21)
+
+### Dependency updates
+
+* **deps:** update plugin gitsemver to v7.3.0 ([c39f487](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/c39f487d9cab189652c73bd35b8274ea3b96f496))
+
+### Bug Fixes
+
+* make excludeLightweightTags() consider annotated tags ([25576ed](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/25576ed7e5a57dbdd2755d7d53dc2f684f6e6bdf))
+
+### Tests
+
+* add a performance test counting how many git commands get executed ([28184e2](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/28184e26b0e86a52840991955a73cff3bd46f3e4))
+
 ## [7.3.0](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.2.0...7.3.0) (2026-10-20)
 
 ### Features
