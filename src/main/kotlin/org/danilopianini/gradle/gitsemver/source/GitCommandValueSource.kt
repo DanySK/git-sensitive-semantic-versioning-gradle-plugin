@@ -8,18 +8,19 @@ import org.gradle.process.ExecOperations
 
 /**
  * Value source for reading results of external git commands.
+ * Failures do not raise exceptions: they are reported as [GitCommandExecutionResult.Failure].
+ * The output is trimmed.
  */
-abstract class GitCommandValueSource : ValueSource<String, Parameters> {
+abstract class GitCommandValueSource : ValueSource<GitCommandExecutionResult, Parameters> {
     /**
      * Execution operations instance to execute external process.
      */
     @get:Inject
     abstract val execOperations: ExecOperations
 
-    override fun obtain(): String {
+    override fun obtain(): GitCommandExecutionResult {
         val output = ByteArrayOutputStream()
-
-        execOperations.exec {
+        val result = execOperations.exec {
             it.apply {
                 commandLine = parameters.commands.get()
                 workingDir = parameters.directory.get()
@@ -27,6 +28,10 @@ abstract class GitCommandValueSource : ValueSource<String, Parameters> {
                 isIgnoreExitValue = true
             }
         }
-        return String(output.toByteArray(), Charset.defaultCharset())
+        val text = String(output.toByteArray(), Charset.defaultCharset()).trim()
+        return when (result.exitValue) {
+            0 -> GitCommandExecutionResult.Success(text)
+            else -> GitCommandExecutionResult.Failure(text, result.exitValue)
+        }
     }
 }

@@ -1,7 +1,5 @@
 package org.danilopianini.gradle.gitsemver
 
-import com.github.benmanes.caffeine.cache.Caffeine
-import com.github.benmanes.caffeine.cache.LoadingCache
 import java.io.File
 import org.danilopianini.gradle.gitsemver.source.GitCommandValueSource
 import org.gradle.api.Project
@@ -52,8 +50,7 @@ open class GitSemVerExtension
 constructor(
     // Detekt false positive TODO: remove once fixed upstream
     @Suppress("UnusedPrivateProperty") private val project: Project,
-    // Detekt false positive (only used in the cache loader). TODO: remove once fixed upstream
-    @Suppress("UnusedPrivateProperty") private val providerFactory: ProviderFactory,
+    private val providerFactory: ProviderFactory,
     private val objectFactory: ObjectFactory,
     private val projectDir: File,
     private val logger: Logger,
@@ -80,19 +77,7 @@ constructor(
     private var updateStrategy: (List<String>) -> UpdateType = { _ -> UpdateType.PATCH },
 ) {
 
-    /**
-     * Trimmed output of the git commands, keyed by command line, loaded on first access.
-     * The repository is assumed to not change during a build, so each command runs at most once per extension.
-     * Empty outputs are stored as empty strings, as Caffeine does not cache null values.
-     */
-    private val gitCommandOutputs: LoadingCache<List<String>, String> = Caffeine.newBuilder().build { cmd ->
-        providerFactory.of(GitCommandValueSource::class.java) {
-            it.parameters { params ->
-                params.commands.set(cmd)
-                params.directory.set(projectDir)
-            }
-        }.get().trim()
-    }
+    private val repository = GitRepositoryState(providerFactory, projectDir)
 
     /**
      * The version computed by the plugin, computed lazily.
@@ -156,22 +141,7 @@ constructor(
      * The git output is cached, but the result reflects the current configuration.
      */
     val latestReachableVersion: SemanticVersion? get() {
-        val reachableTags = when {
-            includeLightweightTags.get() ->
-                runCommand("git", "tag", "--merged", "HEAD")?.lineSequence()
-            else ->
-                // Annotated tags are tag objects, lightweight tags point directly to a commit
-                runCommand(
-                    "git",
-                    "for-each-ref",
-                    "--merged",
-                    "HEAD",
-                    "--format=%(objecttype) %(refname:short)",
-                    "refs/tags",
-                )?.lineSequence()
-                    ?.filter { it.startsWith("tag ") }
-                    ?.map { it.removePrefix("tag ") }
-        }?.toList()
+        val reachableTags = repository.reachableTags(includeLightweightTags.get())
         logger.info("Reachable tags: {}", reachableTags)
         return reachableTags?.asSequence()
             ?.filter { it.startsWith(versionPrefix.get()) }
@@ -210,7 +180,8 @@ constructor(
     fun computeVersion(): String {
         val version = computeVersionFromHistory()
         val marked: Version = when {
-            enableDirtyMarker.get() && isWorkingTreeDirty() -> version.withBuildMetadata(dirtyIdentifier.get())
+            enableDirtyMarker.get() && repository.isWorkingTreeDirty() ->
+                version.withBuildMetadata(dirtyIdentifier.get())
             else -> version
         }
         return marked.toString(maxVersionLength.get()).also { logger.info("Version computed as: {}", it) }
@@ -246,7 +217,16 @@ constructor(
         }
     """.trimIndent()
 
-    protected fun runCommand(vararg cmd: String) = gitCommandOutputs.get(cmd.asList()).takeIf { it.isNotEmpty() }
+    /**
+     * Runs [cmd] in the project directory, returning its trimmed output, or null if the output is empty.
+     * The result is not cached.
+     */
+    protected fun runCommand(vararg cmd: String): String? = providerFactory.of(GitCommandValueSource::class.java) {
+        it.parameters { params ->
+            params.commands.set(cmd.asList())
+            params.directory.set(projectDir)
+        }
+    }.get().output.takeIf { it.isNotEmpty() }
 
     private fun computeVersionFromHistory(): Version {
         val latestReachableVersion = this.latestReachableVersion
@@ -266,23 +246,11 @@ constructor(
                 if (!latestReachableVersion.buildMetadata.isEmpty()) {
                     logger.warn("Build metadata of closest tag $latestReachableVersion will be ignored.")
                 }
-                val commitRange = "${versionPrefix.get()}$latestReachableVersion..HEAD"
-                val distance = runCommand("git", "rev-list", "--count", commitRange)?.toLong()
-                requireNotNull(distance) {
-                    "Bug in git SemVer plugin: [distance? $distance]. Please report at: " +
-                        "https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues"
-                }
+                val distance = repository.distanceFrom("${versionPrefix.get()}$latestReachableVersion")
                 when (distance) {
                     0L -> latestReachableVersion.toGeneralizedVersion()
                     else -> {
-                        val lastCommits = runCommand(
-                            "git",
-                            "log",
-                            "--oneline",
-                            "-$distance",
-                            "--no-decorate",
-                            "--format=%s",
-                        )?.lines().orEmpty()
+                        val lastCommits = repository.lastCommitMessages(distance)
                         val currentVersion = maxOf(
                             updateStrategy(lastCommits).incrementVersion(latestReachableVersion),
                             minSemanticVersion(),
@@ -315,8 +283,7 @@ constructor(
     }
 
     private fun hashOrTimeStamp(): String {
-        val printCommitCommand = "git log -1 --format=%${if (fullHash.get()) "H" else "h"}".split(" ")
-        val hash: String = runCommand(*printCommitCommand.toTypedArray())
+        val hash: String = repository.headHash(fullHash.get())
             ?.takeIf { it.isNotBlank() }
             ?.trim()
             ?.also {
@@ -331,9 +298,6 @@ constructor(
         }
         return hash
     }
-
-    private fun isWorkingTreeDirty(): Boolean =
-        runCommand("git", "status", "--porcelain", "--untracked-files=no") != null
 
     private fun minSemanticVersion(): SemanticVersion = minimumVersion.map {
         checkNotNull(SemanticVersion.fromStringOrNull(it)) {
