@@ -1,3 +1,14 @@
+## [7.3.5](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.3.4...7.3.5) (2026-11-21)
+
+### Dependency updates
+
+* **deps:** update kotest to v6.2.7 ([#1358](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1358)) ([578e275](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/578e2750cad67f28f0531f54dbcbcbf9e7003322))
+* **deps:** update plugin publishoncentral to v9.3.3 ([#1361](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1361)) ([a6f0f23](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/a6f0f2367f777553d119a64968a52409de17dd2b))
+
+### Documentation
+
+* **deps:** update dependency org.jetbrains.dokka to v2.3.0 ([#1362](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1362)) ([95bed93](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/95bed93bdd77cf6d6a0fc9faea8aa68d84b915e4))
+
 ## [7.3.4](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.3.3...7.3.4) (2026-11-21)
 
 ### Dependency updates
