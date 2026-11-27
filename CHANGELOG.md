@@ -1,3 +1,10 @@
+## [7.3.6](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.3.5...7.3.6) (2026-11-27)
+
+### Dependency updates
+
+* **core-deps:** update gradle to v9.9.3 ([#1364](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1364)) ([00405b9](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/00405b90c802c93ff4e2af1922292d787c5c5892))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.160 ([#1363](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/issues/1363)) ([790707d](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/commit/790707de142c2fa901f0a59722063012cf597cf2))
+
 ## [7.3.5](https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin/compare/7.3.4...7.3.5) (2026-11-21)
 
 ### Dependency updates
